@@ -1,6 +1,7 @@
 import {
   Box,
   Circle,
+  Text,
   Center,
   Image,
   createIcon,
@@ -35,7 +36,11 @@ export const RadioCardGroup = (props) => {
         }),
     [children, getRadioProps]
   );
-  return <HStack maxW="xl" overflowX="auto" {...getRootProps(rest)}>{cards}</HStack>;
+  return (
+    <HStack maxW="xl" overflowX="auto" {...getRootProps(rest)}>
+      {cards}
+    </HStack>
+  );
 };
 export const RadioCard = (props) => {
   const { radioProps, children, ...rest } = props;
@@ -62,12 +67,27 @@ export const RadioCard = (props) => {
       <Stack
         alignItems="center"
         justifyContent="center"
+        maxW="96px"
         sx={styles}
         {...checkboxProps}
         {...rest}
-
       >
-        <Image src={props.decor} alt="Ruta de Tapas, La Épica Marítima" />
+        <Image
+          src={props.decor}
+          alt="Ruta de Tapas, La Épica Marítima"
+          filter={!state.isChecked ? "grayscale(90%)" : "none"}
+        />
+        {props.subtitle ? (
+          <Text
+            color={state.isChecked ? "brand.600" : "gray.200"}
+            fontWeight={state.isChecked ? "bolder" : "light"}
+            mt="2"
+          >
+            {props.subtitle}
+          </Text>
+        ) : (
+          <></>
+        )}
         {state.isChecked ? (
           <Circle mx="auto" bg="accent" size="4">
             <Icon as={CheckIcon} boxSize="2.5" color="inverted" />

@@ -8,6 +8,8 @@ import { theme } from "@chakra-ui/pro-theme";
 import { CreateTeam } from "./pages/CreateTeam";
 import { ViewTeam } from "./pages/ViewTeam";
 import { RutasPlay } from "./pages/RutasPlay";
+import { UserProfile } from "./pages/UserProfile";
+import { Tutorial } from "./pages/Tutorial";
 
 const myTheme = extendTheme(
   {
@@ -49,6 +51,12 @@ function App() {
           </Route>
           <Route path="/viewteam" exact>
             <ViewTeam />
+          </Route>
+          <Route path="/user" exact>
+            <UserProfile />
+          </Route>
+          <Route path="/tutorial" exact>
+            <Tutorial />
           </Route>
         </Switch>
       </Router>

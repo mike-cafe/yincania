@@ -14,6 +14,8 @@ import {
   FiHome,
   FiSearch,
   FiSettings,
+  FiShare,
+  FiShare2,
   FiUsers,
 } from 'react-icons/fi'
 import { Logo } from './Logo'
@@ -62,7 +64,7 @@ export const Sidebar = () => (
         >
           <Stack spacing="1">
             <NavButton label="Ayuda" icon={FiHelpCircle} />
-            <NavButton label="Ajustes" icon={FiSettings} />
+            <NavButton label="Compartir" icon={FiShare2} />
           </Stack>
           {/* <Box bg="bg-subtle" px="4" py="5" borderRadius="lg">
             <Stack spacing="4">

@@ -23,6 +23,9 @@ export const ActionTrail = (props) => {
       shadow="base"
       w="100%"
     >
+      <Box mb="8">
+        {props.children}
+      </Box>
       <HStack
         w="100%"
         spacing="4"

@@ -1,5 +1,5 @@
 import { ArrowRightIcon, SearchIcon, ViewIcon } from "@chakra-ui/icons";
-import { IconButton, Divider, Stack, Text,Flex } from "@chakra-ui/react";
+import { Button, Divider, Stack, Text,Flex } from "@chakra-ui/react";
 import * as React from "react";
 import { BarStepCircle } from "./BarStepCircle";
 
@@ -39,12 +39,11 @@ export const BarStep = (props) => {
       </Stack>
       <Flex flexGrow={1} pr={4}>
       {!isActive || (
-        <IconButton
+        <Button
           marginLeft={"auto"}
           colorScheme="brand"
-          aria-label="Search database"
-          icon={<ArrowRightIcon />}
-        />
+          aria-label="Jugar"
+        >Jugar</Button>
       )}
       </Flex>
     </Stack>
