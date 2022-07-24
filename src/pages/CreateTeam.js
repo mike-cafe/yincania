@@ -1,13 +1,8 @@
 import {
-  HStack,
-  Box,
-  Container,
-  Divider,
   VStack,
   Stack,
   Flex,
   Text,
-  useColorModeValue as mode,
   useBreakpointValue,
 } from "@chakra-ui/react";
 import * as React from "react";
@@ -15,18 +10,15 @@ import { Navbar } from "../components/Navbar";
 import { Sidebar } from "../components/Sidebar";
 import { TeamForm } from "../components/TeamForm";
 import { ActionTrail } from "../components/ActionTrail";
+import { useNavigate,useParams } from "react-router-dom";
+
+import { shields } from '../data';
 
 export const CreateTeam = (props) => {
-  const isDesktop = useBreakpointValue({ base: false, lg: true });
+  let navigate = useNavigate();
+  let { id } = useParams();
+
   return (
-    <Flex
-      as="section"
-      direction={{ base: "column", lg: "row" }}
-      height="100vh"
-      overflowY="auto"
-      bg={mode("bg-canvas", "gray.700")}
-    >
-      {isDesktop ? <Sidebar /> : <Navbar />}
       <VStack spacing="8" px="4" py="24" flex="1">
         <Stack w="100%" spacing="5">
           <Text fontSize="lg" fontWeight="medium">
@@ -37,13 +29,15 @@ export const CreateTeam = (props) => {
             esta Yincaña.
           </Text>
         </Stack>
-        <TeamForm />
+        <TeamForm shieldOptions={shields} />
         <ActionTrail
           secondVariant="ghost"
           secondAction="Cancelar"
           firstAction="Confirmar Equipo"
+          mainClick={()=>navigate("/app/view/team/"+id)}
+          backButton={true}
+          backClick={()=>navigate("/app/detail/"+id)}
         />
       </VStack>
-    </Flex>
   );
 };

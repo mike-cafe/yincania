@@ -2,7 +2,6 @@ import {
   Box,
   Circle,
   Text,
-  Center,
   Image,
   createIcon,
   Icon,

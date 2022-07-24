@@ -1,4 +1,4 @@
-import { Button, HStack, Box } from "@chakra-ui/react";
+import { Button,Spacer, HStack, Box } from "@chakra-ui/react";
 import * as React from "react";
 import { HiArrowNarrowRight } from "react-icons/hi";
 
@@ -11,6 +11,10 @@ export const ActionTrail = (props) => {
     secondVariant,
     secondAction,
     firstAction,
+    mainClick,
+    backClick,
+    backButton,
+    firstDisabled,
     ...boxProps
   } = props;
   return (
@@ -33,7 +37,8 @@ export const ActionTrail = (props) => {
         alignItems="between"
       >
         <Button
-          onClick={() => console.log("click")}
+          hidden={!backButton}
+          onClick={backClick}
           size="lg"
           colorScheme="gray"
           variant={secondVariant}
@@ -41,8 +46,10 @@ export const ActionTrail = (props) => {
         >
           {secondAction}
         </Button>
+        <Spacer />
         <Button
-          onClick={() => console.log("click")}
+          disabled={firstDisabled}
+          onClick={mainClick}
           size="lg"
           colorScheme="brand"
           rightIcon={<HiArrowNarrowRight />}

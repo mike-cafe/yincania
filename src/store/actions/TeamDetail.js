@@ -1,0 +1,50 @@
+import {
+  GET_TEAM_DETAIL,
+  GET_TEAM_DETAIL_SUCCESS,
+  GET_TEAM_DETAIL_FAILURE,
+  GET_USERNAMES,
+  GET_USERNAMES_SUCCESS,
+  GET_USERNAMES_FAILURE,
+} from "../types";
+
+export const getTeamDetail = (payload) => {
+  return {
+    type: GET_TEAM_DETAIL,
+    payload: payload,
+  };
+};
+
+export const getTeamDetailSuccess = (data) => {
+  return {
+    type: GET_TEAM_DETAIL_SUCCESS,
+    payload: data,
+  };
+};
+
+export const getTeamDetailFailure = (error) => {
+  return {
+    type: GET_TEAM_DETAIL_FAILURE,
+    payload: error,
+  };
+};
+
+export const getUsernames = (payload) => {
+  return {
+    type: GET_USERNAMES,
+    payload: payload,
+  };
+};
+
+export const getUsernamesSuccess = (data) => {
+  return {
+    type: GET_USERNAMES_SUCCESS,
+    payload: data,
+  };
+};
+
+export const getUsernamesFailure = (error) => {
+  return {
+    type: GET_USERNAMES_FAILURE,
+    payload: error,
+  };
+};

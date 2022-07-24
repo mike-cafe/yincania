@@ -1,17 +1,24 @@
-import { ArrowRightIcon, SearchIcon, ViewIcon } from "@chakra-ui/icons";
-import { Button, Divider, Stack, Text,Flex } from "@chakra-ui/react";
+import { Link, Button, Divider, Stack, Text, Flex } from "@chakra-ui/react";
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import { BarStepCircle } from "./BarStepCircle";
 
 export const BarStep = (props) => {
   const {
     isActive,
+    isPlayable,
     isCompleted,
     isLastStep,
     title,
     description,
+    time,
+    onButtonClick,
+    position,
     ...stackProps
   } = props;
+
+  const navigate = useNavigate();
+
   return (
     <Stack spacing="4" direction="row" {...stackProps}>
       <Stack spacing="0" align="center">
@@ -37,15 +44,37 @@ export const BarStep = (props) => {
           {description}
         </Text>
       </Stack>
-      <Flex flexGrow={1} pr={4}>
       {!isActive || (
-        <Button
-          marginLeft={"auto"}
-          colorScheme="brand"
-          aria-label="Jugar"
-        >Jugar</Button>
+        <Flex flexGrow={1} pr={4}>
+          {!isPlayable || (
+            <Button
+              marginLeft={"auto"}
+              colorScheme="brand"
+              aria-label="Jugar"
+              onClick={() => navigate(`/app/route/${props.routeID}/game/${props.barID}`)}
+            >
+              <Link to="/tutorial">Jugar</Link>
+            </Button>
+          )}
+          {!!isPlayable || (
+            <Button
+              marginLeft={"auto"}
+              colorScheme="brand"
+              aria-label="Jugar"
+              onClick={() => onButtonClick(position + 1, isPlayable)}
+            >
+              Tapa
+            </Button>
+          )}
+        </Flex>
       )}
-      </Flex>
+      {!isCompleted || (
+        <Flex flexGrow={1} pr={4}>
+          <Text color="brand.700" fontWeight="bold" marginLeft={"auto"}>
+            {time}
+          </Text>
+        </Flex>
+      )}
     </Stack>
   );
 };

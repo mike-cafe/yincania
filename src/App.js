@@ -1,15 +1,12 @@
 import "./App.css";
-import { Switch, Route, BrowserRouter as Router } from "react-router-dom";
+import { Provider } from "react-redux";
+import { BrowserRouter as Router } from "react-router-dom";
 import * as React from "react";
-import { RutasList } from "./pages/RutasList";
-import { RutasDetail } from "./pages/RutasDetail";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { theme } from "@chakra-ui/pro-theme";
-import { CreateTeam } from "./pages/CreateTeam";
-import { ViewTeam } from "./pages/ViewTeam";
-import { RutasPlay } from "./pages/RutasPlay";
-import { UserProfile } from "./pages/UserProfile";
-import { Tutorial } from "./pages/Tutorial";
+import store from "./store";
+import AuthContextProvider from "./contexts/AuthContext";
+import AppRouting from "./AppRouting";
 
 const myTheme = extendTheme(
   {
@@ -28,6 +25,15 @@ const myTheme = extendTheme(
         900: "#652B19",
       },
     },
+    semanticTokens: {
+      colors: {
+        ...theme.semanticTokens.colors,
+        "bg-canvas": {
+          default: "whiteAlpha.900",
+          _dark: "gray.900",
+        },
+      },
+    },
   },
   theme
 );
@@ -35,31 +41,13 @@ const myTheme = extendTheme(
 function App() {
   return (
     <ChakraProvider theme={myTheme}>
-      <Router>
-        <Switch>
-          <Route path="/" exact>
-            <RutasList />
-          </Route>
-          <Route path="/detail" exact>
-            <RutasDetail />
-          </Route>
-          <Route path="/play" exact>
-            <RutasPlay />
-          </Route>
-          <Route path="/createteam" exact>
-            <CreateTeam />
-          </Route>
-          <Route path="/viewteam" exact>
-            <ViewTeam />
-          </Route>
-          <Route path="/user" exact>
-            <UserProfile />
-          </Route>
-          <Route path="/tutorial" exact>
-            <Tutorial />
-          </Route>
-        </Switch>
-      </Router>
+      <Provider store={store}>
+        <AuthContextProvider>
+          <Router>
+            <AppRouting />
+            </Router>
+        </AuthContextProvider>
+      </Provider>
     </ChakraProvider>
   );
 }

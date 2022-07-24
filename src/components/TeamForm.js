@@ -25,33 +25,7 @@ export const TeamForm = (props) => (
         }}
       >
         <RadioCardGroup defaultValue="one" spacing="3">
-          {[
-            {
-              decor:
-                "https://firebasestorage.googleapis.com/v0/b/react-coffee-a2736.appspot.com/o/ShieldTwo.png?alt=media&token=99935f82-27bf-4212-864f-0fbf385a4dda",
-              name: "one",
-            },
-            {
-              decor:
-                "https://firebasestorage.googleapis.com/v0/b/react-coffee-a2736.appspot.com/o/ShieldThree.png?alt=media&token=b4e3f05d-8dbc-48da-977f-1edaeb0bcbf0",
-              name: "two",
-            },
-            {
-              decor:
-                "https://firebasestorage.googleapis.com/v0/b/react-coffee-a2736.appspot.com/o/ShieldOne.png?alt=media&token=b0d82e4c-30aa-46a2-8289-cb1c818df3f6",
-              name: "three",
-            },
-            {
-              decor:
-                "https://firebasestorage.googleapis.com/v0/b/react-coffee-a2736.appspot.com/o/ShieldTwo.png?alt=media&token=99935f82-27bf-4212-864f-0fbf385a4dda",
-              name: "four",
-            },
-            {
-              decor:
-              "https://firebasestorage.googleapis.com/v0/b/react-coffee-a2736.appspot.com/o/ShieldFour.png?alt=media&token=cd50cab2-4a67-40ca-8a66-92062943c390",
-              name: "five",
-            },
-          ].map((option) => (
+          {props.shieldOptions.map((option) => (
             <RadioCard
               key={option.name}
               value={option.name}

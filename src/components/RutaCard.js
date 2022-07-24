@@ -1,14 +1,13 @@
 import {
   Box,
-  BoxProps,
   Button,
   Flex,
-  FlexProps,
+  Skeleton,
+  SkeletonText,
   LightMode,
   List,
   ListIcon,
   ListItem,
-  ListItemProps,
   Text,
   useColorModeValue as mode,
 } from "@chakra-ui/react";
@@ -52,6 +51,8 @@ const RutaDetail = (props) => {
 
 export const RutaCard = (props) => {
   const {
+    loading,
+    isFinished,
     features,
     name,
     description,
@@ -74,49 +75,90 @@ export const RutaCard = (props) => {
       {...rest}
     >
       <Box
-        bg={image? `url(${image})` : "orange.500"}
+        bg={`url(${image})`}
         bgRepeat="no-repeat"
         bgSize="cover"
         bgPos="center center"
         px="8"
         py="8"
-        color={image? "orange.500":"orange.50"}
+        color={image ? "orange.500" : "orange.50"}
+        position="relative"
       >
-        <Text fontWeight="bold" fontSize="lg" >
-          {name}
-        </Text>
-        <RutaDisplay my="2" currency="" price={price} duration={duration} />
-        <Text>{description}</Text>
-      </Box>
-      <Box px="8" pt="10" pb="12"  borderBottomWidth="1px">
-        <List stylePosition="outside" spacing="4">
-          {features.map((feature, index) => (
-            <RutaDetail key={index}>{feature}</RutaDetail>
-          ))}
-        </List>
-      </Box>
-      <Box px="8" py="6">
-        <LightMode>
-          <Button
-            onClick={onClick}
-            size="lg"
-            w="full"
-            colorScheme={c}
-            rightIcon={<HiArrowNarrowRight />}
+        {isFinished ? (
+          <Flex
+            bg="brand.500"
+            position="absolute"
+            right={-20}
+            top={6}
+            width="240px"
+            transform="rotate(45deg)"
+            py={2}
+            justifyContent="center"
+            alignItems="center"
           >
-            Participar
-          </Button>
-        </LightMode>
-        <Text
-          mt="2"
-          color={mode("gray.600", "gray.400")}
-          align="center"
-          fontSize="sm"
-        >
-          Diviérte y gana premios
-        </Text>
+            <Text
+              fontSize="xs"
+              textTransform="uppercase"
+              fontWeight="bold"
+              letterSpacing="wider"
+              color="white"
+            >
+              Finished
+            </Text>
+          </Flex>
+        ) : (
+          ""
+        )}
+        <Skeleton mb={4} width={()=>loading? "30%":"100%"} height="16px" isLoaded={!loading}>
+          <Text fontWeight="bold" fontSize="lg">
+            {name}
+          </Text>
+        </Skeleton>
+        <Skeleton my="2" height="24px" isLoaded={!loading}>
+          <RutaDisplay  currency="" price={price} duration={duration} />
+        </Skeleton>
+        <Skeleton height="16px" isLoaded={!loading}>
+          <Text>{description}</Text>
+        </Skeleton>
       </Box>
-
+      {isFinished ? (
+        ""
+      ) : (
+        <Box px="8" pt="10" pb="12" borderBottomWidth="1px">
+          <List stylePosition="outside" spacing="4">
+            <SkeletonText skeletonHeight="12px" noOfLines={3} spacing="4" isLoaded={!loading}>
+              {features.map((feature, index) => (
+                <RutaDetail key={index}>{feature}</RutaDetail>
+              ))}
+            </SkeletonText>
+          </List>
+        </Box>
+      )}
+        <Box px="8" py="6">
+          <LightMode>
+          <Skeleton borderRadius="md" startColor="brand.100" endColor="brand.400" isLoaded={!loading}>
+            <Button
+              onClick={onClick}
+              size="lg"
+              w="full"
+              colorScheme={c}
+              rightIcon={<HiArrowNarrowRight />}
+            >
+              {isFinished ? "Ver Resultado" : "Participar"}
+            </Button>
+          </Skeleton>
+          </LightMode>
+          <Skeleton startColor="gray.100" endColor="gray.300" mt={4} height="12px" isLoaded={!loading}>
+          <Text
+            mt="2"
+            color={mode("gray.600", "gray.400")}
+            align="center"
+            fontSize="sm"
+          >
+            Diviérte y gana premios
+          </Text>
+          </Skeleton>
+        </Box>
     </Box>
   );
 };

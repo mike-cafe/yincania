@@ -11,12 +11,11 @@ import {
 } from "@chakra-ui/react";
 import * as React from "react";
 import { GoCalendar, GoGlobe, GoLocation } from "react-icons/go";
-import { Card } from "./Card";
 import { CardContent } from "./CardContent";
 import { CardHeader } from "./CardHeader";
 import { BarAvatar } from "./BarAvatar";
 
-export const StatPro = () => (
+export const BarCard = (props) => (
   <Box
     bg={useColorModeValue("white", "gray.700")}
     mx="auto"
@@ -28,30 +27,20 @@ export const StatPro = () => (
   >
     <HStack spacing="4">
       <BarAvatar
-        name="Destino"
-        src="https://firebasestorage.googleapis.com/v0/b/react-coffee-a2736.appspot.com/o/CuevaPirata.jpeg?alt=media&token=1ae0f1af-0722-4f02-b841-6980ce83d2d6"
+        name={props.barDetail.name}
+        src={props.barDetail.cover}
       />
       <CardContent>
         <Text color="muted">
-          Bar Final
+          {props.barDetail.isLast? "Bar Final":""}
         </Text>
-        <CardHeader title="La Cueva del Pirata" />
+        <CardHeader title={props.barDetail.name} />
         <Stack spacing="1" mt="2">
           <HStack fontSize="sm">
             <Icon as={GoLocation} color="gray.500" />
-            <Text>Calle Ida, 12</Text>
+            <Text>{props.barDetail.location}</Text>
           </HStack>
         </Stack>
-
-        {/* <Text fontWeight="semibold" mt="8" mb="2">
-          Interests
-        </Text>
-        <Wrap shouldWrapChildren>
-          <Tag>Productivity</Tag>
-          <Tag>Work</Tag>
-          <Tag>Business</Tag>
-          <Tag>Woman</Tag>
-        </Wrap> */}
       </CardContent>
     </HStack>
   </Box>

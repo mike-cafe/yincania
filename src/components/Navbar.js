@@ -4,7 +4,6 @@ import {
   DrawerContent,
   DrawerOverlay,
   Flex,
-  useColorModeValue,
   useDisclosure,
 } from '@chakra-ui/react'
 import * as React from 'react'
@@ -12,8 +11,9 @@ import { Logo } from './Logo'
 import { Sidebar } from './Sidebar'
 import { ToggleButton } from './ToggleButton'
 
-export const Navbar = () => {
+export const Navbar = (props) => {
   const { isOpen, onToggle, onClose } = useDisclosure()
+  
   return (
     <Box
       width="full"
@@ -39,7 +39,7 @@ export const Navbar = () => {
         >
           <DrawerOverlay />
           <DrawerContent>
-            <Sidebar />
+            <Sidebar profile={props.profile}/>
           </DrawerContent>
         </Drawer>
       </Flex>

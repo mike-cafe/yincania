@@ -2,7 +2,6 @@ import {
   Image,
   Flex,
   Box,
-  Button,
   HStack,
   Icon,
   Stack,
@@ -14,27 +13,25 @@ import {
   Wrap,
 } from "@chakra-ui/react";
 import * as React from "react";
-import {
-  HiCash,
-  HiLocationMarker,
-  HiShieldCheck,
-  HiUser,
-} from "react-icons/hi";
-import { ActionTrail } from "../components/ActionTrail";
-import { Navbar } from "../components/Navbar";
-import { Sidebar } from "../components/Sidebar";
+import { HiShieldCheck, HiUser } from "react-icons/hi";
+import { useParams } from "react-router-dom";
+import { ActionTrail } from "../../components/ActionTrail";
+import { Navbar } from "../../components/Navbar";
+import { Sidebar } from "../../components/Sidebar";
+import { rutaDetail } from "../../data";
 
-export const ViewTeam = () => {
-  const isDesktop = useBreakpointValue({ base: false, lg: true });
+const TeamDetail = (props) => {
+  let params = useParams();
+  React.useEffect(() => props.getTeamDetail(params.id), [params.id]);
+  React.useEffect(() => {
+    if (props.teamDetail) {
+      props.getUsernames(props.teamDetail?.members.map((one)=>one.id));
+    }
+  }, [props.teamDetail]);
+
+  // a falta de crear acciones para la recuperación de
+  // los usuarios del equipo y la yincaña
   return (
-    <Flex
-      as="section"
-      direction={{ base: "column", lg: "row" }}
-      height="100vh"
-      overflowY="auto"
-      bg={mode("bg-canvas", "gray.700")}
-    >
-      {isDesktop ? <Sidebar /> : <Navbar />}
       <VStack spacing="6" px="4" py="24" flex="1">
         <Stack
           align="center"
@@ -47,13 +44,10 @@ export const ViewTeam = () => {
             md: "row",
           }}
         >
-          <Image
-            height="96px"
-            src="https://firebasestorage.googleapis.com/v0/b/react-coffee-a2736.appspot.com/o/ShieldTwo.png?alt=media&token=99935f82-27bf-4212-864f-0fbf385a4dda"
-          />
+          <Image height="96px" src={props.teamDetail?.shield} />
 
           <Text textAlign="center" as="h2" fontWeight="bold" fontSize="xl">
-            Los Idiotas de Alcobendas
+            {props.teamDetail?.name}
           </Text>
           <HStack
             fontSize={{
@@ -67,13 +61,13 @@ export const ViewTeam = () => {
               color={mode("gray.500", "gray.300")}
               lineHeight="1"
             >
-              Equipo para Yincaña 'Desafío Marítimo'
+              {`Equipo para Yincaña '${rutaDetail.title}'`}
             </Text>
             <Icon as={HiShieldCheck} color="green.500" />
           </HStack>
         </Stack>
         <Box fontSize="sm" textAlign="center" noOfLines={2}>
-          La única solución a un plan absurdo es un plan aún más absurdo.
+          {props.teamDetail?.warcry}
         </Box>
         <HStack>
           <Icon as={HiUser} fontSize="xl" color="gray.400" />
@@ -83,7 +77,7 @@ export const ViewTeam = () => {
             textAlign="center"
             color={mode("gray.600", "gray.300")}
           >
-            <b>7</b> miembros
+            {props.teamDetail?.memberCounter} miembros
           </Text>
         </HStack>
         <Wrap
@@ -91,7 +85,7 @@ export const ViewTeam = () => {
           shouldWrapChildren
           color={mode("gray.600", "gray.300")}
         >
-          {["JC", "Maroto", "Vitti", "Jacob", "Capi", "Mari", "Quasi"].map(
+          {props.usernames?.map(
             (tag) => (
               <Tag key={tag} color="inherit" px="3">
                 {tag}
@@ -103,8 +97,10 @@ export const ViewTeam = () => {
           secondVariant="ghost"
           secondAction="Abandonar Equipo"
           firstAction="Invitar al Equipo"
+          backButton={true}
         />
       </VStack>
-    </Flex>
   );
 };
+
+export default TeamDetail;
