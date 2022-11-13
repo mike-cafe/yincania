@@ -4,8 +4,8 @@ import * as React from 'react'
 export const Card = (props) => (
   <Box
     minH="3xs"
-    boxShadow={useColorModeValue('sm', 'sm-dark')}
     borderRadius="lg"
+    p={2}
     {...props}
   />
 )

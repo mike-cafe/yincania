@@ -19,11 +19,11 @@ const Start = (props) => {
   const query = useQuery();
   if (localStorage.getItem(LocalStorage.TOKEN) == null) {
       if (query.get("mode") === "verifyEmail") {
-        return <Navigate to={`/login${location.search}`} />;
+        return <Navigate to={`/${location.search}`} />;
       } else if (query.get("mode") === "resetPassword") {
         return <Navigate to={`/reset-password${location.search}`} />;
       } else {
-        return <Navigate to={"/login"} />;
+        return <Navigate to={"/"} />;
       }
   } else if (currentUser) {
       props.userData({ user: currentUser, navigate });

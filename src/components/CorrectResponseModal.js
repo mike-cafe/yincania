@@ -5,18 +5,18 @@ import {
   ModalBody,
   ModalContent,
   ModalOverlay,
-  StackDivider,
   Stack,
-  HStack,
-  Image,
   Text,
+  Image,
+  HStack,
+  StackDivider
 } from "@chakra-ui/react";
 import * as React from "react";
 import { Logo } from "./Logo";
 import { clasification } from "../data";
 
 export const CorrectResponseModal = (props) => {
-
+  const { saving, ...rest } = props;
   const [showResults, setShowResults] = React.useState(false);
 
   return (
@@ -38,7 +38,7 @@ export const CorrectResponseModal = (props) => {
               }}
             >
               <Logo height="5" />
-              {showResults ? (
+              /* {showResults ? (
                 <Stack spacing="3" textAlign="center">
                   <Text fontSize="2xl" color="brand.500" fontWeight="bold">
                     Resultados
@@ -92,31 +92,35 @@ export const CorrectResponseModal = (props) => {
                   <Text fontSize="lg">
                     Tú y tu equipo
                     <Box as="span" fontWeight="bold">
-                      podéis pasar al siguiente bar.
+                      podéis consumir vuestra tapa e ir al siguiente bar.
                     </Box>
                   </Text>
                 </Stack>
-              )}
+              )} */
 
               <Stack direction="row" spacing="4">
                 <Button
                   type="submit"
+                  variant="solid"
                   colorScheme="brand"
                   size="md"
                   width="100%"
                   onClick={props.onFinish}
+                  isLoading={saving}
                 >
-                  Inicio
+                  Canjear Tapa
                 </Button>
-                {showResults || <Button
-                  colorScheme="brand"
-                  variant="outline"
-                  onClick={()=>setShowResults(true)}
-                  size="md"
-                  width="100%"
-                >
-                  Resultados
-                </Button>}
+                {/* {showResults || (
+                  <Button
+                    colorScheme="brand"
+                    variant="outline"
+                    onClick={() => setShowResults(true)}
+                    size="md"
+                    width="100%"
+                  >
+                    Resultados
+                  </Button>
+                )} */}
               </Stack>
             </Stack>
           </ModalBody>

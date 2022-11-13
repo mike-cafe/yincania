@@ -5,7 +5,14 @@ import {
   GET_USERNAMES,
   GET_USERNAMES_SUCCESS,
   GET_USERNAMES_FAILURE,
+  FIND_TEAM,
+  FIND_TEAM_SUCCESS,
+  FIND_TEAM_FAILURE
 } from "../types";
+
+export const resetTeamStates = () => ({
+  type: "RESET_TEAM_STATE",
+});
 
 export const getTeamDetail = (payload) => {
   return {
@@ -45,6 +52,27 @@ export const getUsernamesSuccess = (data) => {
 export const getUsernamesFailure = (error) => {
   return {
     type: GET_USERNAMES_FAILURE,
+    payload: error,
+  };
+};
+
+export const findTeam = (payload) => {
+  return {
+    type: FIND_TEAM,
+    payload: payload,
+  };
+};
+
+export const findTeamSuccess = (data) => {
+  return {
+    type: FIND_TEAM_SUCCESS,
+    payload: data,
+  };
+};
+
+export const findTeamFailure = (error) => {
+  return {
+    type: FIND_TEAM_FAILURE,
     payload: error,
   };
 };

@@ -7,6 +7,8 @@ import teamdetail from './teamdetail';
 import usernames from './usernames';
 import userprofile from './userprofile'
 import signIn from './signIn';
+import saveTeam from './saveTeam';
+import tapasdetail from './tapasdetail';
 
 export default function* rootSaga() {
   yield all([
@@ -18,5 +20,7 @@ export default function* rootSaga() {
     usernames(),
     userprofile(),
     signIn(),
+    saveTeam(),
+    tapasdetail(),
   ]);
 }

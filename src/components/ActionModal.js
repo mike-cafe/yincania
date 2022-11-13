@@ -12,12 +12,10 @@ import {
   Button,
   Icon,
   Text,
-  useColorModeValue,
 } from "@chakra-ui/react";
 import * as React from "react";
 import { Logo } from "./Logo";
-import { GoCalendar, GoGlobe, GoLocation } from "react-icons/go";
-import { Card } from "./Card";
+import { GoLocation } from "react-icons/go";
 import { CardContent } from "./CardContent";
 import { CardHeader } from "./CardHeader";
 import { Link as RouteLink } from "react-router-dom";
@@ -26,7 +24,7 @@ import QRCode from "react-qr-code";
 import { BarAvatar } from "./BarAvatar";
 
 export const ActionModal = (props) => {
-  const { barNumber, onClose, ...rest } = props;
+  const { barNumber,tapaURL, onClose, ...rest } = props;
 
   return (
     <Box height="100vh">
@@ -84,20 +82,10 @@ export const ActionModal = (props) => {
                 <Center>
                   <QRCode
                     size="196"
-                    value="https://www.npmjs.com/package/react-qr-code"
+                    value={tapaURL}
                   />
                 </Center>
               </Stack>
-              {/* <ModalForm /> */}
-              {/* <Link
-                fontSize="lg"
-                textAlign="center"
-                color={useColorModeValue("gray.600", "gray.400")}
-                textDecoration="underline"
-                onClick={onClose}
-              >
-                Cerrar
-              </Link> */}
             </Stack>
           </ModalBody>
         </ModalContent>

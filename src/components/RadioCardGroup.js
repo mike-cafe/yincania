@@ -16,12 +16,14 @@ import React from "react";
 
 export const RadioCardGroup = (props) => {
   const { children, name, defaultValue, value, onChange, ...rest } = props;
+
   const { getRootProps, getRadioProps } = useRadioGroup({
     name,
     defaultValue,
     value,
     onChange,
   });
+
   const cards = React.useMemo(
     () =>
       React.Children.toArray(children)
@@ -30,11 +32,14 @@ export const RadioCardGroup = (props) => {
           return React.cloneElement(card, {
             radioProps: getRadioProps({
               value: card.props.value,
+              isChecked:defaultValue===card.props.value,
+              checked:defaultValue===card.props.value,
             }),
           });
         }),
     [children, getRadioProps]
   );
+  
   return (
     <HStack maxW="xl" overflowX="auto" {...getRootProps(rest)}>
       {cards}
@@ -50,6 +55,7 @@ export const RadioCard = (props) => {
   const inputProps = getInputProps();
   const checkboxProps = getCheckboxProps();
   const labelProps = getLabelProps();
+  
   return (
     <Box
       as="label"

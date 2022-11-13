@@ -15,6 +15,7 @@ import {
   userData,
   verifyToken,
 } from "./../../store/actions/SignIn";
+import { saveUserData } from "../../store/actions/UserProfile";
 
 const LoginContainer = (props) => {
   return <Login {...props} />;
@@ -22,13 +23,11 @@ const LoginContainer = (props) => {
 
 const mapStateToProps = ({ SignUp, SignIn }) => {
   return {
-    emailSent: SignIn?.emailSent,
     error: SignIn?.error,
     signInResponse: SignIn?.response,
     user: SignIn?.user,
     loading: SignIn?.loading,
     tokenVerified: SignIn?.tokenVerified,
-    userHasWorkSpace: SignIn?.userHasWorkSpace,
   };
 };
 const mapDispatchToProps = (dispatch) => {
@@ -68,6 +67,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     verifyToken: (data) => {
       dispatch(verifyToken(data));
+    },
+    saveUserData:(userProfile)=>{
+      dispatch(saveUserData(userProfile))
     },
     // logout: () => {
     //   dispatch(logout());

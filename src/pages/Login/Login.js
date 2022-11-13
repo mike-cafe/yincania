@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { functions } from "../../utils/init-firebase";
 import {
   Box,
   Button,
@@ -17,33 +18,36 @@ import {
   useToast,
   InputRightAddon,
   Center,
+  Link,
 } from "@chakra-ui/react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useTimer } from "use-timer";
+import { useLocation, useNavigate, Link as RouteLink } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Card } from "./../../components/Card";
 import Banner from "./../../components/authenticationModules/Banner";
-import { LocalStorage } from "./../../store/LocalStorage";
 import { Toast } from "./../../store/Toast";
 import { useAuth } from "./../../contexts/AuthContext";
+import { Logo } from "../../components/Logo";
 import {
   getAuth,
-  GoogleAuthProvider,
-  getRedirectResult,
 } from "@firebase/auth";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+import { httpsCallable } from "firebase/functions";
 
 const schema = yup.object().shape({
-  email: yup.string().email().required(),
+  email: yup.string().email().required("Se debe introducir un email"),
   password: yup
     .string()
-    .min(8)
+    .min(
+      8,
+      "La contraseña debe tener por lo menos 8 caracteres (mayúsculas y minúsculas), 1 número y un caracter especial"
+    )
     .required()
     .matches(
       /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/,
-      "Password must contain at least 8 characters (lowercase and uppercase), one number and one special character"
+      "La contraseña debe tener por lo menos 8 caracteres (mayúsculas y minúsculas), 1 número y un caracter especial"
     ),
 });
 
@@ -52,120 +56,44 @@ const useQuery = () => {
 };
 
 const Login = (props) => {
-  const { userHasWorkSpace } = props;
   const location = useLocation();
   const query = useQuery();
   const navigate = useNavigate();
   const toast = useToast();
-  const auth = getAuth();
-  const { time, start } = useTimer({
-    endTime: 5,
-    initialTime: 1,
-    onTimeOver: () => {
-      if (userHasWorkSpace) {
-        localStorage.setItem(LocalStorage.TOKEN, currentUser.accessToken);
-        localStorage.setItem(LocalStorage.USER_ID, currentUser.uid);
-        navigate("/app/widgets/");
-      } else {
-        localStorage.setItem(LocalStorage.TOKEN, currentUser.accessToken);
-        localStorage.setItem(LocalStorage.USER_ID, currentUser.uid);
-        navigate("/app/notion1");
-      }
-    },
-  });
+
   const {
     signInWithGoogle,
     login,
     applyActionCodeVerification,
     sendUserEmailVerification,
     currentUser,
+    additionalInfo,
     logout,
+    manageRedirectResult,
+    createUserProfile
   } = useAuth();
+
   const [show, setShow] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
   const [email, setEmail] = useState("");
+  const [bannerError, setBannerError] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
+
   const [disabledForm, setDisabledForm] = useState(false);
-  const [isGoogleLogin, setIsGoogleLogin] = useState(false);
-  const [socialLogin, setSocialLogin] = useState(false);
-
+  const auth = getAuth();
+  const nextUrl = query.get("next") ||  "/app/routes";
+  
   useEffect(() => {
-    getRedirectResult(auth)
-      .then((result) => {
-        const credential = GoogleAuthProvider.credentialFromResult(result)
-        const user = result.user;
-        navigate(
-          {
-            pathname: "/login",
-            search: `oauthToken=${user.accessToken}`,
-            state: { token: user.accessToken },
-          },
-          { replace: true }
-        );
-      })
-      .catch((error) => {
-        const credential = GoogleAuthProvider.credentialFromError(error)
-      });
-  }, [auth]);
-
-  useEffect(() => {
-    if (query.get("v")) {
-      setShowBanner(true);
-      setEmail(localStorage.getItem(LocalStorage.TAPAP_EMAIL));
-    }
     if (query.get("mode") === "verifyEmail") {
       toast({
-        position: "bottom-right",
+        position: "bottom-center",
         title: Toast.EmailVerification.info.title,
         duration: Toast.EmailVerification.info.duration,
         isClosable: true,
       });
       verifyUserEmail();
     }
-    if (query.get("oauthToken")) {
-      toast({
-        position: "bottom-right",
-        title: Toast.SocialLoginVerification.info.title,
-        duration: Toast.SocialLoginVerification.info.duration,
-        isClosable: true,
-      });
-      setDisabledForm(true);
-      setSocialLogin(true);
-      props.verifyToken({
-        token: query.get("oauthToken"),
-        socialLogin: true,
-        user: currentUser,
-        navigate,
-      });
-    }
   }, [location]);
-
-  useEffect(() => {
-    const { user } = props;
-    if (user) {
-      if (!user?.emailVerified) {
-        setShowBanner(true);
-        setEmail(user.email);
-      }
-    }
-  }, [props.user]);
-
-  useEffect(() => {
-    const { tokenVerified } = props;
-    if (socialLogin) {
-      if (tokenVerified) {
-        setSocialLogin(false);
-        start();
-        toast({
-          position: "bottom-right",
-          title: Toast.SocialLoginVerification.success.title,
-          description: `${Toast.SocialLoginVerification.success.description} ${time} `,
-          duration: Toast.SocialLoginVerification.success.duration,
-          status: "success",
-          isClosable: true,
-        });
-      }
-    }
-  }, [props.user, props.userHasWorkSpace, props.tokenVerified]);
 
   const {
     register,
@@ -182,51 +110,58 @@ const Login = (props) => {
   const handleCloseIcon = () => {
     setShowBanner(false);
     setEmail("");
-    localStorage.removeItem(LocalStorage.TAPAP_EMAIL);
+    logout();
   };
 
   const handleResendEmailClick = async () => {
     try {
-      await sendUserEmailVerification();
-      props.reSendEmailSuccess();
+      await sendUserEmailVerification().finally(() => {
+        setEmailSent(true);
+        logout();
+      });
+      setTimeout(() => {
+        setShowBanner(false);
+      }, 1000);
     } catch (error) {
-      props.reSendEmailFailure(error.message);
       toast({
-        position: "bottom-right",
-        title: "Resend Email",
+        position: "bottom-center",
+        title: "Reenviar Correo",
         description: error.message,
         status: "error",
         duration: Toast.EmailVerification.error.duration,
         isClosable: true,
       });
+      setBannerError(true);
     }
   };
 
   const handleGoogleClick = () => {
-    setSocialLogin(true);
-    setIsGoogleLogin(true);
-    signInWithGoogle();
+    setDisabledForm(true)
+    signInWithGoogle(redirectTo).finally(
+      ()=>setDisabledForm(false)
+    )
   };
+  const redirectTo = (res) => props.userData({ user: res.user,next:nextUrl, navigate });
 
   const onSubmit = async (payload) => {
-    reset();
     setDisabledForm(true);
     login(payload.email, payload.password)
       .then((res) => {
-        setDisabledForm(false);
-        if (res.user.emailVerified) {
-          props.signInSuccess(res.user);
-          props.userData({ user: res.user, navigate });
+        if (res.user?.emailVerified) {
+          props.userData({ user: res.user,next:nextUrl, navigate });
         } else {
-          props.signInSuccess(res.user);
+          setEmail(res?.user?.email);
+          setShowBanner(true);
         }
+        reset();
+        setDisabledForm(false);
       })
       .catch((error) => {
         setDisabledForm(false);
         props.signInFailure(error.message);
         toast({
-          position: "bottom-right",
-          description: error.message,
+          position: "bottom-center",
+          description: "Usuario y/o contraseña incorrectos.",
           status: "error",
           duration: 9000,
           isClosable: true,
@@ -234,35 +169,12 @@ const Login = (props) => {
       });
   };
 
-  const onLogout = async () => {
-    reset();
-    setDisabledForm(true);
-    logout().then(()=>{
-      toast({
-        position: "bottom-right",
-        description: "Hasta pronto!",
-        status: "success",
-        duration: 9000,
-        isClosable: true,
-      });
-    }).catch(
-      (error)=>{toast({
-        position: "bottom-right",
-        description: error.message,
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });}
-    )
-    .finally(()=>setDisabledForm(false))
-  };
-
   const verifyUserEmail = async () => {
     const actionCode = query.get("oobCode");
     try {
       await applyActionCodeVerification(actionCode);
       toast({
-        position: "bottom-right",
+        position: "bottom-center",
         title: Toast.EmailVerification.success.title,
         description: Toast.EmailVerification.success.description,
         status: "success",
@@ -271,7 +183,7 @@ const Login = (props) => {
       });
     } catch (error) {
       toast({
-        position: "bottom-right",
+        position: "bottom-center",
         title: Toast.EmailVerification.error.title,
         description: Toast.EmailVerification.error.description,
         status: "error",
@@ -293,28 +205,24 @@ const Login = (props) => {
         }}
       >
         <Box maxW="md" mx="auto">
-          {/* <Logo
-            mx="auto"
-            h="6"
-            mb={{
-              base: "10",
-              md: "20",
-            }}
-          /> */}
-          <Heading textAlign="center" size="xl" fontWeight="extrabold">
-            Sign in to your account
+          <Center>
+            <Logo />
+          </Center>
+
+          <Heading textAlign="center" size="lg" fontWeight="extrabold">
+            Iniciar Sesión
           </Heading>
           <Text mt="4" mb="8" align="center" maxW="md" fontWeight="small">
-            <Text as="span">Don&apos;t have an account?</Text>
-            <Button
+            <Text as="span">¿No tienes una cuenta todavía?</Text>
+            <Link
               ml={1}
-              colorScheme="yellow"
-              variant="link"
-              onClick={() => navigate("/signup")}
+              color="brand.600"
               fontWeight="bold"
+              as={RouteLink}
+              to="/signup"
             >
-              Sign up here
-            </Button>
+              Regístrate
+            </Link>
           </Text>
           <Card>
             <Stack spacing="6">
@@ -335,14 +243,15 @@ const Login = (props) => {
                 isDisabled={disabledForm}
               >
                 <Flex my={2} justify="space-between" align="center">
-                  <FormLabel m={0}>Password</FormLabel>
+                  <FormLabel m={0}>Contraseña</FormLabel>
                   <Button
                     variant="link"
                     colorScheme="yellow"
                     onClick={() => navigate("/forget-password")}
-                    fontWeight="bold"
+                    fontWeight="normal"
+                    fontSize="xs"
                   >
-                    Forgot Password?
+                    ¿Olvidaste tu contraseña?
                   </Button>
                 </Flex>
                 <InputGroup size="md">
@@ -353,7 +262,7 @@ const Login = (props) => {
                     pr="4.5rem"
                   />
                   <InputRightAddon onClick={handleClick}>
-                    {show ? "Hide" : "Show"}
+                    {show ? <FiEyeOff color="gray" /> : <FiEye color="gray" />}
                   </InputRightAddon>
                 </InputGroup>
                 <FormErrorMessage>{errors?.password?.message}</FormErrorMessage>
@@ -366,17 +275,7 @@ const Login = (props) => {
                 onClick={handleSubmit(onSubmit)}
                 disabled={!!errors.email || !!errors.password || disabledForm}
               >
-                Sign in
-              </Button>
-              <Button
-                type="button"
-                colorScheme="gray"
-                size="sm"
-                fontSize="md"
-                onClick={onLogout}
-                disabled={!!errors.email || !!errors.password || disabledForm}
-              >
-                Logout
+                Iniciar Sesión
               </Button>
             </Stack>
             <Flex align="center" color="gray.300" mt="6">
@@ -390,7 +289,7 @@ const Login = (props) => {
                 color={useColorModeValue("gray.500", "gray.300")}
                 fontWeight="medium"
               >
-                or continue with
+                o continua con
               </Text>
               <Box flex="1">
                 <Divider borderColor="currentcolor" />
@@ -405,7 +304,7 @@ const Login = (props) => {
                 onClick={handleGoogleClick}
               >
                 <Center>
-                  <Text>Sign in with Google</Text>
+                  <Text>Google</Text>
                 </Center>
               </Button>
             </SimpleGrid>
@@ -417,7 +316,9 @@ const Login = (props) => {
           email={email}
           handleCloseIcon={handleCloseIcon}
           handleResendEmailClick={handleResendEmailClick}
-          {...props}
+          error={bannerError}
+          setError={setBannerError}
+          emailSent={emailSent}
         />
       )}
     </>

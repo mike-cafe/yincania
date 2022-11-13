@@ -1,4 +1,5 @@
 import {
+  VStack,
   Box,
   Button,
   Flex,
@@ -109,24 +110,31 @@ export const RutaCard = (props) => {
         ) : (
           ""
         )}
-        <Skeleton mb={4} width={()=>loading? "30%":"100%"} height="16px" isLoaded={!loading}>
-          <Text fontWeight="bold" fontSize="lg">
-            {name}
+        <VStack align={"flex-start"}>
+          <Text
+            fontSize="3xl"
+            lineHeight="1"
+            letterSpacing="tight"
+            fontWeight={"extrabold"}
+          >
+            {price}
           </Text>
-        </Skeleton>
-        <Skeleton my="2" height="24px" isLoaded={!loading}>
-          <RutaDisplay  currency="" price={price} duration={duration} />
-        </Skeleton>
-        <Skeleton height="16px" isLoaded={!loading}>
-          <Text>{description}</Text>
-        </Skeleton>
+          <Text textColor="blackAlpha.700" textAlign={"left"} fontWeight="bold">
+            {description}
+          </Text>
+        </VStack>
       </Box>
       {isFinished ? (
         ""
       ) : (
         <Box px="8" pt="10" pb="12" borderBottomWidth="1px">
           <List stylePosition="outside" spacing="4">
-            <SkeletonText skeletonHeight="12px" noOfLines={3} spacing="4" isLoaded={!loading}>
+            <SkeletonText
+              skeletonHeight="12px"
+              noOfLines={3}
+              spacing="4"
+              isLoaded={!loading}
+            >
               {features.map((feature, index) => (
                 <RutaDetail key={index}>{feature}</RutaDetail>
               ))}
@@ -134,9 +142,14 @@ export const RutaCard = (props) => {
           </List>
         </Box>
       )}
-        <Box px="8" py="6">
-          <LightMode>
-          <Skeleton borderRadius="md" startColor="brand.100" endColor="brand.400" isLoaded={!loading}>
+      <Box px="8" py="6">
+        <LightMode>
+          <Skeleton
+            borderRadius="md"
+            startColor="brand.100"
+            endColor="brand.400"
+            isLoaded={!loading}
+          >
             <Button
               onClick={onClick}
               size="lg"
@@ -147,8 +160,14 @@ export const RutaCard = (props) => {
               {isFinished ? "Ver Resultado" : "Participar"}
             </Button>
           </Skeleton>
-          </LightMode>
-          <Skeleton startColor="gray.100" endColor="gray.300" mt={4} height="12px" isLoaded={!loading}>
+        </LightMode>
+        <Skeleton
+          startColor="gray.100"
+          endColor="gray.300"
+          mt={4}
+          height="12px"
+          isLoaded={!loading}
+        >
           <Text
             mt="2"
             color={mode("gray.600", "gray.400")}
@@ -157,8 +176,8 @@ export const RutaCard = (props) => {
           >
             Diviérte y gana premios
           </Text>
-          </Skeleton>
-        </Box>
+        </Skeleton>
+      </Box>
     </Box>
   );
 };

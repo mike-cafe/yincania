@@ -1,4 +1,4 @@
-import { Button,Spacer, HStack, Box } from "@chakra-ui/react";
+import { Button, Spacer, HStack, Box } from "@chakra-ui/react";
 import * as React from "react";
 import { HiArrowNarrowRight } from "react-icons/hi";
 
@@ -17,25 +17,12 @@ export const ActionTrail = (props) => {
     firstDisabled,
     ...boxProps
   } = props;
-  return (
-    <Box
-      position="fixed"
-      bottom="0"
-      py="6"
-      px="4"
-      bg="white"
-      shadow="base"
-      w="100%"
-    >
-      <Box mb="8">
-        {props.children}
-      </Box>
-      <HStack
-        w="100%"
-        spacing="4"
-        justifyContent="between"
-        alignItems="between"
-      >
+
+  let actionButtons;
+  if (backButton) {
+     actionButtons = (
+      <>
+        {" "}
         <Button
           hidden={!backButton}
           onClick={backClick}
@@ -43,6 +30,7 @@ export const ActionTrail = (props) => {
           colorScheme="gray"
           variant={secondVariant}
           marginRight="auto"
+          fontSize={{base:"sm",sm:"md"}}
         >
           {secondAction}
         </Button>
@@ -51,11 +39,46 @@ export const ActionTrail = (props) => {
           disabled={firstDisabled}
           onClick={mainClick}
           size="lg"
+          w="100%"
           colorScheme="brand"
           rightIcon={<HiArrowNarrowRight />}
+          fontSize={{base:"sm",sm:"md"}}
         >
           {firstAction}
         </Button>
+      </>
+    );
+  } else {
+    actionButtons = (
+      <>
+        <Button
+          disabled={firstDisabled}
+          onClick={mainClick}
+          size="lg"
+          w="100%"
+          colorScheme="brand"
+          rightIcon={<HiArrowNarrowRight />}
+          fontSize={{base:"sm",sm:"md"}}
+        >
+          {firstAction}
+        </Button>
+      </>
+    );
+  }
+
+  return (
+    <Box
+      position="fixed"
+      bottom="0"
+      py="4"
+      px={2}
+      bg="white"
+      shadow="base"
+      w="100%"
+    >
+      <Box mb="8">{props.children}</Box>
+      <HStack w="100%" justifyContent="between" alignItems="between" px={2}>
+        {actionButtons}
       </HStack>
     </Box>
   );

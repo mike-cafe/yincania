@@ -1,4 +1,10 @@
 import {
+  TelegramShareButton,
+  TwitterShareButton,
+  WhatsappShareButton,
+  WhatsappIcon,
+} from "react-share";
+import {
   Image,
   Flex,
   Box,
@@ -10,28 +16,59 @@ import {
   Text,
   useColorModeValue as mode,
   useBreakpointValue,
+  useDisclosure,
   Wrap,
 } from "@chakra-ui/react";
 import * as React from "react";
 import { HiShieldCheck, HiUser } from "react-icons/hi";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ActionTrail } from "../../components/ActionTrail";
-import { Navbar } from "../../components/Navbar";
-import { Sidebar } from "../../components/Sidebar";
+import { ShareDrawer } from "../../components/ShareDrawer";
 import { rutaDetail } from "../../data";
+import { useAuth } from "../../contexts/AuthContext";
+import { useLocation } from "react-router-dom";
 
 const TeamDetail = (props) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const auth = useAuth();
+  const navigate = useNavigate();
+  let location = useLocation();
   let params = useParams();
+  const [teamCode, setTeamCode] = React.useState();
+
   React.useEffect(() => props.getTeamDetail(params.id), [params.id]);
+
   React.useEffect(() => {
-    if (props.teamDetail) {
-      props.getUsernames(props.teamDetail?.members.map((one)=>one.id));
+    if (props.teamDetail?.members) {
+      props.getUsernames(props.teamDetail?.members);
+    }
+    if (props.teamDetail?.id) {
+      if (props.teamDetail?.code) {
+        setTeamCode(props.teamDetail?.code);
+      } else {
+        setTeamCode(props.teamDetail?.id.substring(0, 5));
+      }
     }
   }, [props.teamDetail]);
 
-  // a falta de crear acciones para la recuperación de
-  // los usuarios del equipo y la yincaña
+  const abandonTeam = () => {
+    props.removeUser({
+      members: props.teamDetail?.members,
+      user: auth.currentUser.uid,
+      id: params.id,
+      route:props.teamDetail?.route,
+      navigate: navigate,
+    });
+    props.removeTeam({
+      routes: props.userData?.routes,
+      route: props.teamDetail?.route,
+      user: auth.currentUser?.uid,
+      navigate: navigate,
+    });
+  };
+
   return (
+    <>
       <VStack spacing="6" px="4" py="24" flex="1">
         <Stack
           align="center"
@@ -85,21 +122,41 @@ const TeamDetail = (props) => {
           shouldWrapChildren
           color={mode("gray.600", "gray.300")}
         >
-          {props.usernames?.map(
-            (tag) => (
-              <Tag key={tag} color="inherit" px="3">
-                {tag}
-              </Tag>
-            )
-          )}
+          {props.usernames?.map((tag) => (
+            <Tag key={tag} color="inherit" px="3">
+              {tag}
+            </Tag>
+          ))}
         </Wrap>
         <ActionTrail
           secondVariant="ghost"
           secondAction="Abandonar Equipo"
           firstAction="Invitar al Equipo"
           backButton={true}
+          mainClick={onOpen}
+          backClick={abandonTeam}
         />
       </VStack>
+      <ShareDrawer
+        isOpen={isOpen}
+        onClose={onClose}
+        teamCode={teamCode}
+      />
+      {/* <HStack>
+        <WhatsappShareButton
+          url={`${location.pathname}/join/team?code=${props.teamDetail?.code}`}
+          children={""}
+        />
+        <TwitterShareButton
+          url={`${location.pathname}/join/team?code=${props.teamDetail?.code}`}
+          children={""}
+        />
+        <TelegramShareButton
+          url={`${location.pathname}/join/team?code=${props.teamDetail?.code}`}
+          children={""}
+        />
+      </HStack> */}
+    </>
   );
 };
 

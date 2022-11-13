@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { RadioCardGroup, RadioCard } from "../../components/RadioCardGroup";
+import { avatarOptions } from "../../data";
 import {
   Box,
   Button,
@@ -22,37 +24,37 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
-
-import { useNavigate, useLocation } from "react-router-dom";
-import { FiExternalLink } from "react-icons/fi";
+import { useNavigate, useLocation, Link as RouteLink } from "react-router-dom";
 import * as yup from "yup";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-// import { Logo } from "./../../components/controls/Logo";
 import { Card } from "./../../components/Card";
 import { useAuth } from "./../../contexts/AuthContext";
-import { LocalStorage } from "./../../store/LocalStorage";
 import { FcGoogle } from "react-icons/fc";
-import {
-  getAuth,
-  GoogleAuthProvider,
-  getRedirectResult,
-} from "@firebase/auth";
+import { getAuth, updateProfile } from "@firebase/auth";
+import { Logo } from "../../components/Logo";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 const schema = yup.object().shape({
-  email: yup.string().email().required(),
+  name: yup.string().required(),
+  username: yup.string("Se debe introducir una nombre de usuario").required(),
+  avatar: yup.string().required(),
+  email: yup.string().email().required("Se debe introducir un email"),
   password: yup
     .string()
-    .min(8)
-    .required()
+    .min(
+      8,
+      "La contraseña debe tener por lo menos 8 caracteres (mayúsculas y minúsculas), 1 número y un caracter especial"
+    )
+    .required("Se debe introducir una contraseña")
     .matches(
       /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/,
-      "Password must contain at least 8 characters (lowercase and uppercase), one number and one special character"
+      "La contraseña debe tener por lo menos 8 caracteres (mayúsculas y minúsculas), 1 número y un caracter especial"
     ),
   confirmPassword: yup
     .string()
     .required("Please confirm your password")
-    .oneOf([yup.ref("password"), null], "Passwords don't match."),
+    .oneOf([yup.ref("password"), null], "Las contraseñas no coinciden."),
 });
 
 const useQuery = () => {
@@ -63,17 +65,17 @@ const Signup = (props) => {
   const navigate = useNavigate();
   const query = useQuery();
   const auth = getAuth();
+  const nextUrl = query.get("next") ||  "/app/routes";
 
   const {
     signInWithGoogle,
-    login,
-    applyActionCodeVerification,
     sendUserEmailVerification,
     registerUser,
-    currentUser,
+    logout,
+    createUserProfile,
+    manageRedirectResult,
   } = useAuth();
   const toast = useToast();
-  const location = useLocation();
 
   const [show, setShow] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -82,8 +84,6 @@ const Signup = (props) => {
   const [checkedPrivacyPolicy, setCheckedPrivacyPolicy] = useState(false);
   const [emailAlreadyTaken, setEmailAlreadyTaken] = useState(false);
   const [disabledForm, setDisabledForm] = useState(false);
-  const [isGoogleLogin, setIsGoogleLogin] = useState(false);
-  const [socialLogin, setSocialLogin] = useState(false);
 
   useEffect(() => {
     const { emailAlreadyTaken } = props;
@@ -97,77 +97,52 @@ const Signup = (props) => {
     handleSubmit,
     formState: { errors },
     reset,
+    control,
   } = useForm({
     mode: "onBlur",
     resolver: yupResolver(schema),
   });
 
-  const handleShowConfirmPasswordClick = () => {
+  const handleShowConfirmPasswordClick = () =>
     setShowConfirmPassword(!showConfirmPassword);
-  };
 
   const handleGoogleClick = () => {
-    setSocialLogin(true);
-    setIsGoogleLogin(true);
-    signInWithGoogle();
+    setDisabledForm(true)
+    signInWithGoogle(redirectTo).finally(
+      ()=>setDisabledForm(false)
+    )
   };
-
-  useEffect(() => {
-    getRedirectResult(auth)
-      .then((result) => {
-        const credential = GoogleAuthProvider.credentialFromResult(result)
-        const user = result.user;
-        navigate(
-          {
-            pathname: "/app/login",
-            search: `oauthToken=${user.accessToken}`,
-            state: { token: user.accessToken },
-          },
-          { replace: true }
-        );
-      })
-      .catch((error) => {
-        const credential = GoogleAuthProvider.credentialFromError(error)
-      });
-  }, [auth]);
-
-  useEffect(() => {
-    if (query.get("oauthToken")) {
-      toast({
-        position: "bottom-right",
-        title: Toast.SocialLoginVerification.info.title,
-        duration: Toast.SocialLoginVerification.info.duration,
-        isClosable: true,
-      });
-      setDisabledForm(true);
-      setSocialLogin(true);
-      props.verifyToken({
-        token: query.get("oauthToken"),
-        socialLogin: true,
-        user: currentUser,
-        navigate,
-      });
-    }
-  }, [location]);
+  const redirectTo = (res) => props.userData({ user: res.user,next:nextUrl, navigate });
 
   const handleClick = () => setShow(!show);
 
-  const onSubmit = async (payload) => {
+  const onSubmit = (payload) => {
     setDisabledForm(true);
     registerUser(payload.email, payload.password)
       .then(async (res) => {
-        const data = {
-          ...res.user,
-          _tokenResponse: res._tokenResponse,
-        };
         await sendUserEmailVerification();
-        localStorage.setItem(LocalStorage.WAKANDA_EMAIL, payload.email);
-        props.signUpSuccess(data);
-        setDisabledForm(false);
-        navigate({
-          pathname: "/login",
-          search: "?v=true",
+        await createUserProfile({
+          uid: res.user.uid,
+          avatar: payload.avatar,
+          username: payload.username,
+          name: payload.name,
+          email: payload.username,
+          routes: [],
         });
+        await updateProfile(res.user, {
+          displayName: payload.username,
+        });
+        await logout();
+        setDisabledForm(false);
+        toast({
+          position: "bottom-center",
+          title: "Comprueba tu correo",
+          description: "Te hemos enviado un email para verificar la dirección.",
+          status: "info",
+          duration: 5000,
+          isClosable: true,
+        });
+        navigate("/");
       })
       .catch((error) => {
         setDisabledForm(false);
@@ -175,7 +150,7 @@ const Signup = (props) => {
           props.getAlreadyEmail(true);
         } else {
           toast({
-            position: "bottom-right",
+            position: "bottom-center",
             description: error.message,
             status: "error",
             duration: 9000,
@@ -185,6 +160,45 @@ const Signup = (props) => {
       });
     reset();
   };
+
+  const avatarFormControl = (
+    <Controller
+      name="avatar"
+      control={control}
+      render={({ field }) => (
+        <FormControl id="avatar">
+          <Stack
+            direction={{ base: "column", md: "row" }}
+            spacing={{ base: "1.5", md: "8" }}
+            justify="space-between"
+          >
+            <FormLabel variant="inline">Avatar</FormLabel>
+            <Stack
+              spacing={{ base: "3", md: "5" }}
+              direction={{ base: "column", sm: "row" }}
+              width="full"
+              maxW={{ md: "3xl" }}
+            >
+              <RadioCardGroup spacing="3" {...field}>
+                {avatarOptions.map((option, idx) => (
+                  <RadioCard
+                    key={option.name}
+                    value={option.name}
+                    decor={option.decor}
+                    subtitle={option.name}
+                  >
+                    <Text color="emphasized" fontWeight="medium" fontSize="sm">
+                      Option {option.name}
+                    </Text>
+                  </RadioCard>
+                ))}
+              </RadioCardGroup>
+            </Stack>
+          </Stack>
+        </FormControl>
+      )}
+    />
+  );
 
   return (
     <>
@@ -197,29 +211,25 @@ const Signup = (props) => {
           lg: "8",
         }}
       >
+        <Center>
+          <Logo />
+        </Center>
+
         <Box maxW="md" mx="auto">
-          {/* <Logo
-            mx="auto"
-            h="6"
-            mb={{
-              base: "10",
-              md: "20",
-            }}
-          /> */}
-          <Heading textAlign="center" size="xl" fontWeight="extrabold">
-            Create a new account
+          <Heading textAlign="center" size="lg" fontWeight="extrabold">
+            Crear una cuenta
           </Heading>
           <Text mt="4" mb="8" align="center" maxW="md" fontWeight="small">
-            <Text as="span">Already have an account?</Text>
-            <Button
+            <Text as="span">¿Ya tienes una cuenta?</Text>
+            <Link
               ml={1}
-              colorScheme="yellow"
-              variant="link"
-              onClick={() => navigate("/login")}
+              color="brand.600"
               fontWeight="bold"
+              as={RouteLink}
+              to="/"
             >
-              Sign in
-            </Button>
+              Inicia sesión
+            </Link>
           </Text>
           <Card>
             <Stack spacing="6">
@@ -253,7 +263,7 @@ const Signup = (props) => {
                 isDisabled={disabledForm}
               >
                 <Flex justify="space-between">
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Contraseña</FormLabel>
                 </Flex>
                 <InputGroup size="md">
                   <Input
@@ -263,7 +273,7 @@ const Signup = (props) => {
                     pr="4.5rem"
                   />
                   <InputRightAddon onClick={handleClick}>
-                    {show ? "Hide" : "Show"}
+                    {show ? <FiEyeOff color="gray" /> : <FiEye color="gray" />}
                   </InputRightAddon>
                 </InputGroup>
                 <FormErrorMessage>{errors?.password?.message}</FormErrorMessage>
@@ -275,7 +285,7 @@ const Signup = (props) => {
                 isDisabled={disabledForm}
               >
                 <Flex justify="space-between">
-                  <FormLabel>Confirm Password</FormLabel>
+                  <FormLabel>Confirma Contraseña</FormLabel>
                 </Flex>
                 <InputGroup size="md">
                   <Input
@@ -285,13 +295,38 @@ const Signup = (props) => {
                     pr="4.5rem"
                   />
                   <InputRightAddon onClick={handleShowConfirmPasswordClick}>
-                    {showConfirmPassword ? "Hide" : "Show"}
+                    {showConfirmPassword ? (
+                      <FiEyeOff color="gray" />
+                    ) : (
+                      <FiEye color="gray" />
+                    )}
                   </InputRightAddon>
                 </InputGroup>
                 <FormErrorMessage>
                   {errors?.confirmPassword?.message}
                 </FormErrorMessage>
               </FormControl>
+              <FormControl id="username">
+                <Stack
+                  direction={{ base: "column", md: "row" }}
+                  spacing={{ base: "1.5", md: "8" }}
+                  justify="space-between"
+                >
+                  <FormLabel variant="inline">Nombre</FormLabel>
+                  <Input maxW={{ md: "3xl" }} {...register("name")} />
+                </Stack>
+              </FormControl>
+              <FormControl id="username">
+                <Stack
+                  direction={{ base: "column", md: "row" }}
+                  spacing={{ base: "1.5", md: "8" }}
+                  justify="space-between"
+                >
+                  <FormLabel variant="inline">Nombre de Ususario</FormLabel>
+                  <Input maxW={{ md: "3xl" }} {...register("username")} />
+                </Stack>
+              </FormControl>
+              {avatarFormControl}
               <FormControl id="conditionCheckBox">
                 <Checkbox
                   marginBottom="1"
@@ -302,7 +337,7 @@ const Signup = (props) => {
                   fontSize="sm"
                   isDisabled={disabledForm}
                 >
-                  I read and accept the
+                  He leído y acepto los
                   <Link
                     href="https://mikecafe.notion.site/Terms-and-Conditions-7ff554e60e3d48069849821d14a4c9f9"
                     isExternal
@@ -311,7 +346,7 @@ const Signup = (props) => {
                     textDecoration="underline"
                     color="yellow.600"
                   >
-                    terms & conditions <ExternalLinkIcon mx="2px" />
+                    términos & condiciones <ExternalLinkIcon mx="2px" />
                   </Link>
                 </Checkbox>
                 <Checkbox
@@ -321,7 +356,7 @@ const Signup = (props) => {
                   isDisabled={disabledForm}
                   onChange={(e) => setCheckedPrivacyPolicy(e.target.checked)}
                 >
-                  I read and accept the
+                  He leído y acepto la
                   <Link
                     href="https://mikecafe.notion.site/Privacy-Policy-509f3be10de7493db4f09f59519b2ece"
                     isExternal
@@ -330,7 +365,7 @@ const Signup = (props) => {
                     textDecoration="underline"
                     color="yellow.600"
                   >
-                    privacy policy
+                    política de privacidad
                     <ExternalLinkIcon mx="2px" />
                   </Link>
                 </Checkbox>
@@ -347,10 +382,12 @@ const Signup = (props) => {
                   !!errors.confirmPassword ||
                   !checkedTermsAndCondition ||
                   !checkedPrivacyPolicy ||
+                  !!errors.name ||
+                  !!errors.username ||
                   disabledForm
                 }
               >
-                Sign Up
+                Registrar
               </Button>
             </Stack>
             <Flex align="center" color="gray.300" mt="6">
@@ -364,7 +401,7 @@ const Signup = (props) => {
                 color={useColorModeValue("gray.500", "gray.300")}
                 fontWeight="medium"
               >
-                or continue with
+                o continua con
               </Text>
               <Box flex="1">
                 <Divider borderColor="currentcolor" />
@@ -379,11 +416,9 @@ const Signup = (props) => {
                 onClick={handleGoogleClick}
               >
                 <Center>
-                  <Text>Sign up with Google</Text>
+                  <Text>Google</Text>
                 </Center>
               </Button>
-              {/* <VisuallyHidden>Login with Google</VisuallyHidden>
-                <FaGoogle /> */}
             </SimpleGrid>
           </Card>
         </Box>

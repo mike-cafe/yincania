@@ -6,21 +6,29 @@ import {
   VStack,
   Flex,
   Text,
-  useBreakpointValue,
   Container,
 } from "@chakra-ui/react";
 import * as React from "react";
-import { BarList } from "../components/BarList";
-import { Navbar } from "../components/Navbar";
-import { Sidebar } from "../components/Sidebar";
-import { TeamPlayCard } from "../components/TeamPlayCard";
-import { ActionModal } from "../components/ActionModal";
-import { ResultsModal } from "../components/ResultsModal";
-import { rutaDetail,teamDetail,barList } from "../data";
+import { BarList } from "../../components/BarList";
+import { TeamPlayCard } from "../../components/TeamPlayCard";
+import { ActionModal } from "../../components/ActionModal";
+import { ResultsModal } from "../../components/ResultsModal";
+import { useParams } from "react-router-dom";
 
-export const RutasPlayFinish = (props) => {
+const RutasFinished = (props) => {
   const [showQR, setShowQR] = React.useState(0);
   const [showResults, setShowResults] = React.useState(false);
+  let params = useParams();
+
+  React.useEffect(() => props.getRouteDetail(params.id), [params.id]);
+  React.useEffect(() => props.getUserProfile(), []);
+
+  React.useEffect(() => {
+    let currentTeam = props.user.routes.find((route) => route.id === params.id); 
+    if(currentTeam){
+      props.getTeamDetail(currentTeam.team);
+    }
+  }, [props.user]);
 
   const tapasAction = (pos, isPlayable) => {
     if (!isPlayable) {
@@ -31,13 +39,11 @@ export const RutasPlayFinish = (props) => {
 
   return (
     <>
-      <Container
-        mb="24"
-      >
+      <Container mb="24">
         <VStack spacing="8" px="4" py="8" pt="92px" flex="1">
           <VStack color="brand.600" w="100%" spacing={2} align="left">
             <Text fontSize="xl" lineHeight="1" fontWeight="bold">
-              {rutaDetail.location}
+              {props.detail?.location}
             </Text>
             <Text
               fontSize="4xl"
@@ -45,7 +51,7 @@ export const RutasPlayFinish = (props) => {
               letterSpacing="tight"
               fontWeight="extrabold"
             >
-              {rutaDetail.title}
+              {props.detail?.title}
             </Text>
           </VStack>{" "}
           <HStack
@@ -55,7 +61,7 @@ export const RutasPlayFinish = (props) => {
             borderRadius="3xl"
             bgPos="right"
             bgRepeat="no-repeat"
-            bgImage={rutaDetail.cover}
+            bgImage={props.detail?.cover}
           >
             <Box
               py="6"
@@ -94,15 +100,29 @@ export const RutasPlayFinish = (props) => {
               </Button>
             </Box>
           </HStack>
-          <TeamPlayCard
-            finished={true}
-            w="100%"
-            team={teamDetail}
-            rutaId={rutaDetail.id}
-            delta={{ isUpwardsTrend: true, value: "+10" }}
-            creativity="https://firebasestorage.googleapis.com/v0/b/react-coffee-a2736.appspot.com/o/TapapTapas.png?alt=media&token=5eb3599d-0b03-4f8d-8d04-17a53a0ac5b3"
-          />
-          <BarList completed={true} bars={barList} tapasAction={tapasAction} />
+          {props.team? (
+            <TeamPlayCard
+              finished={true}
+              w="100%"
+              team={props.team}
+              teamId={
+                props.user.routes.find((route) => route.id === params.id).team
+              }
+              delta={{ isUpwardsTrend: true, value: "+10" }}
+              creativity="https://firebasestorage.googleapis.com/v0/b/react-coffee-a2736.appspot.com/o/TapapTapas.png?alt=media&token=5eb3599d-0b03-4f8d-8d04-17a53a0ac5b3"
+            />
+          ) : (
+            ""
+          )}
+          {props.team?.routeGames ? (
+            <BarList
+              completed={true}
+              bars={props.team?.routeGames}
+              tapasAction={tapasAction}
+            />
+          ) : (
+            ""
+          )}
         </VStack>
       </Container>
       {showQR !== 0 ? (
@@ -113,12 +133,12 @@ export const RutasPlayFinish = (props) => {
         ""
       )}
       {showResults ? (
-        <ResultsModal barNumber={0} onClose={() => setShowResults(false)}>
-          {" "}
-        </ResultsModal>
+        <ResultsModal clasification={props.detail.board} barNumber={0} onClose={() => setShowResults(false)} />
       ) : (
         ""
       )}
     </>
   );
 };
+
+export default RutasFinished;

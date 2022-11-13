@@ -91,7 +91,6 @@ const SignIn = (state = INIT_STATE, action) => {
       return {
         ...state,
         response: action.payload,
-        userHasWorkSpace: true,
         loading: false,
       };
     case USER_DATA_FAILURE:

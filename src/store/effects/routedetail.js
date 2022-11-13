@@ -1,12 +1,15 @@
 import { all, fork, put, takeEvery, retry } from "redux-saga/effects";
-import { getRouteDetailSuccess,getRouteDetailFailure } from "../actions/RouteDetail";
+import {
+  getRouteDetailSuccess,
+  getRouteDetailFailure,
+} from "../actions/RouteDetail";
 import { GET_ROUTE_DETAIL } from "../types";
 
 import { db } from "../../utils/init-firebase";
 import { getDoc, doc } from "firebase/firestore";
 import { MAX_RETRY_COUNT, RETRY_INTERVAL } from "../constants";
 
-const getRouteDetailData = async (request) => {  
+const getRouteDetailData = async (request) => {
   const docRef = doc(db, "routes", request.payload);
   const docData = await getDoc(docRef);
 
@@ -25,7 +28,7 @@ function* getRouteDetail(id) {
       getRouteDetailData,
       id
     );
-    if (data) yield put(getRouteDetailSuccess(data));
+    if (data) yield put(getRouteDetailSuccess({ ...data, id: id.payload }));
   } catch (error) {
     yield put(getRouteDetailFailure(error));
   }

@@ -1,14 +1,17 @@
-import { Box, Container, Stack } from "@chakra-ui/react";
 import * as React from "react";
-import { steps } from "../data";
+import { Box, Container, Stack } from "@chakra-ui/react";
 import { BarStep } from "./BarStep";
 import { useStep } from "./useStep";
 
 export const BarList = (props) => {
+
+  const { loading,...rest } = props;
+
   const [currentStep, { setStep }] = useStep({
-    maxStep: steps.length,
+    maxStep: 7,
     initialStep: 2,
   });
+
   return (
     <Box width="100%" bg="bg-surface" boxShadow="base" borderRadius="lg">
       <Container
@@ -17,47 +20,34 @@ export const BarList = (props) => {
           md: "8",
         }}
       >
-        {props.completed ? (
-          <Stack spacing="0">
-            {props.bars.map((bar, id) => (
-              <BarStep
-                key={id}
-                position={id}
-                cursor="pointer"
-                onButtonClick={props.tapasAction}
-                title={bar.name}
-                time={bar.time}
-                description={bar.address}
-                isActive={false}
-                isCompleted={true}
-                isLastStep={steps.length === id + 1}
-                isPlayable={false}
-                routeID={props.routeID}
-                barID={bar.id}
-              />
-            ))}
-          </Stack>
-        ) : (
-          <Stack spacing="0">
-            {props.bars.map((bar, id) => (
-              <BarStep
-                key={id}
-                position={id}
-                cursor="pointer"
-                onClick={() => setStep(id)}
-                onButtonClick={props.tapasAction}
-                title={bar.name}
-                description={bar.address}
-                isActive={currentStep === id}
-                isCompleted={currentStep > id}
-                isLastStep={props.bars.length === id + 1}
-                isPlayable={bar.playable}
-                routeID={props.routeID}
-                barID={bar.id}
-              />
-            ))}
-          </Stack>
-        )}
+        <Stack spacing="0">
+          {props.bars
+            ?.map((bar, id) => {
+                return (
+                  <BarStep
+                    key={id}
+                    position={bar.pos}
+                    cursor="pointer"
+                    onButtonClick={props.tapasAction}
+                    title={bar.name}
+                    address={bar.address}
+                    addressURL={bar.addressURL}
+                    finishTime={bar.finishTime?.seconds}
+                    startTime={bar.startTime?.seconds}
+                    description={bar.address}
+                    status={bar.status}
+                    isLastStep={bar.pos===7}
+                    routeID={props.routeID}
+                    barID={bar.bar}
+                    game={bar.barGame.id}
+                    team={props.team}
+                    loading={loading}
+                  />
+                );
+              }
+            )
+            .sort((a, b) => a.props.position - b.props.position)}
+        </Stack>
       </Container>
     </Box>
   );

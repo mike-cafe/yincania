@@ -12,8 +12,6 @@ import {
   Skeleton,
 } from "@chakra-ui/react";
 import * as React from "react";
-import { Navbar } from "../../components/Navbar";
-import { Sidebar } from "../../components/Sidebar";
 import { CorrectResponseModal } from "../../components/CorrectResponseModal";
 import { WrongResponseModal } from "../../components/WrongResponseModal";
 import { ActionTrail } from "../../components/ActionTrail";
@@ -30,10 +28,15 @@ const BarGame = (props) => {
   const [currentAnswer, setCurrentAnswer] = React.useState();
   const [showModal, setShowModal] = React.useState(false);
   const [penalty, setPenalty] = React.useState(false);
-  const [seconds, setSeconds] = React.useState(props.game?.penalty);
-  const handleAnswer = (value) => setCurrentAnswer(value);
+  const [seconds, setSeconds] = React.useState();
   const [intervalId, setIntervalId] = React.useState();
-
+  const handleAnswer = (value) => setCurrentAnswer(value);
+  const handleFinish = () => {
+    props.saveAnswer({
+      team: params.team,
+      game: params.game,
+    });
+  };
   const chooseModal = () => {
     if (
       showModal &&
@@ -41,7 +44,8 @@ const BarGame = (props) => {
     ) {
       return (
         <CorrectResponseModal
-          onFinish={() => navigate("/app/play/" + props.game?.route)}
+          saving={props.game?.loading}
+          onFinish={handleFinish}
         />
       );
     } else if (showModal) {
@@ -79,20 +83,17 @@ const BarGame = (props) => {
     }
   }, [seconds]);
 
-  React.useEffect(
-    () =>
-      props.getBarGameData({
-        routeID: params.routeID,
-        barID: params.barID,
-      }),
-    []
-  );
-  
+  React.useEffect(() => props.getBarGameData(params.game), []);
+  React.useEffect(() => setSeconds(props.game?.penalty), [props.game]);
+  React.useEffect(() => {
+    if (props.saved) {
+      navigate("/app/play/" + props.game?.route);
+      props.resetGame()
+    }
+  }, [props.saved]);
   return (
     <>
-      <Container
-        mb="24"
-      >
+      <Container mb="24">
         <VStack spacing="8" px="4" py="8" pt="92px" flex="1">
           <Center w="100%">
             <Skeleton

@@ -13,11 +13,18 @@ import {
   Image,
 } from "@chakra-ui/react";
 import * as React from "react";
-import { clasification } from "../data";
+// import { clasification } from "../data";
 import { Logo } from "./Logo";
 
+function time2text(time) {
+  const timeHours = Math.trunc(time / 60);
+  const timeMinutes = Math.trunc(time - timeHours * 60);
+  const timeSeconds = Math.trunc((time - timeMinutes - timeHours * 60) * 60);
+  return `${timeHours} horas, ${timeMinutes} minutos y ${timeSeconds} segundos`;
+}
+
 export const ResultsModal = (props) => {
-  const { barNumber,noClose, onClose, ...rest } = props;
+  const { clasification, barNumber, noClose, onClose, ...rest } = props;
 
   return (
     <Box height="100vh">
@@ -25,9 +32,7 @@ export const ResultsModal = (props) => {
         <ModalOverlay />
         <ModalContent borderRadius="2xl" mx="4">
           <ModalBody>
-            {
-              noClose? "":<ModalCloseButton />
-            }
+            {noClose ? "" : <ModalCloseButton />}
             <Stack
               maxW="xs"
               mx="auto"
@@ -46,31 +51,39 @@ export const ResultsModal = (props) => {
                   Resultados
                 </Text>
                 <Stack divider={<StackDivider />} spacing="4">
-                  {clasification.map((team) => (
-                    <Stack key={team.id} fontSize="sm" px="4" spacing="4">
-                      <Stack
-                        direction="row"
-                        justify="space-between"
-                        spacing="4"
-                      >
-                        <HStack spacing="6">
-                          <Image
-                            width="32px"
-                            src={team.shieldUrl}
-                            alt="Escudo Equipo"
-                          />
+                  {clasification
+                    .filter((team) => team.hasFinished)
+                    .map((team) => (
+                      <Stack key={team.id} fontSize="sm" px="4" spacing="4">
+                        <Stack
+                          direction="row"
+                          justify="space-between"
+                          spacing="4"
+                        >
+                          <HStack spacing="6">
+                            <Image
+                              width="32px"
+                              src={team.shield}
+                              alt="Escudo Equipo"
+                            />
 
-                          <Box>
-                            <Text textAlign="initial" fontWeight="medium" color="emphasized">
-                              {team.name}
-                            </Text>
-                            <Text textAlign="initial" color="muted">{team.slogan}</Text>
-                          </Box>
-                        </HStack>
-                        <Text color="muted">{team.time}</Text>
+                            <Box>
+                              <Text
+                                textAlign="initial"
+                                fontWeight="medium"
+                                color="emphasized"
+                              >
+                                {team.name}
+                              </Text>
+                              <Text textAlign="initial" color="muted">
+                                {team.slogan}
+                              </Text>
+                            </Box>
+                          </HStack>
+                          <Text color="muted">{time2text(team.time)}</Text>
+                        </Stack>
                       </Stack>
-                    </Stack>
-                  ))}
+                    ))}
                 </Stack>
               </Stack>
               <Button

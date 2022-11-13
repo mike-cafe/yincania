@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getUserProfile } from "../../store/actions/UserProfile";
+import { getUserProfile, saveUserData } from "../../store/actions/UserProfile";
 import UserProfile from "./UserProfile";
 
 const UserProfileContainer = (props) => {
@@ -20,6 +20,7 @@ const mapDispatchToProps = (dispatch) => {
     getUserProfile: () => {
       dispatch(getUserProfile());
     },
+    saveUserProfile: (payload) => dispatch(saveUserData(payload))
   };
 };
 

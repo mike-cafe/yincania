@@ -31,22 +31,24 @@ const RutasDetail = (props) => {
   const isDesktop = useBreakpointValue({ base: false, lg: true });
   let navigate = useNavigate();
   let params = useParams();
+  const [hasTeam, setHasTeam] = React.useState(
+    props.user?.routes?.find((r) => r.id === params.id)?.team
+  );
 
   React.useEffect(() => {
     if (props.detail?.final != null) {
       props.getFinalDetail(props.detail?.final);
     }
   }, [props.detail]);
+  
   React.useEffect(() => props.getRouteDetail(params.id), [params.id]);
 
   return (
-    <Container
-      mb="24"
-    >
+    <Container mb="24" px={{base:2,sm2:4}}>
       <Center width="100%" pt="67px">
         <Image
           src={props.detail?.cover}
-          alt="Ruta de Tapas, La Épica Marítima"
+          alt={props.detail?.title}
         />
       </Center>
       <VStack spacing="8" px="4" py="8" flex="1">
@@ -95,11 +97,18 @@ const RutasDetail = (props) => {
         </HStack>
         {props.final ? <BarCard w="100%" barDetail={props.final} /> : ""}
         <ActionTrail
-          backButton={true}
+          backButton={!hasTeam}
+          backClick={()=>navigate("/app/join/team")}
           secondVariant="outline"
           secondAction="Unirse a Equipo"
-          firstAction="Crear Equipo"
-          mainClick={() => navigate("/app/create/team/" + props.detail?.id)}
+          firstAction={hasTeam ? "Ver Equipo" : "Crear Equipo"}
+          mainClick={() => {
+            if (hasTeam) {
+              navigate("/app/view/team/" + hasTeam);
+            } else {
+              navigate("/app/create/team/" + props.detail?.id);
+            }
+          }}
         />
       </VStack>
     </Container>

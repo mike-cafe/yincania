@@ -25,7 +25,7 @@ export const StatLight = (props) => {
         py="2"
       >
         <Stack>
-          <Center mx="auto" boxSize="64px">
+          <Center mx="auto" boxSize={{ base: '32px', sm: '64px', lg: '64px' }}>
             <Image
               src={creativity}
               alt="Ruta de Tapas, La Épica Marítima"

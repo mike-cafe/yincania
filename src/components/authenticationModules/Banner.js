@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { InfoIcon } from "@chakra-ui/icons";
+import { EmailIcon, InfoIcon } from "@chakra-ui/icons";
 import { FiX } from "react-icons/fi";
 import {
   Box,
+  Button,
   HStack,
   Icon,
   Stack,
@@ -12,32 +13,26 @@ import {
 import { BannerLink } from "./BannerLink";
 const Banner = (props) => {
   const { email, handleCloseIcon, handleResendEmailClick } = props;
-  const [buttonText, setButtonText] = useState("Resend email");
+  const [buttonText, setButtonText] = useState("Enviar");
 
   useEffect(() => {
-    const { emailSent } = props;
-    if (emailSent) {
-      setButtonText("Email Sent!");
+    if (props.error) {
+      setButtonText("Error enviando el correo");
       setTimeout(() => {
         setButtonText("Resend email");
-        props.resetSignInStates();
-      }, [3000]);
-    }
-  }, [props.emailSent]);
-
-  useEffect(() => {
-    const { error } = props;
-    if (error) {
-      setButtonText("Error Sent Email!");
-      setTimeout(() => {
-        setButtonText("Resend email");
-        props.resetSignInStates();
+        props.setBannerError(false);
       }, [3000]);
     }
   }, [props.error]);
 
+  useEffect(() => {
+    if (props.emailSent) {
+      setButtonText("Enviado!");
+    }
+  }, [props.emailSent]);
+
   const handleResendEmailLink = () => {
-    setButtonText("Resending...");
+    setButtonText("Enviando...");
     handleResendEmailClick();
   };
 
@@ -50,28 +45,30 @@ const Banner = (props) => {
         py="3"
         px={{ base: "3", md: "6", lg: "8" }}
         color="white"
+        spacing="4"
         bg={useColorModeValue("blue.600", "blue.400")}
+        position="relative"
       >
-        <HStack spacing="2">
-          <Icon as={InfoIcon} fontSize="2xl" h="10" />
+        <Box position="absolute" top="2" right="2">
+          <FiX size={22} onClick={handleCloseIcon} />
+        </Box>
+        <HStack spacing={4} mt={0}>
+          <Icon as={EmailIcon} fontSize="2xl" h="10" />
           <Text fontWeight="medium" marginEnd="2">
-            Confirm your email. Check your email. We&apos;ve send a message to{" "}
-            <b>{email}</b>
+            Te enviaremos un correo de verificación a <b>{email}</b>
           </Text>
         </HStack>
-        <BannerLink
-          w={{
-            base: "full",
-            sm: "auto",
-          }}
-          textColor={props?.error ? "red" : "blue.500"}
+        <Button
+          size="md"
+          w="full"
+          variant="solid"
+          colorScheme="whiteAlpha"
+          textColor={props?.error ? "red" : "white"}
           fontWeight={buttonText === "Email Sent!" ? "bold" : "normal"}
-          flexShrink={0}
           onClick={handleResendEmailLink}
         >
           {buttonText}
-        </BannerLink>
-        <FiX size={22} onClick={handleCloseIcon} />
+        </Button>
       </Stack>
     </Box>
   );

@@ -7,17 +7,27 @@ import {
   signUpFailure,
   getAlreadyEmail,
 } from "./../../store/actions/SignUp";
+import {
+  signIn,
+  signInSuccess,
+  signInFailure,
+  userData,
+} from "./../../store/actions/SignIn";
+import {
+  saveUserData,
+} from "./../../store/actions/UserProfile";
 
 const SignupContainer = (props) => {
   return <Signup {...props} />;
 };
 
-const mapStateToProps = ({ SignUp }) => {
+const mapStateToProps = ({ SignUp,UserProfile }) => {
   return {
     userToken: SignUp?.response?.token,
     loading: SignUp?.loading,
     emailAlreadyTaken: SignUp?.emailTaken,
     signUpResponse: SignUp?.response,
+    userProfile:UserProfile?.data,
   };
 };
 const mapDispatchToProps = (dispatch) => {
@@ -25,14 +35,20 @@ const mapDispatchToProps = (dispatch) => {
     signUp: (userData) => {
       dispatch(signUp(userData));
     },
-    signUpSuccess: (userData) => {
-      dispatch(signUpSuccess(userData));
+    signInSuccess: (user) => {
+      dispatch(signInSuccess(user));
     },
-    signUpFailure: (userData) => {
-      dispatch(signUpFailure(userData));
+    signInFailure: (userData) => {
+      dispatch(signInFailure(userData));
     },
     getAlreadyEmail: (userData) => {
       dispatch(getAlreadyEmail(userData));
+    },
+    saveUserData:(userProfile)=>{
+      dispatch(saveUserData(userProfile))
+    },
+    userData: (data) => {
+      dispatch(userData(data));
     },
   };
 };

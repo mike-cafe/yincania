@@ -8,9 +8,9 @@ import * as React from "react";
 import { Link as RouteLink } from "react-router-dom";
 
 export const UserProfile = (props) => {
-  const { name, image, email } = props;
+  const { name, image, email,onClick } = props;
   return (
-        <RouteLink to="/app/user">
+        <RouteLink to="/app/user" onClick={onClick}>
           <HStack spacing="3" ps="2">
             <Avatar
               showBorder={true}

@@ -7,6 +7,8 @@ import { theme } from "@chakra-ui/pro-theme";
 import store from "./store";
 import AuthContextProvider from "./contexts/AuthContext";
 import AppRouting from "./AppRouting";
+import { createStandaloneToast } from "@chakra-ui/react";
+import useVH from "react-viewport-height";
 
 const myTheme = extendTheme(
   {
@@ -34,21 +36,34 @@ const myTheme = extendTheme(
         },
       },
     },
+    breakpoints:{
+      base:'220px',
+      sm: '321px',
+      sm2: '361px',
+      md: '768px',
+      lg: '960px',
+      xl: '1200px',
+      '2xl': '1536px',
+    }
   },
   theme
 );
 
+const { ToastContainer, toast } = createStandaloneToast({ theme: myTheme });
+
 function App() {
+  useVH();
   return (
-    <ChakraProvider theme={myTheme}>
-      <Provider store={store}>
-        <AuthContextProvider>
+      <ChakraProvider theme={myTheme}>
+        <Provider store={store}>
           <Router>
-            <AppRouting />
-            </Router>
-        </AuthContextProvider>
-      </Provider>
-    </ChakraProvider>
+            <AuthContextProvider>
+              <AppRouting />
+              <ToastContainer />
+            </AuthContextProvider>
+          </Router>
+        </Provider>
+      </ChakraProvider>
   );
 }
 

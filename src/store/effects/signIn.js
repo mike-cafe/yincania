@@ -15,6 +15,7 @@ import {
 import { USER_DATA, VERIFY_TOKEN, RESEND_EMAIL } from "../types";
 import { LocalStorage } from "../LocalStorage";
 import { Toast } from "../Toast";
+import { getRedirectResult, GoogleAuthProvider } from "firebase/auth";
 
 const toast = createStandaloneToast();
 
@@ -39,7 +40,7 @@ function* getUserDocument({ payload }) {
       yield put(userDataSuccess(JSON.stringify(data)));
       localStorage.setItem(LocalStorage.TOKEN, payload.user.accessToken);
       localStorage.setItem(LocalStorage.USER_ID, payload.user.uid);
-      payload.navigate("/app/routes");
+      payload.navigate(payload.next);
     } else {
       yield put(
         userDataFailure({
@@ -58,11 +59,22 @@ export function* callUserDocument() {
 }
 
 const verifyTokenApi = async (payload) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve({ status: 200, data: "Token verified" });
-    }, 3000);
+  return getRedirectResult(payload.auth)
+  .then((result) => {
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    const user = result.user;
+    payload.navigate(
+      {
+        pathname: payload.next,
+      },
+      { replace: true }
+    );
+    return { status: 200, data: "Token verified" }
+  })
+  .catch((error) => {
+    const credential = GoogleAuthProvider.credentialFromError(error);
   });
+
 };
 function* verify_Token({ payload }) {
   try {
@@ -89,7 +101,7 @@ function* verify_Token({ payload }) {
   } catch (error) {
     if (payload.socialLogin) {
       toast({
-        position: "bottom-right",
+        position: "bottom-center",
         title: Toast.SocialLoginVerification.error.title,
         description: Toast.SocialLoginVerification.error.description,
         duration: Toast.SocialLoginVerification.error.duration,
@@ -98,7 +110,7 @@ function* verify_Token({ payload }) {
       });
     } else {
       toast({
-        position: "bottom-right",
+        position: "bottom-center",
         title: Toast.EmailVerification.error.title,
         description: Toast.EmailVerification.error.description,
         duration: Toast.EmailVerification.error.duration,
@@ -129,7 +141,7 @@ function* resend_Email({ payload }) {
     }
   } catch (error) {
     toast({
-      position: "bottom-right",
+      position: "bottom-center",
       title: error.Message,
       description: error.status,
       duration: 3000,
