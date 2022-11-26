@@ -46,11 +46,15 @@ const addMemberApi = async (payload) => {
   const member = payload.member;
   const team = payload.team;
   try {
-    await updateDoc(doc(db, "teams", team), {
+    await updateDoc(doc(db, "teams", team.teamId), {
       members: arrayUnion(member),
       memberCounter: increment(1),
     });
-    return true;
+    return {
+      ...team,
+      members: [...team.members, member],
+      memberCounter: team.memberCounter + 1,
+    };
   } catch (e) {
     return null;
   }
@@ -64,9 +68,9 @@ const removeUserApi = async (payload) => {
   try {
     const updatedData = await updateDoc(doc(db, "teams", payload.id), {
       members: teamMembers,
-      memberCounter: increment(-1),
-    })
-    return {routeId:payload.route}
+      memberCounter: teamMembers.length,
+    });
+    return { routeId: payload.route };
   } catch (e) {
     return e;
   }
@@ -131,13 +135,14 @@ function* addMember({ payload }) {
       payload
     );
     if (data) {
+      yield put(getTeamDetailSuccess(data))
       yield put(resetTeamStates());
       yield put(
         saveUserData({
-          uid:payload.member,
+          uid: payload.member,
           newRoute: {
             id: payload.route,
-            team: payload.team,
+            team: payload.team.teamId,
           },
         })
       );
@@ -149,7 +154,7 @@ function* addMember({ payload }) {
           isClosable: true,
         })
       );
-      payload.navigate(`/app/view/team/${payload.team}`);
+      payload.navigate(`/app/view/team/${data.teamId}`);
     }
   } catch (error) {
     yield put(getTeamDetailFailure(error));

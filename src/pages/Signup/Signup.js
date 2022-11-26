@@ -126,7 +126,7 @@ const Signup = (props) => {
           avatar: payload.avatar,
           username: payload.username,
           name: payload.name,
-          email: payload.username,
+          email: payload.email,
           routes: [],
         });
         await updateProfile(res.user, {

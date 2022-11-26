@@ -7,7 +7,8 @@ import {
   GET_USERNAMES_FAILURE,
   FIND_TEAM,
   FIND_TEAM_SUCCESS,
-  FIND_TEAM_FAILURE
+  FIND_TEAM_FAILURE,
+  RESET_FIND_TEAM
 } from "../types";
 
 export const resetTeamStates = () => ({
@@ -74,5 +75,11 @@ export const findTeamFailure = (error) => {
   return {
     type: FIND_TEAM_FAILURE,
     payload: error,
+  };
+};
+
+export const resetFindTeam = () => {
+  return {
+    type: RESET_FIND_TEAM,
   };
 };

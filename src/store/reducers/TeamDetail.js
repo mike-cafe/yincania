@@ -9,6 +9,7 @@ import {
   FIND_TEAM,
   FIND_TEAM_SUCCESS,
   FIND_TEAM_FAILURE,
+  RESET_FIND_TEAM
 } from "../types";
 
 const INIT_STATE = {
@@ -34,6 +35,8 @@ const TeamDetail = (state = INIT_STATE, action) => {
       return { ...state, loading: false,teamFound:true };
     case FIND_TEAM_FAILURE:
       return { ...state, loading: false,teamFound:false };
+    case RESET_FIND_TEAM:
+      return { ...state,loading:false, teamFound:false };
     case GET_USERNAMES:
       return { ...state, loading: true };
     case GET_USERNAMES_SUCCESS:

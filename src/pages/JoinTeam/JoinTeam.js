@@ -32,18 +32,29 @@ const JoinTeam = (props) => {
 
   const navigate = useNavigate();
   const auth = useAuth();
+  
   const onSubmit = async (values) => props.findTeam(values.code);
 
   const joinTeam = () => {
     props.addMember({
       member: auth.currentUser.uid,
-      team: props.teamDetail.teamId,
+      team: props.teamDetail,
       route: props.teamDetail.route,
       navigate: navigate,
     });
   };
 
+  React.useEffect(() => {
+    if(props.teamFound){
+      setShowTeam(true)
+    }else{
+      setShowTeam(false);
+    }
+  }, [props.teamFound]);
+
   const [searchParams, setSearchParams] = useSearchParams();
+  const [showTeam, setShowTeam] = React.useState(false);
+
   let code = searchParams.get("code");
 
   if(code){
@@ -62,11 +73,12 @@ const JoinTeam = (props) => {
             compartir los actuales miembros.
           </Text>
         </Stack>
-        {props.teamFound ? (
+        {showTeam ? (
           <TeamJoinCard
             w="100%"
             label="Tapas"
             join={joinTeam}
+            discard={props.resetFindTeam}
             team={props.teamDetail}
             rutaId={props.teamDetail?.route}
             delta={{ isUpwardsTrend: true, value: "+10" }}

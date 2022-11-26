@@ -30,9 +30,11 @@ export const addTeamRoute = functions
           .get()
           .then((docSnap) => {
             const routeData = docSnap.data();
+            functions.logger.info(routeData);
             const shuffledStages = routeData?.stages.sort(
                 () => Math.random() - 0.5
             );
+            functions.logger.info(shuffledStages);
             const stageObjects = [...shuffledStages, routeData?.final].map(
                 (stage, idx) => {
                   return {
@@ -42,6 +44,7 @@ export const addTeamRoute = functions
                   };
                 }
             );
+            functions.logger.info(snap.ref.id.substring(0, 5));
             stageObjects[0].startTime = routeData?.date;
             return snap.ref.update({
               routeGames: stageObjects,
@@ -121,7 +124,6 @@ export const retrieveTapa = functions
     .https.onCall((data, context) => {
       const code: string = data.code;
       const id: string = data.id;
-      functions.logger.info(data);
       try {
         return db
             .collection("tapas")
@@ -194,13 +196,6 @@ export const achieveGame = functions
       const isConsumed = docData.consumed;
       const barGame = docData.game;
       const team = docData.team;
-      functions.logger.info(
-          "data for achieve game",
-          docData,
-          isConsumed,
-          barGame,
-          team
-      );
       return db
           .doc(`teams/${team}`)
           .get()
@@ -226,7 +221,6 @@ export const achieveGame = functions
                   startTime: Timestamp.now(),
                 };
               }
-              functions.logger.info("before return, gonna write", gamesData);
               return docSnap.ref.set(
                   {
                     routeGames: gamesData,

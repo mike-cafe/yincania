@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { addMember, saveTeamData } from "../../store/actions/SaveTeam";
-import { findTeam } from "../../store/actions/TeamDetail";
+import { findTeam, resetFindTeam } from "../../store/actions/TeamDetail";
 import { saveUserData } from "../../store/actions/UserProfile";
 import JoinTeam from "./JoinTeam";
 
@@ -22,6 +22,7 @@ const mapDispatchToProps = (dispatch) => {
     saveUserData:(data) => dispatch(saveUserData(data)),
     addMember:(data) => dispatch(addMember(data)),
     findTeam: (code) => dispatch(findTeam(code)),
+    resetFindTeam: ()=> dispatch(resetFindTeam())
   };
 };
 

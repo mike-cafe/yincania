@@ -42,7 +42,7 @@ const RutasPlay = (props) => {
             setTapaURL(`http://192.168.41.3:3000/tapa/${res.data}`);
           } else {
             setTapaURL(
-              `http://react-coffee-a2736--pre-8flo8lqv.web.app/tapa/${res.data}`
+              `https://react-coffee-a2736.web.app/tapa/${res.data}`
             );
           }
           setShowQR(pos);

@@ -34,7 +34,6 @@ import {
   getAuth,
 } from "@firebase/auth";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { httpsCallable } from "firebase/functions";
 
 const schema = yup.object().shape({
   email: yup.string().email().required("Se debe introducir un email"),

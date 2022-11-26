@@ -33,8 +33,8 @@ export const TeamPlayCard = (props) => {
       timeDate.setHours(0);
       try{
         timeDate.setSeconds(timeDiff);
-        if(timeDate.getHours()==0){
-          setTotalTime(timeDate.getMinutes() + " minutos")
+        if(timeArray.length===0){
+          setTotalTime("Sin empezar")
         }else{
           setTotalTime(timeDate.getHours()+" horas, " + timeDate.getMinutes() + " minutos")
         }        
