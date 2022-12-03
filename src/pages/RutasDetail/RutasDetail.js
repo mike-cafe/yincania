@@ -6,12 +6,14 @@ import {
   Text,
   useBreakpointValue,
   Container,
+  Button,
 } from "@chakra-ui/react";
 import * as React from "react";
 import { StatLight } from "../../components/StatLight";
 import { BarCard } from "../../components/BarCard";
 import { ActionTrail } from "../../components/ActionTrail";
 import { useNavigate, useParams } from "react-router-dom";
+import { ArrowBackIcon } from "@chakra-ui/icons";
 
 const months = [
   "enero",
@@ -40,16 +42,13 @@ const RutasDetail = (props) => {
       props.getFinalDetail(props.detail?.final);
     }
   }, [props.detail]);
-  
+
   React.useEffect(() => props.getRouteDetail(params.id), [params.id]);
 
   return (
-    <Container mb="24" px={{base:2,sm2:4}}>
+    <Container mb="24" px={{ base: 2, sm2: 4 }}>
       <Center width="100%" pt="67px">
-        <Image
-          src={props.detail?.cover}
-          alt={props.detail?.title}
-        />
+        <Image src={props.detail?.cover} alt={props.detail?.title} />
       </Center>
       <VStack spacing="8" px="4" py="8" flex="1">
         <VStack color="brand.600" w="100%" spacing={2} align="left">
@@ -98,13 +97,13 @@ const RutasDetail = (props) => {
         {props.final ? <BarCard w="100%" barDetail={props.final} /> : ""}
         <ActionTrail
           backButton={!hasTeam}
-          backClick={()=>navigate("/app/join/team")}
+          backClick={() => navigate(`/app/join/team?routeId=${props.detail?.id}`)}
           secondVariant="outline"
           secondAction="Unirse a Equipo"
           firstAction={hasTeam ? "Ver Equipo" : "Crear Equipo"}
           mainClick={() => {
             if (hasTeam) {
-              navigate("/app/view/team/" + hasTeam);
+              navigate("/app/view/team/" + hasTeam + `?routeId=${props.detail?.id}`);
             } else {
               navigate("/app/create/team/" + props.detail?.id);
             }

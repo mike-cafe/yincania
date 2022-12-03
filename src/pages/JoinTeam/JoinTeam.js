@@ -63,7 +63,7 @@ const JoinTeam = (props) => {
 
   return (
     <>
-      <VStack spacing="8" px="4" py="24" flex="1">
+      <VStack spacing="8" px="4" py="32" flex="1">
         <Stack w="100%" spacing="5">
           <Text fontSize="lg" fontWeight="medium">
             Unirse a Equipo

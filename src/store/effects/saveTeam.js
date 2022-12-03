@@ -94,7 +94,7 @@ function* saveData({ payload }) {
           isClosable: true,
         })
       );
-      payload.navigate(`/app/view/team/${data.teamId}`);
+      payload.navigate(`/app/view/team/${data.teamId}?routeId=${payload.route}`);
     }
   } catch (error) {
     yield put(getTeamDetailFailure(error));
@@ -154,7 +154,7 @@ function* addMember({ payload }) {
           isClosable: true,
         })
       );
-      payload.navigate(`/app/view/team/${data.teamId}`);
+      payload.navigate(`/app/view/team/${data.teamId}?routeId=${payload.route}`);
     }
   } catch (error) {
     yield put(getTeamDetailFailure(error));

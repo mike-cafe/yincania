@@ -1,19 +1,45 @@
-import {
-  Flex,
-  Text,
-  useBreakpointValue,
-  useToast,
-} from "@chakra-ui/react";
+import { Flex, Text, useBreakpointValue, useToast } from "@chakra-ui/react";
 import * as React from "react";
 import { Navbar } from "../../components/Navbar";
 import { Sidebar } from "../../components/Sidebar";
-import { Outlet, useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
+import { Outlet, useLocation, useParams, useSearchParams } from "react-router-dom";
 
 const DefaultLayout = (props) => {
   const isDesktop = useBreakpointValue({ base: false, lg: true });
   const toast = useToast();
-  let auth = useAuth();
+  let params = useParams();
+  let [searchParams] = useSearchParams();
+  let location = useLocation();
+  const [backButton, setBackButton] = React.useState();
+  
+  React.useEffect(
+    ()=>{
+      let match = location.pathname.match(
+        /(app[/]routes)|(app[/]detail)|(view[/]team)|(create[/]team)|(join[/]team)/g
+      );
+      if(match && props.userProfile){
+        switch (match[0]) {
+          case "app/routes":
+            setBackButton(null);
+            break;
+          case "app/detail":
+            setBackButton("/app/routes/");
+            break;
+          case "view/team":
+            setBackButton(`/app/detail/${searchParams.get("routeId")}`);
+            break;
+          case "create/team":
+            setBackButton(null);
+            break;
+          case "join/team":
+            setBackButton(`/app/detail/${searchParams.get("routeId")}`);
+            break;
+          default:
+            console.log("in other url");
+        }
+      }
+    },[location.pathname,props]
+  ) 
 
   React.useEffect(() => {
     props.getUserProfile();
@@ -27,7 +53,6 @@ const DefaultLayout = (props) => {
   }, [props.userFeedback]);
 
   return (
-    
     <Flex
       as="section"
       direction={{ base: "column", lg: "row" }}
@@ -37,7 +62,7 @@ const DefaultLayout = (props) => {
       {isDesktop ? (
         <Sidebar profile={props.userProfile} />
       ) : (
-        <Navbar profile={props.userProfile} />
+        <Navbar backButton={backButton} profile={props.userProfile} />
       )}
       <Outlet />
     </Flex>
