@@ -58,7 +58,6 @@ const schema = yup.object().shape({
     .string("Se debe confirmar la contraseña")
     .required("Confirma tu contraseña")
     .oneOf([yup.ref("password"), null], "Las contraseñas no coinciden."),
-  
 });
 
 const useQuery = () => {
@@ -87,22 +86,29 @@ const Signup = (props) => {
   const [emailAlreadyTaken, setEmailAlreadyTaken] = useState(false);
   const [disabledForm, setDisabledForm] = useState(false);
 
-  useEffect(() => {
-    const { emailAlreadyTaken } = props;
-    if (emailAlreadyTaken) {
-      setEmailAlreadyTaken(true);
-    }
-  }, [props.emailAlreadyTaken]);
+  // useEffect(() => {
+  //   const { emailAlreadyTaken } = props;
+  //   if (emailAlreadyTaken) {
+  //     setEmailAlreadyTaken(true);
+  //   }
+  // }, [props.emailAlreadyTaken]);
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors,isValid },
     reset,
     control,
   } = useForm({
     mode: "onBlur",
     resolver: yupResolver(schema),
+    defaultValues:{
+      email:"",
+      password:"",
+      confirmPassword:"",
+      name:"",
+      username:""
+    }
   });
 
   const handleShowConfirmPasswordClick = () =>
@@ -118,10 +124,10 @@ const Signup = (props) => {
   const handleClick = () => setShow(!show);
 
   const onSubmit = (payload) => {
-    console.log("en suvmmit",payload);
     setDisabledForm(true);
     registerUser(payload.email, payload.password)
       .then(async (res) => {
+        reset();
         await sendUserEmailVerification();
         await createUserProfile({
           uid: res.user.uid,
@@ -149,7 +155,7 @@ const Signup = (props) => {
       .catch((error) => {
         setDisabledForm(false);
         if (error.message.includes("email-already-in-use")) {
-          props.getAlreadyEmail(true);
+          setEmailAlreadyTaken(true);
         } else {
           toast({
             position: "bottom-center",
@@ -158,53 +164,64 @@ const Signup = (props) => {
             duration: 9000,
             isClosable: true,
           });
+          reset();
         }
       });
-    reset();
   };
+
+  const forceReset = ()=>reset();
 
   const avatarFormControl = (
     <Controller
       name="avatar"
       control={control}
-      render={({ field,formState }) => (
-        <FormControl id="avatar"
-        isInvalid={formState.errors?.avatar}
-        errortext={formState.errors?.avatar?.message}
-        isRequired
-        isDisabled={disabledForm}
-        >
-          <Stack
-            direction={{ base: "column", md: "row" }}
-            spacing={{ base: "1.5", md: "8" }}
-            justify="space-between"
+      render={({ field, formState }) => {
+        return (
+          <FormControl
+            id="avatar"
+            isInvalid={formState.errors?.avatar}
+            errortext={formState.errors?.avatar?.message}
+            isRequired
+            isDisabled={disabledForm}
           >
-            <FormLabel variant="inline">Avatar</FormLabel>
             <Stack
-              spacing={{ base: "3", md: "5" }}
-              direction={{ base: "column", sm: "row" }}
-              width="full"
-              maxW={{ md: "3xl" }}
+              direction={{ base: "column", md: "row" }}
+              spacing={{ base: "1.5", md: "8" }}
+              justify="space-between"
             >
-              <RadioCardGroup spacing="3" {...field}>
-                {avatarOptions.map((option, idx) => (
-                  <RadioCard
-                    key={option.name}
-                    value={option.name}
-                    decor={option.decor}
-                    subtitle={option.name}
-                  >
-                    <Text color="emphasized" fontWeight="medium" fontSize="sm">
-                      Option {option.name}
-                    </Text>
-                  </RadioCard>
-                ))}
-              </RadioCardGroup>
+              <FormLabel variant="inline">Avatar</FormLabel>
+              <Stack
+                spacing={{ base: "3", md: "5" }}
+                direction={{ base: "column", sm: "row" }}
+                width="full"
+                maxW={{ md: "3xl" }}
+              >
+                <RadioCardGroup spacing="3" {...field}>
+                  {avatarOptions.map((option, idx) => (
+                    <RadioCard
+                      key={option.name}
+                      value={option.name}
+                      decor={option.decor}
+                      subtitle={option.name}
+                    >
+                      <Text
+                        color="emphasized"
+                        fontWeight="medium"
+                        fontSize="sm"
+                      >
+                        Option {option.name}
+                      </Text>
+                    </RadioCard>
+                  ))}
+                </RadioCardGroup>
+              </Stack>
             </Stack>
-          </Stack>
-          <FormErrorMessage>{formState.errors?.avatar?.message}</FormErrorMessage>
-        </FormControl>
-      )}
+            <FormErrorMessage>
+              {formState.errors?.avatar?.message}
+            </FormErrorMessage>
+          </FormControl>
+        );
+      }}
     />
   );
 
@@ -251,15 +268,19 @@ const Signup = (props) => {
                 <Input
                   type="email"
                   name="email"
-                  {...register('email', {
-                    onChange: (e) =>emailAlreadyTaken && setEmailAlreadyTaken(false),
+                  {...register("email", {
+                    onChange: (e) =>{
+                      if(emailAlreadyTaken){
+                        setEmailAlreadyTaken(false);
+                      }
+                    }  
                   })}
                 />
 
                 <FormErrorMessage>{errors?.email?.message}</FormErrorMessage>
                 {emailAlreadyTaken && (
                   <FormErrorMessage>
-                    This email is already registered.
+                    Vaya parece que ya tenemos una cuenta con ese correo electrónico
                   </FormErrorMessage>
                 )}
               </FormControl>
@@ -397,18 +418,17 @@ const Signup = (props) => {
                 size="lg"
                 fontSize="md"
                 onClick={handleSubmit(onSubmit)}
-                disabled={
-                  !!errors.email ||
-                  !!errors.password ||
-                  !!errors.confirmPassword ||
+                isDisabled={
                   !checkedTermsAndCondition ||
                   !checkedPrivacyPolicy ||
-                  !!errors.name ||
-                  !!errors.username ||
+                  !isValid ||
                   disabledForm
                 }
               >
                 Registrar
+              </Button>
+              <Button variant="outline" colorScheme="brand" onClick={()=>forceReset()}>
+                Forzar reset
               </Button>
             </Stack>
             <Flex align="center" color="gray.300" mt="6">

@@ -14,38 +14,40 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 
-export const RadioCardGroup = (props) => {
-  const { children, name, defaultValue, value, onChange, ...rest } = props;
+export const RadioCardGroup = React.forwardRef(
+  ({ children, name, defaultValue, value, onChange, ...rest }, ref) => {
 
-  const { getRootProps, getRadioProps } = useRadioGroup({
-    name,
-    defaultValue,
-    value,
-    onChange,
-  });
+    const { getRootProps, getRadioProps } = useRadioGroup({
+      name,
+      defaultValue,
+      value,
+      onChange,
+    });
 
-  const cards = React.useMemo(
-    () =>
-      React.Children.toArray(children)
-        .filter(React.isValidElement)
-        .map((card) => {
-          return React.cloneElement(card, {
-            radioProps: getRadioProps({
-              value: card.props.value,
-              isChecked:defaultValue===card.props.value,
-              checked:defaultValue===card.props.value,
-            }),
-          });
-        }),
-    [children, getRadioProps]
-  );
-  
-  return (
-    <HStack maxW="xl" overflowX="auto" {...getRootProps(rest)}>
-      {cards}
-    </HStack>
-  );
-};
+    const cards = React.useMemo(
+      () =>
+        React.Children.toArray(children)
+          .filter(React.isValidElement)
+          .map((card) => {
+            return React.cloneElement(card, {
+              radioProps: getRadioProps({
+                value: card.props.value,
+                isChecked: defaultValue === card.props.value,
+                checked: defaultValue === card.props.value,
+              }),
+            });
+          }),
+      [children, getRadioProps]
+    );
+
+    return (
+      <HStack maxW="xl" overflowX="auto" {...getRootProps(rest)} ref={ref}>
+        {cards}
+      </HStack>
+    );
+  }
+);
+
 export const RadioCard = (props) => {
   const { radioProps, children, ...rest } = props;
   const { getInputProps, getCheckboxProps, getLabelProps, state } =
@@ -55,7 +57,7 @@ export const RadioCard = (props) => {
   const inputProps = getInputProps();
   const checkboxProps = getCheckboxProps();
   const labelProps = getLabelProps();
-  
+
   return (
     <Box
       as="label"
