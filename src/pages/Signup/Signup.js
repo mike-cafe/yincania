@@ -36,12 +36,15 @@ import { Logo } from "../../components/Logo";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
 const schema = yup.object().shape({
-  name: yup.string().required(),
-  username: yup.string("Se debe introducir una nombre de usuario").required(),
-  avatar: yup.string().required(),
-  email: yup.string().email().required("Se debe introducir un email"),
-  password: yup
+  name: yup.string().required("Por favor, dinos tu nombre"),
+  username: yup.string().required("Se debe introducir un nombre de usuario"),
+  avatar: yup.string().required("Debes seleccionar un avatar!"),
+  email: yup
     .string()
+    .email("Debe ser un email válido")
+    .required("Se debe introducir un email"),
+  password: yup
+    .string("Se debe introducir una contraseña")
     .min(
       8,
       "La contraseña debe tener por lo menos 8 caracteres (mayúsculas y minúsculas), 1 número y un caracter especial"
@@ -52,9 +55,10 @@ const schema = yup.object().shape({
       "La contraseña debe tener por lo menos 8 caracteres (mayúsculas y minúsculas), 1 número y un caracter especial"
     ),
   confirmPassword: yup
-    .string()
-    .required("Please confirm your password")
+    .string("Se debe confirmar la contraseña")
+    .required("Confirma tu contraseña")
     .oneOf([yup.ref("password"), null], "Las contraseñas no coinciden."),
+  
 });
 
 const useQuery = () => {
@@ -64,8 +68,7 @@ const useQuery = () => {
 const Signup = (props) => {
   const navigate = useNavigate();
   const query = useQuery();
-  const auth = getAuth();
-  const nextUrl = query.get("next") ||  "/app/routes";
+  const nextUrl = query.get("next") || "/app/routes";
 
   const {
     signInWithGoogle,
@@ -73,7 +76,6 @@ const Signup = (props) => {
     registerUser,
     logout,
     createUserProfile,
-    manageRedirectResult,
   } = useAuth();
   const toast = useToast();
 
@@ -107,16 +109,16 @@ const Signup = (props) => {
     setShowConfirmPassword(!showConfirmPassword);
 
   const handleGoogleClick = () => {
-    setDisabledForm(true)
-    signInWithGoogle(redirectTo).finally(
-      ()=>setDisabledForm(false)
-    )
+    setDisabledForm(true);
+    signInWithGoogle(redirectTo).finally(() => setDisabledForm(false));
   };
-  const redirectTo = (res) => props.userData({ user: res.user,next:nextUrl, navigate });
+  const redirectTo = (res) =>
+    props.userData({ user: res.user, next: nextUrl, navigate });
 
   const handleClick = () => setShow(!show);
 
   const onSubmit = (payload) => {
+    console.log("en suvmmit",payload);
     setDisabledForm(true);
     registerUser(payload.email, payload.password)
       .then(async (res) => {
@@ -165,8 +167,13 @@ const Signup = (props) => {
     <Controller
       name="avatar"
       control={control}
-      render={({ field }) => (
-        <FormControl id="avatar">
+      render={({ field,formState }) => (
+        <FormControl id="avatar"
+        isInvalid={formState.errors?.avatar}
+        errortext={formState.errors?.avatar?.message}
+        isRequired
+        isDisabled={disabledForm}
+        >
           <Stack
             direction={{ base: "column", md: "row" }}
             spacing={{ base: "1.5", md: "8" }}
@@ -195,6 +202,7 @@ const Signup = (props) => {
               </RadioCardGroup>
             </Stack>
           </Stack>
+          <FormErrorMessage>{formState.errors?.avatar?.message}</FormErrorMessage>
         </FormControl>
       )}
     />
@@ -243,10 +251,9 @@ const Signup = (props) => {
                 <Input
                   type="email"
                   name="email"
-                  {...register("email")}
-                  onChange={() =>
-                    emailAlreadyTaken && setEmailAlreadyTaken(false)
-                  }
+                  {...register('email', {
+                    onChange: (e) =>emailAlreadyTaken && setEmailAlreadyTaken(false),
+                  })}
                 />
 
                 <FormErrorMessage>{errors?.email?.message}</FormErrorMessage>
@@ -306,7 +313,13 @@ const Signup = (props) => {
                   {errors?.confirmPassword?.message}
                 </FormErrorMessage>
               </FormControl>
-              <FormControl id="username">
+              <FormControl
+                id="name"
+                isInvalid={!!errors?.name?.message}
+                errortext={errors?.name?.message}
+                isRequired
+                isDisabled={disabledForm}
+              >
                 <Stack
                   direction={{ base: "column", md: "row" }}
                   spacing={{ base: "1.5", md: "8" }}
@@ -315,8 +328,15 @@ const Signup = (props) => {
                   <FormLabel variant="inline">Nombre</FormLabel>
                   <Input maxW={{ md: "3xl" }} {...register("name")} />
                 </Stack>
+                <FormErrorMessage>{errors?.name?.message}</FormErrorMessage>
               </FormControl>
-              <FormControl id="username">
+              <FormControl
+                id="username"
+                isInvalid={!!errors?.username?.message}
+                errortext={errors?.username?.message}
+                isRequired
+                isDisabled={disabledForm}
+              >
                 <Stack
                   direction={{ base: "column", md: "row" }}
                   spacing={{ base: "1.5", md: "8" }}
@@ -325,6 +345,7 @@ const Signup = (props) => {
                   <FormLabel variant="inline">Nombre de Ususario</FormLabel>
                   <Input maxW={{ md: "3xl" }} {...register("username")} />
                 </Stack>
+                <FormErrorMessage>{errors?.username?.message}</FormErrorMessage>
               </FormControl>
               {avatarFormControl}
               <FormControl id="conditionCheckBox">
