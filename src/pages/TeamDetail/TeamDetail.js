@@ -1,12 +1,7 @@
 import {
-  TelegramShareButton,
-  TwitterShareButton,
-  WhatsappShareButton,
-  WhatsappIcon,
-} from "react-share";
-import {
   Image,
-  Flex,
+  TagLabel,
+  TagRightIcon,
   Box,
   HStack,
   Icon,
@@ -15,7 +10,6 @@ import {
   Tag,
   Text,
   useColorModeValue as mode,
-  useBreakpointValue,
   useDisclosure,
   Wrap,
 } from "@chakra-ui/react";
@@ -26,15 +20,17 @@ import { ActionTrail } from "../../components/ActionTrail";
 import { ShareDrawer } from "../../components/ShareDrawer";
 import { rutaDetail } from "../../data";
 import { useAuth } from "../../contexts/AuthContext";
-import { useLocation } from "react-router-dom";
+import { CheckIcon, CopyIcon } from "@chakra-ui/icons";
+import copy from "copy-to-clipboard";
 
 const TeamDetail = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const auth = useAuth();
   const navigate = useNavigate();
-  let location = useLocation();
+
   let params = useParams();
   const [teamCode, setTeamCode] = React.useState();
+  const [showCheck, setShowCheck] = React.useState(false);
 
   React.useEffect(() => props.getTeamDetail(params.id), [params.id]);
 
@@ -56,7 +52,7 @@ const TeamDetail = (props) => {
       members: props.teamDetail?.members,
       user: auth.currentUser.uid,
       id: params.id,
-      route:props.teamDetail?.route,
+      route: props.teamDetail?.route,
       navigate: navigate,
     });
     props.removeTeam({
@@ -65,6 +61,14 @@ const TeamDetail = (props) => {
       user: auth.currentUser?.uid,
       navigate: navigate,
     });
+  };
+
+  const copyCode = () => {
+    copy(teamCode);
+    setShowCheck(true);
+    setTimeout(() => {
+      setShowCheck(false);
+    }, [3000]);
   };
 
   return (
@@ -117,6 +121,7 @@ const TeamDetail = (props) => {
             {props.teamDetail?.memberCounter} miembros
           </Text>
         </HStack>
+
         <Wrap
           justify="center"
           shouldWrapChildren
@@ -128,6 +133,27 @@ const TeamDetail = (props) => {
             </Tag>
           ))}
         </Wrap>
+        <VStack spacing="2">
+          <HStack spacing={2}>
+            <Tag
+              size="lg"
+              fontWeight={showCheck ? "light" : "semibold"}
+              fontSize={showCheck ? "md" : "xl"}
+              variant="outline"
+              colorScheme={showCheck ? "green" : "gray"}
+              color={showCheck ? "green.500" : "gray"}
+              onClick={copyCode}
+            >
+              <TagLabel>{showCheck ? "Copiado" : teamCode}</TagLabel>
+              <TagRightIcon
+                as={showCheck ? CheckIcon : CopyIcon}
+                color={showCheck ? "green" : "gray"}
+              />
+            </Tag>
+          </HStack>
+          <Text>(con este código puedes invitar al equipo)</Text>
+        </VStack>
+        {/* <Text>Con este código otros podrán unirse a tu equipo</Text> */}
         <ActionTrail
           secondVariant="ghost"
           secondAction="Abandonar Equipo"
@@ -137,25 +163,7 @@ const TeamDetail = (props) => {
           backClick={abandonTeam}
         />
       </VStack>
-      <ShareDrawer
-        isOpen={isOpen}
-        onClose={onClose}
-        teamCode={teamCode}
-      />
-      {/* <HStack>
-        <WhatsappShareButton
-          url={`${location.pathname}/join/team?code=${props.teamDetail?.code}`}
-          children={""}
-        />
-        <TwitterShareButton
-          url={`${location.pathname}/join/team?code=${props.teamDetail?.code}`}
-          children={""}
-        />
-        <TelegramShareButton
-          url={`${location.pathname}/join/team?code=${props.teamDetail?.code}`}
-          children={""}
-        />
-      </HStack> */}
+      <ShareDrawer isOpen={isOpen} onClose={onClose} teamCode={teamCode} />
     </>
   );
 };

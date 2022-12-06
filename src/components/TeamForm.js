@@ -6,6 +6,7 @@ import {
   Text,
   Stack,
   Textarea,
+  FormErrorMessage,
 } from "@chakra-ui/react";
 import * as React from "react";
 import { RadioCardGroup, RadioCard } from "./RadioCardGroup";
@@ -19,8 +20,8 @@ import { shields } from "../data";
 
 const schema = yup.object().shape({
   shield: yup.string().required().default("one"),
-  name: yup.string().required(),
-  warcry: yup.string().required(),
+  name: yup.string().required("Escribe un nombre para tu equipo"),
+  warcry: yup.string().required("Escribe un grito de guerra para tu equipo"),
 });
 
 export const TeamForm = (props) => {
@@ -93,16 +94,26 @@ export const TeamForm = (props) => {
             />
           </Stack>
         </FormControl>
-        <FormControl id="name">
+        <FormControl
+          id="name"
+          isInvalid={!!errors?.name?.message}
+          errortext={errors?.name?.message}
+          isRequired
+        >
           <FormLabel>Nombre del Equipo</FormLabel>
           <Input placeholder="Nombre de Equipo" {...register("name")} />
+          <FormErrorMessage>{errors?.name?.message}</FormErrorMessage>
         </FormControl>
-        <FormControl id="motive">
+        <FormControl id="warcry"
+          isInvalid={!!errors?.warcry?.message}
+          errortext={errors?.warcry?.message}
+          isRequired>
           <FormLabel>Grito de Guerra</FormLabel>
           <Textarea rows={3} resize="none" {...register("warcry")} />
           <FormHelperText color="subtle">
             Escribe una frase para motivar al equipo
           </FormHelperText>
+          <FormErrorMessage>{errors?.warcry?.message}</FormErrorMessage>
         </FormControl>
       </Stack>
       <ActionTrail
