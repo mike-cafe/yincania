@@ -31,14 +31,6 @@ const UserProfile = (props) => {
               Tu personalidad en el bar.
             </Text>
           </Box>
-          {/* <Button
-            type="submit"
-            onClick={handleSubmit(onSubmit)}
-            variant="primary"
-            alignSelf="start"
-          >
-            Guardar
-          </Button> */}
         </Stack>
         <Divider />
 

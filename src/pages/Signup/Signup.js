@@ -116,7 +116,19 @@ const Signup = (props) => {
 
   const handleGoogleClick = () => {
     setDisabledForm(true);
-    signInWithGoogle(redirectTo).finally(() => setDisabledForm(false));
+    signInWithGoogle(redirectTo)
+    .catch((err)=>{
+      if(err.message=="auth/user-disabled"){
+        toast({
+          position: "bottom-center",
+          description: "Usuario deshabilitado, por favor contacta con nosotros",
+          status: "error",
+          duration: 4000,
+          isClosable: true,
+        });
+      }
+    })
+    .finally(() => setDisabledForm(false));
   };
   const redirectTo = (res) =>
     props.userData({ user: res.user, next: nextUrl, navigate });
@@ -156,7 +168,22 @@ const Signup = (props) => {
         setDisabledForm(false);
         if (error.message.includes("email-already-in-use")) {
           setEmailAlreadyTaken(true);
-        } else {
+          toast({
+            position: "top-center",
+            description: "Vaya parece que ya tenemos una cuenta con ese correo electrónico.",
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+          });
+        } else if (error.message.includes("user-disabled")){
+          toast({
+            position: "bottom-center",
+            description: "Usuario deshabilitado, por favor contacta con nosotros",
+            status: "error",
+            duration: 4000,
+            isClosable: true,
+          });
+        }else{
           toast({
             position: "bottom-center",
             description: error.message,
@@ -168,8 +195,6 @@ const Signup = (props) => {
         }
       });
   };
-
-  const forceReset = ()=>reset();
 
   const avatarFormControl = (
     <Controller
@@ -426,9 +451,6 @@ const Signup = (props) => {
                 }
               >
                 Registrar
-              </Button>
-              <Button variant="outline" colorScheme="brand" onClick={()=>forceReset()}>
-                Forzar reset
               </Button>
             </Stack>
             <Flex align="center" color="gray.300" mt="6">

@@ -5,9 +5,18 @@ import {
   StackDivider,
   FormControl,
   FormLabel,
+  FormErrorMessage,
   Input,
   Text,
   Stack,
+  useDisclosure,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalOverlay,
+  ModalCloseButton,
+  ModalFooter,
+  ModalHeader,
 } from "@chakra-ui/react";
 import * as React from "react";
 import { RadioCardGroup, RadioCard } from "./RadioCardGroup";
@@ -20,6 +29,7 @@ import { avatarOptions } from "../data";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "./../utils/init-firebase";
+import { ConfirmDeleteModal } from "./ConfirmDeleteModal";
 
 export const UserForm = (props) => {
   const {
@@ -33,10 +43,15 @@ export const UserForm = (props) => {
     uid,
     ...rest
   } = props;
+
+  const [ openModal, setOpenModal ] = React.useState(false)
   const { logout } = useAuth();
   const schema = yup.object().shape({
-    name: yup.string().required().default(name),
-    username: yup.string().required().default(username),
+    name: yup.string().required("Por favor, dinos tu nombre").default(name),
+    username: yup
+      .string()
+      .required("Necesitas un nombre de usuario")
+      .default(username),
     avatar: yup.string().required().default(avatar),
     email: yup.string().email().required().default(email),
   });
@@ -50,15 +65,22 @@ export const UserForm = (props) => {
   };
 
   const navigate = useNavigate();
-
+  
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  
   const {
     register,
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { errors,isValid },
   } = useForm({
     mode: "onBlur",
     resolver: yupResolver(schema),
+    defaultValues: {
+      email: email,
+      name: name,
+      username: username,
+    },
   });
 
   const onSubmit = (formData) =>
@@ -68,8 +90,14 @@ export const UserForm = (props) => {
     });
 
   return (
+    <>
     <Stack spacing="5" divider={<StackDivider />}>
-      <FormControl id="name">
+      <FormControl
+        id="name"
+        isInvalid={!!errors?.name?.message}
+        errortext={errors?.name?.message}
+        isRequired
+      >
         <Stack
           direction={{ base: "column", md: "row" }}
           spacing={{ base: "1.5", md: "8" }}
@@ -82,8 +110,14 @@ export const UserForm = (props) => {
             {...register("name")}
           />
         </Stack>
+        <FormErrorMessage>{errors?.name?.message}</FormErrorMessage>
       </FormControl>
-      <FormControl id="username">
+      <FormControl
+        id="username"
+        isInvalid={!!errors?.username?.message}
+        errortext={errors?.username?.message}
+        isRequired
+      >
         <Stack
           direction={{ base: "column", md: "row" }}
           spacing={{ base: "1.5", md: "8" }}
@@ -95,6 +129,7 @@ export const UserForm = (props) => {
             defaultValue={username}
             {...register("username")}
           />
+          <FormErrorMessage>{errors?.username?.message}</FormErrorMessage>
         </Stack>
       </FormControl>
 
@@ -160,6 +195,7 @@ export const UserForm = (props) => {
           type="submit"
           onClick={handleSubmit(onSubmit)}
           variant="primary"
+          isDisabled={!isValid}
         >
           Guardar
         </Button>
@@ -169,11 +205,28 @@ export const UserForm = (props) => {
           variant="ghost"
           colorScheme="gray"
           color="gray.400"
-          onClick={onDeletion}
+          onClick={onOpen}
         >
           Eliminar Cuenta
         </Button>
       </Flex>
     </Stack>
+    <Modal isOpen={isOpen} onClose={onClose} size="2xl">
+        <ModalOverlay />
+        <ModalContent borderRadius="2xl" mx="4">
+            <ModalHeader>Eliminar Cuenta</ModalHeader>
+            <ModalCloseButton />
+          <ModalBody>
+          <Text>¿Estás seguro que quieres borrar  tu cuenta?. Se perderán todos tus avances.</Text>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme='brand' mr={3} onClick={onClose}>
+              Volver
+            </Button>
+            <Button onClick={onDeletion} variant='ghost' colorScheme="brand">Sí, eliminar mi cuenta</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
   );
 };

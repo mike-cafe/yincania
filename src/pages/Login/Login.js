@@ -136,7 +136,19 @@ const Login = (props) => {
 
   const handleGoogleClick = () => {
     setDisabledForm(true)
-    signInWithGoogle(redirectTo).finally(
+    signInWithGoogle(redirectTo)
+    .catch((err)=>{
+      if(err.message=="auth/user-disabled"){
+        toast({
+          position: "bottom-center",
+          description: "Usuario deshabilitado, por favor contacta con nosotros",
+          status: "error",
+          duration: 4000,
+          isClosable: true,
+        });
+      }
+    })
+    .finally(
       ()=>setDisabledForm(false)
     )
   };
@@ -158,14 +170,25 @@ const Login = (props) => {
       .catch((error) => {
         setDisabledForm(false);
         props.signInFailure(error.message);
-        toast({
-          position: "bottom-center",
-          description: "Usuario y/o contraseña incorrectos.",
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
+        if(error.message.includes("auth/user-disabled")){
+          toast({
+            position: "bottom-center",
+            description: "Usuario deshabilitado, por favor contacta con nosotros",
+            status: "error",
+            duration: 4000,
+            isClosable: true,
+          });
+        }else{
+          toast({
+            position: "bottom-center",
+            description: "Usuario y/o contraseña incorrectos.",
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+          });
+        }
       });
+
   };
 
   const verifyUserEmail = async () => {

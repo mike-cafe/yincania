@@ -24,7 +24,6 @@ import { auth } from "../utils/init-firebase";
 import { useToast } from "@chakra-ui/react";
 import { db } from "../utils/init-firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { Navigate } from "react-router-dom";
 
 const AuthContext = createContext({
   currentUser: null,
@@ -85,18 +84,27 @@ export default function AuthContextProvider({ children }) {
   function registerUser(email, password) {
     return createUserWithEmailAndPassword(auth, email, password)
       .then((result) => {
-        setAdditionalInfo({
+          setAdditionalInfo({
           ...getAdditionalUserInfo(result),
           isSocial: false,
         });
         return result;
+      }).catch((error) => {
+        // Handle Errors here.
+        throw new Error(error.code)
       })
   }
 
   function forgotPassword(email) {
+    let redirectUrl;
+    if(window.location.hostname === "localhost"){
+      redirectUrl = "http://localhost:3000"
+    }else{
+      redirectUrl = "https://react-coffee-a2736.web.app/"
+    }
     return sendPasswordResetEmail(auth, email, {
-      url: `https://react-coffee-a2736--pre-8flo8lqv.web.app/`
-    })
+      url: redirectUrl
+    }).then()
   }
 
   function resetPassword(oobCode, newPassword) {
@@ -157,7 +165,7 @@ export default function AuthContextProvider({ children }) {
       const email = error.customData.email;
       // The AuthCredential type that was used.
       const credential = GoogleAuthProvider.credentialFromError(error);
-      // ...
+      throw new Error(error.code)
     })
   }
 

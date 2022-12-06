@@ -33,7 +33,7 @@ const ForgetPassword = (props) => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors,isValid },
     reset,
   } = useForm({
     mode: "onBlur",
@@ -46,7 +46,7 @@ const ForgetPassword = (props) => {
       await forgotPassword(payload.email);
       toast({
         position: "bottom-right",
-        description: `An email is sent to ${payload.email} for password reset instructions.`,
+        description: `Se ha enviado un correo a ${payload.email} con instrucciones para resetear la contraseña`,
         status: "success",
         isClosable: true,
       });
@@ -110,7 +110,7 @@ const ForgetPassword = (props) => {
                 size="lg"
                 fontSize="md"
                 onClick={handleSubmit(onSubmit)}
-                disabled={!!errors.email}
+                isDisabled={!isValid}
               >
                 Recuperar Contraseña
               </Button>
