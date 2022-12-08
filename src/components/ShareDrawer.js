@@ -9,12 +9,8 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import {
-  TelegramShareButton,
-  TwitterShareButton,
   WhatsappShareButton,
   WhatsappIcon,
-  TelegramIcon,
-  TwitterIcon,
 } from "react-share";
 
 export const ShareDrawer = (props) => (
@@ -30,20 +26,10 @@ export const ShareDrawer = (props) => (
           <HStack spacing={6}>
             <WhatsappShareButton
               title="Únete a mi equipo para una Yincaña que empezará próximamente..."
-              url={`https://${window.location.host}/app/join/team?code=${props.teamCode}`}
+              url={window.location.hostname==="localhost"? `http://localhost:3000/app/join/team?code=${props.teamCode}%26routeId=${props.routeId}`:`https://${window.location.host}/app/join/team?code=${props.teamCode}%26routeId=${props.routeId}`}
             >
               <WhatsappIcon size={48} round={true} />
             </WhatsappShareButton>
-            {/* <TwitterShareButton
-              url={`https://${window.location.host}/app/join/team?code=${props.teamCode}`}
-            >
-              <TwitterIcon size={48} round={true} />
-            </TwitterShareButton>
-            <TelegramShareButton
-              url={`https://${window.location.host}/app/join/team?code=${props.teamCode}`}
-            >
-              <TelegramIcon size={48} round={true} />
-            </TelegramShareButton> */}
           </HStack>
         </VStack>
       </DrawerBody>

@@ -80,8 +80,8 @@ const Login = (props) => {
 
   const [disabledForm, setDisabledForm] = useState(false);
   const auth = getAuth();
-  const nextUrl = query.get("next") ||  "/app/routes";
-  
+  const nextUrl = query.get("next") || "/app/routes";
+
   useEffect(() => {
     if (query.get("mode") === "verifyEmail") {
       toast({
@@ -152,7 +152,13 @@ const Login = (props) => {
       ()=>setDisabledForm(false)
     )
   };
-  const redirectTo = (res) => props.userData({ user: res.user,next:nextUrl, navigate });
+  const redirectTo = (res) => {
+    if(res.isNewUser && nextUrl==="/app/routes"){
+      props.userData({ user: res.user,next:"/tutorial", navigate })
+    }else{
+      props.userData({ user: res.user,next:nextUrl, navigate })
+    }
+  };
 
   const onSubmit = async (payload) => {
     setDisabledForm(true);

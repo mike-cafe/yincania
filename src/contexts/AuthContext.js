@@ -147,14 +147,14 @@ export default function AuthContextProvider({ children }) {
             routes: [],
           }
         ).finally((data)=>{
-          fnCallback(result);
+          fnCallback({...result,isNewUser:isNewUser});
           return result
         })
         .catch((error)=>{
           console.error("error in create user profile",error)
         })
       }else{
-        fnCallback(result);
+        fnCallback({...result,isNewUser:isNewUser});
         return result
       }
     }).catch((error) => {

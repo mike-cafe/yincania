@@ -71,9 +71,6 @@ const mapDispatchToProps = (dispatch) => {
     saveUserData:(userProfile)=>{
       dispatch(saveUserData(userProfile))
     },
-    // logout: () => {
-    //   dispatch(logout());
-    // },
   };
 };
 

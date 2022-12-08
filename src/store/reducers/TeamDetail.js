@@ -17,6 +17,7 @@ const INIT_STATE = {
   usernames:null,
   loading: false,
   teamFound:null,
+  err:null,
 };
 
 const TeamDetail = (state = INIT_STATE, action) => {
@@ -32,11 +33,11 @@ const TeamDetail = (state = INIT_STATE, action) => {
     case FIND_TEAM:
       return { ...state, loading: true };
     case FIND_TEAM_SUCCESS:
-      return { ...state, loading: false,teamFound:true };
+      return { ...state, loading: false,teamFound:true,err:null };
     case FIND_TEAM_FAILURE:
-      return { ...state, loading: false,teamFound:false };
+      return { ...state, loading: false,teamFound:false,err:action.payload };
     case RESET_FIND_TEAM:
-      return { ...state,loading:false, teamFound:false };
+      return { ...state,loading:false, teamFound:false,err:null };
     case GET_USERNAMES:
       return { ...state, loading: true };
     case GET_USERNAMES_SUCCESS:

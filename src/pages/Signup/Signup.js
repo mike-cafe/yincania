@@ -130,9 +130,13 @@ const Signup = (props) => {
     })
     .finally(() => setDisabledForm(false));
   };
-  const redirectTo = (res) =>
-    props.userData({ user: res.user, next: nextUrl, navigate });
-
+  const redirectTo = (res) => {
+    if(res.isNewUser && nextUrl==="/app/routes"){
+      props.userData({ user: res.user,next:"/tutorial", navigate })
+    }else{
+      props.userData({ user: res.user,next:nextUrl, navigate })
+    }
+  };
   const handleClick = () => setShow(!show);
 
   const onSubmit = (payload) => {

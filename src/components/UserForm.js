@@ -29,7 +29,6 @@ import { avatarOptions } from "../data";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "./../utils/init-firebase";
-import { ConfirmDeleteModal } from "./ConfirmDeleteModal";
 
 export const UserForm = (props) => {
   const {
@@ -44,7 +43,7 @@ export const UserForm = (props) => {
     ...rest
   } = props;
 
-  const [ openModal, setOpenModal ] = React.useState(false)
+  const [openModal, setOpenModal] = React.useState(false);
   const { logout } = useAuth();
   const schema = yup.object().shape({
     name: yup.string().required("Por favor, dinos tu nombre").default(name),
@@ -56,6 +55,16 @@ export const UserForm = (props) => {
     email: yup.string().email().required().default(email),
   });
 
+  React.useEffect(() => {
+    if (!username) {
+      setError(
+        "username",
+        { type: "focus", message: "Necesitas un nombre de usuario" },
+        { shouldFocus: true }
+      );
+    }
+  }, [username]);
+
   const onDeletion = async () => {
     const disableUser = httpsCallable(functions, "disableUser");
     await disableUser()
@@ -65,14 +74,15 @@ export const UserForm = (props) => {
   };
 
   const navigate = useNavigate();
-  
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const {
     register,
     handleSubmit,
     control,
-    formState: { errors,isValid },
+    setError,
+    formState: { errors, isValid },
   } = useForm({
     mode: "onBlur",
     resolver: yupResolver(schema),
@@ -91,139 +101,144 @@ export const UserForm = (props) => {
 
   return (
     <>
-    <Stack spacing="5" divider={<StackDivider />}>
-      <FormControl
-        id="name"
-        isInvalid={!!errors?.name?.message}
-        errortext={errors?.name?.message}
-        isRequired
-      >
-        <Stack
-          direction={{ base: "column", md: "row" }}
-          spacing={{ base: "1.5", md: "8" }}
-          justify="space-between"
+      <Stack spacing="5" divider={<StackDivider />}>
+        <FormControl
+          id="name"
+          isInvalid={!!errors?.name?.message}
+          errortext={errors?.name?.message}
+          isRequired
         >
-          <FormLabel variant="inline">Name</FormLabel>
-          <Input
-            maxW={{ md: "3xl" }}
-            defaultValue={name}
-            {...register("name")}
-          />
-        </Stack>
-        <FormErrorMessage>{errors?.name?.message}</FormErrorMessage>
-      </FormControl>
-      <FormControl
-        id="username"
-        isInvalid={!!errors?.username?.message}
-        errortext={errors?.username?.message}
-        isRequired
-      >
-        <Stack
-          direction={{ base: "column", md: "row" }}
-          spacing={{ base: "1.5", md: "8" }}
-          justify="space-between"
-        >
-          <FormLabel variant="inline">Nombre de Ususario</FormLabel>
-          <Input
-            maxW={{ md: "3xl" }}
-            defaultValue={username}
-            {...register("username")}
-          />
-          <FormErrorMessage>{errors?.username?.message}</FormErrorMessage>
-        </Stack>
-      </FormControl>
-
-      <FormControl id="avatar">
-        <Stack
-          direction={{ base: "column", md: "row" }}
-          spacing={{ base: "1.5", md: "8" }}
-          justify="space-between"
-        >
-          <FormLabel variant="inline">Avatar</FormLabel>
           <Stack
-            spacing={{ base: "3", md: "5" }}
-            direction={{ base: "column", sm: "row" }}
-            width="full"
-            maxW={{ md: "3xl" }}
+            direction={{ base: "column", md: "row" }}
+            spacing={{ base: "1.5", md: "8" }}
+            justify="space-between"
           >
-            <Controller
-              name="avatar"
-              control={control}
-              render={({ field }) => (
-                <RadioCardGroup defaultValue={avatar} spacing="3" {...field}>
-                  {avatarOptions.map((option, idx) => (
-                    <RadioCard
-                      key={option.name}
-                      value={option.name}
-                      decor={option.decor}
-                      subtitle={option.name}
-                    >
-                      <Text
-                        color="emphasized"
-                        fontWeight="medium"
-                        fontSize="sm"
-                      >
-                        Option {option.name}
-                      </Text>
-                    </RadioCard>
-                  ))}
-                </RadioCardGroup>
-              )}
+            <FormLabel variant="inline">Name</FormLabel>
+            <Input
+              maxW={{ md: "3xl" }}
+              defaultValue={name}
+              {...register("name")}
             />
           </Stack>
-        </Stack>
-      </FormControl>
+          <FormErrorMessage>{errors?.name?.message}</FormErrorMessage>
+        </FormControl>
+        <FormControl
+          id="username"
+          isInvalid={!!errors?.username?.message}
+          errortext={errors?.username?.message}
+          isRequired
+        >
+          <Stack
+            direction={{ base: "column", md: "row" }}
+            spacing={{ base: "1.5", md: "8" }}
+            justify="space-between"
+          >
+            <FormLabel variant="inline">Nombre de Ususario</FormLabel>
+            <Input
+              maxW={{ md: "3xl" }}
+              defaultValue={username}
+              {...register("username")}
+            />
+            <FormErrorMessage>{errors?.username?.message}</FormErrorMessage>
+          </Stack>
+        </FormControl>
 
-      <FormControl id="email">
-        <Stack
-          direction={{ base: "column", md: "row" }}
-          spacing={{ base: "1.5", md: "8" }}
-          justify="space-between"
-        >
-          <FormLabel variant="inline">Email</FormLabel>
-          <Input
-            type="email"
-            maxW={{ md: "3xl" }}
-            defaultValue={email}
-            disabled={true}
-            {...register("email")}
-          />
-        </Stack>
-      </FormControl>
-      <Flex direction="row-reverse">
-        <Button
-          type="submit"
-          onClick={handleSubmit(onSubmit)}
-          variant="primary"
-          isDisabled={!isValid}
-        >
-          Guardar
-        </Button>
-        <Spacer></Spacer>
-        <Button
-          leftIcon={<DeleteIcon />}
-          variant="ghost"
-          colorScheme="gray"
-          color="gray.400"
-          onClick={onOpen}
-        >
-          Eliminar Cuenta
-        </Button>
-      </Flex>
-    </Stack>
-    <Modal isOpen={isOpen} onClose={onClose} size="2xl">
+        <FormControl id="avatar">
+          <Stack
+            direction={{ base: "column", md: "row" }}
+            spacing={{ base: "1.5", md: "8" }}
+            justify="space-between"
+          >
+            <FormLabel variant="inline">Avatar</FormLabel>
+            <Stack
+              spacing={{ base: "3", md: "5" }}
+              direction={{ base: "column", sm: "row" }}
+              width="full"
+              maxW={{ md: "3xl" }}
+            >
+              <Controller
+                name="avatar"
+                control={control}
+                render={({ field }) => (
+                  <RadioCardGroup defaultValue={avatar} spacing="3" {...field}>
+                    {avatarOptions.map((option, idx) => (
+                      <RadioCard
+                        key={option.name}
+                        value={option.name}
+                        decor={option.decor}
+                        subtitle={option.name}
+                      >
+                        <Text
+                          color="emphasized"
+                          fontWeight="medium"
+                          fontSize="sm"
+                        >
+                          Option {option.name}
+                        </Text>
+                      </RadioCard>
+                    ))}
+                  </RadioCardGroup>
+                )}
+              />
+            </Stack>
+          </Stack>
+        </FormControl>
+
+        <FormControl id="email">
+          <Stack
+            direction={{ base: "column", md: "row" }}
+            spacing={{ base: "1.5", md: "8" }}
+            justify="space-between"
+          >
+            <FormLabel variant="inline">Email</FormLabel>
+            <Input
+              type="email"
+              maxW={{ md: "3xl" }}
+              defaultValue={email}
+              disabled={true}
+              {...register("email")}
+            />
+          </Stack>
+        </FormControl>
+        <Flex direction="row-reverse">
+          <Button
+            type="submit"
+            onClick={handleSubmit(onSubmit)}
+            variant="primary"
+            isDisabled={!isValid}
+          >
+            Guardar
+          </Button>
+          <Spacer></Spacer>
+          <Button
+            leftIcon={<DeleteIcon />}
+            variant="ghost"
+            colorScheme="gray"
+            color="gray.400"
+            onClick={onOpen}
+          >
+            Eliminar Cuenta
+          </Button>
+        </Flex>
+      </Stack>
+      <Modal isOpen={isOpen} onClose={onClose} size="2xl">
         <ModalOverlay />
         <ModalContent borderRadius="2xl" mx="4">
-            <ModalHeader>Eliminar Cuenta</ModalHeader>
-            <ModalCloseButton />
+          <ModalHeader>Eliminar Cuenta</ModalHeader>
+          <ModalCloseButton />
           <ModalBody>
-          <Text>¿Estás seguro que quieres borrar  tu cuenta?. Se perderán todos tus avances.</Text>
+            <Text>
+              ¿Estás seguro que quieres borrar tu cuenta?. Se perderán todos tus
+              avances.
+            </Text>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme='brand' mr={3} onClick={onClose}>
+            <Button colorScheme="brand" mr={3} onClick={onClose}>
               Volver
             </Button>
-            <Button onClick={onDeletion} variant='ghost' colorScheme="brand">Sí, eliminar mi cuenta</Button>
+            <Button onClick={onDeletion} variant="ghost" colorScheme="brand">
+              Sí, eliminar mi cuenta
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

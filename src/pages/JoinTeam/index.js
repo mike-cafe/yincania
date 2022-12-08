@@ -14,6 +14,7 @@ const mapStateToProps = ({ TeamDetail }) => {
     loading: TeamDetail?.loading,
     teamFound:TeamDetail?.teamFound,
     teamDetail:TeamDetail?.data,
+    err:TeamDetail?.err,
   };
 };
 

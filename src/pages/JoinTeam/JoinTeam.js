@@ -8,6 +8,7 @@ import {
   Button,
   Text,
   Stack,
+  FormErrorMessage,
 } from "@chakra-ui/react";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -17,22 +18,24 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 const schema = yup.object().shape({
-  code: yup.string().required(),
+  code: yup.string().required("Introduce un código de equipo"),
 });
 
 const JoinTeam = (props) => {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm({
-    mode: "onBlur",
+    mode: "onChange",
     resolver: yupResolver(schema),
   });
 
   const navigate = useNavigate();
   const auth = useAuth();
-  
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const onSubmit = async (values) => props.findTeam(values.code);
 
   const joinTeam = () => {
@@ -43,23 +46,34 @@ const JoinTeam = (props) => {
       navigate: navigate,
     });
   };
+  let code = searchParams.get("code");
+
+  if (code) {
+    onSubmit({ code: code });
+  }
 
   React.useEffect(() => {
-    if(props.teamFound){
-      setShowTeam(true)
-    }else{
+    if (props.teamFound) {
+      setShowTeam(true);
+    } else {
       setShowTeam(false);
     }
   }, [props.teamFound]);
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  React.useEffect(() => {
+    if (props.err) {
+      setError(
+        "code",
+        {
+          message: "No se ha encontrado un equipo con este código",
+          type: "focus",
+        },
+        { shouldFocus: true }
+      );
+    }
+  }, [props.err]);
+
   const [showTeam, setShowTeam] = React.useState(false);
-
-  let code = searchParams.get("code");
-
-  if(code){
-    onSubmit({code:code})
-  }
 
   return (
     <>
@@ -87,13 +101,19 @@ const JoinTeam = (props) => {
         ) : (
           ""
         )}
-        <FormControl id="code">
+        <FormControl
+          id="code"
+          isInvalid={!!errors?.code?.message}
+          errortext={errors?.code?.message}
+          isRequired
+        >
           <FormLabel>Código</FormLabel>
           <Input
             defaultValue={code}
             placeholder="XXXXXX"
             {...register("code")}
           />
+          <FormErrorMessage>{errors?.code?.message}</FormErrorMessage>
         </FormControl>
         <Button
           disabled={!!errors?.code?.message}

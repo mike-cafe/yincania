@@ -60,6 +60,8 @@ function* findTeam(code) {
     if (data) {
       yield put(findTeamSuccess(data));
       yield put(getTeamDetailSuccess(data));
+    }else{
+      yield put(findTeamFailure({message:"not found"}));
     }
   } catch (error) {
     yield put(findTeamFailure(error));

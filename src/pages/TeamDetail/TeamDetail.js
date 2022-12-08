@@ -163,7 +163,12 @@ const TeamDetail = (props) => {
           backClick={abandonTeam}
         />
       </VStack>
-      <ShareDrawer isOpen={isOpen} onClose={onClose} teamCode={teamCode} />
+      <ShareDrawer
+        isOpen={isOpen}
+        onClose={onClose}
+        teamCode={teamCode}
+        routeId={props.teamDetail?.route}
+      />
     </>
   );
 };
