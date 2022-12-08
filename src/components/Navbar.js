@@ -13,6 +13,7 @@ import {
   Flex,
   Text,
   useDisclosure,
+  useBreakpointValue
 } from "@chakra-ui/react";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
@@ -22,6 +23,7 @@ import { ToggleButton } from "./ToggleButton";
 
 export const Navbar = (props) => {
   const { isOpen, onToggle, onClose } = useDisclosure();
+
 
   let navigate = useNavigate();
 

@@ -86,13 +86,6 @@ const Signup = (props) => {
   const [emailAlreadyTaken, setEmailAlreadyTaken] = useState(false);
   const [disabledForm, setDisabledForm] = useState(false);
 
-  // useEffect(() => {
-  //   const { emailAlreadyTaken } = props;
-  //   if (emailAlreadyTaken) {
-  //     setEmailAlreadyTaken(true);
-  //   }
-  // }, [props.emailAlreadyTaken]);
-
   const {
     register,
     handleSubmit,

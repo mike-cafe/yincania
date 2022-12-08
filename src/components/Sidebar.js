@@ -11,6 +11,7 @@ import { UserProfile } from "./UserProfile";
 export const Sidebar = (props) => {
   const { logout } = useAuth();
   const [avatar, setAvatar] = React.useState();
+
   React.useEffect(() => {
     if (props.profile?.avatar) {
       setAvatar(
@@ -75,7 +76,10 @@ export const Sidebar = (props) => {
               name={props.profile?.name}
               image={avatar}
               email={props.profile?.email}
-              onClick={()=>props.close()}
+              onClick={()=>{
+                console.log("hola");
+                props.close()}
+              }
             />
             <NavButton
                 path="/"

@@ -23,7 +23,9 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate,Link as RouteLink } from "react-router-dom";
 
 const schema = yup.object().shape({
-  email: yup.string().email("No es un correo electrónico válido").required("Se requiere un correo electrónico"),
+  email: yup.string()
+  .email("No es un correo electrónico válido")
+  .required("Se requiere un correo electrónico"),
 });
 
 const ForgetPassword = (props) => {
@@ -43,14 +45,23 @@ const ForgetPassword = (props) => {
   const onSubmit = async (payload) => {
     reset();
     try {
-      await forgotPassword(payload.email);
-      toast({
-        position: "bottom-right",
-        description: `Se ha enviado un correo a ${payload.email} con instrucciones para resetear la contraseña`,
-        status: "success",
-        isClosable: true,
-      });
-      navigate("/");
+      let forgotResult = await forgotPassword(payload.email);
+      if(forgotResult.emailProvider){
+        toast({
+          position: "bottom-right",
+          description: `Se ha enviado un correo a ${payload.email} con instrucciones para resetear la contraseña`,
+          status: "success",
+          isClosable: true,
+        });
+        navigate("/");
+      }else{
+        toast({
+          position: "bottom-right",
+          description: `Vaya parece que este email no existe o está asociado a una cuenta de Google`,
+          status: "error",
+          isClosable: true,
+        });
+      }
     } catch (error) {
       toast({
         position: "bottom-right",

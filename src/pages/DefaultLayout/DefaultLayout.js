@@ -1,4 +1,4 @@
-import { Flex, Text, useBreakpointValue, useToast } from "@chakra-ui/react";
+import { Flex, useBreakpointValue, useToast } from "@chakra-ui/react";
 import * as React from "react";
 import { Navbar } from "../../components/Navbar";
 import { Sidebar } from "../../components/Sidebar";
@@ -60,7 +60,7 @@ const DefaultLayout = (props) => {
       overflowY="auto"
     >
       {isDesktop ? (
-        <Sidebar profile={props.userProfile} />
+        <Sidebar profile={props.userProfile} close={()=>{}} />
       ) : (
         <Navbar backButton={backButton} profile={props.userProfile} />
       )}

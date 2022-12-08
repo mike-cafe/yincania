@@ -19,6 +19,7 @@ import {
   reauthenticateWithCredential,
   getRedirectResult,
   getAdditionalUserInfo,
+  fetchSignInMethodsForEmail,
 } from "firebase/auth";
 import { auth } from "../utils/init-firebase";
 import { useToast } from "@chakra-ui/react";
@@ -96,15 +97,25 @@ export default function AuthContextProvider({ children }) {
   }
 
   function forgotPassword(email) {
+    
     let redirectUrl;
     if(window.location.hostname === "localhost"){
       redirectUrl = "http://localhost:3000"
     }else{
       redirectUrl = "https://react-coffee-a2736.web.app/"
     }
-    return sendPasswordResetEmail(auth, email, {
-      url: redirectUrl
-    }).then()
+    return fetchSignInMethodsForEmail(auth,email)
+    .then((providers)=>{
+      if(providers.includes("password")){
+        return sendPasswordResetEmail(auth, email, {
+          url: redirectUrl
+        }).then(()=>{
+          return {emailProvider:true}
+        })
+      }else{
+        return {emailProvider:false}
+      }
+      })
   }
 
   function resetPassword(oobCode, newPassword) {

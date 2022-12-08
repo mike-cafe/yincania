@@ -31,17 +31,20 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 
 const schema = yup.object().shape({
   password: yup
-    .string()
-    .min(8)
-    .required()
+    .string("Se debe introducir una contraseña")
+    .min(
+      8,
+      "La contraseña debe tener por lo menos 8 caracteres (mayúsculas y minúsculas), 1 número y un caracter especial"
+    )
+    .required("Se debe introducir una contraseña")
     .matches(
       /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/,
-      "Password must contain at least 8 characters (lowercase and uppercase), one number and one special character"
+      "La contraseña debe tener por lo menos 8 caracteres (mayúsculas y minúsculas), 1 número y un caracter especial"
     ),
   confirmPassword: yup
-    .string()
-    .required("Please confirm your password")
-    .oneOf([yup.ref("password"), null], "Passwords don't match."),
+    .string("Se debe confirmar la contraseña")
+    .required("Confirma tu contraseña")
+    .oneOf([yup.ref("password"), null], "Las contraseñas no coinciden."),
 });
 
 function useQuery() {
@@ -65,22 +68,16 @@ const ResetPasswordPage = (props) => {
     setShowConfirmPassword(!showConfirmPassword);
 
   useEffect(() => {
-    toast({
-      position: "bottom-right",
-      title: "Verificando código",
-      isClosable: true,
-      duration:3000,
-    });
     async function verifyToken() {
       try {
         await verifyPasswordResetCodeVerification(oobCode);
         toast({
           position: "bottom-right",
           title: "Token Verified",
-          description: "You can Change your password",
+          description: "Puedes cambiar tu contraseña",
           status: "success",
           isClosable: true,
-          duration:3000
+          duration: 3000,
         });
         setDisableForm(false);
       } catch (error) {
@@ -91,11 +88,21 @@ const ResetPasswordPage = (props) => {
           description: "Parece que el link ha caducado.",
           status: "error",
           isClosable: true,
-          duration:3000
+          duration: 3000,
         });
       }
     }
-    verifyToken();
+    if(oobCode){
+    toast({
+      position: "bottom-right",
+      title: "Verificando código",
+      isClosable: true,
+      duration: 3000,
+    });
+    verifyToken();}
+    else{
+      navigate("/")
+    }
   }, []);
 
   const {
@@ -113,7 +120,8 @@ const ResetPasswordPage = (props) => {
       await resetPassword(oobCode, payload.password);
       toast({
         position: "bottom-right",
-        description: "Password has been changed, you can login now.",
+        description:
+          "La contraseña ha sido modificada, puedes hacer login normalmente.",
         status: "success",
         duration: 9000,
         isClosable: true,
@@ -186,7 +194,7 @@ const ResetPasswordPage = (props) => {
               isDisabled={disableForm}
             >
               <Flex justify="space-between">
-                <FormLabel>Password</FormLabel>
+                <FormLabel>Contraseña</FormLabel>
               </Flex>
               <InputGroup>
                 <Input
@@ -196,7 +204,7 @@ const ResetPasswordPage = (props) => {
                   pr="4.5rem"
                 />
                 <InputRightAddon onClick={handleShow}>
-                  {show ? <FiEyeOff color="gray" /> : <FiEye color="gray"/>}
+                  {show ? <FiEyeOff color="gray" /> : <FiEye color="gray" />}
                 </InputRightAddon>
               </InputGroup>
               <FormErrorMessage>{errors?.password?.message}</FormErrorMessage>
@@ -208,7 +216,7 @@ const ResetPasswordPage = (props) => {
               isDisabled={disableForm}
             >
               <Flex justify="space-between">
-                <FormLabel>Confirm Password</FormLabel>
+                <FormLabel>Confirma Contraseña</FormLabel>
               </Flex>
               <InputGroup>
                 <Input
@@ -219,7 +227,11 @@ const ResetPasswordPage = (props) => {
                 />
 
                 <InputRightAddon onClick={handleShowConfirmPasswordClick}>
-                  {showConfirmPassword ? <FiEyeOff color="gray" /> : <FiEye color="gray"/>}
+                  {showConfirmPassword ? (
+                    <FiEyeOff color="gray" />
+                  ) : (
+                    <FiEye color="gray" />
+                  )}
                 </InputRightAddon>
               </InputGroup>
               <FormErrorMessage>

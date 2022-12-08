@@ -17,6 +17,7 @@ const Start = (props) => {
   const location = useLocation();
   const navigate = useNavigate();
   const query = useQuery();
+
   if (localStorage.getItem(LocalStorage.TOKEN) == null) {
       if (query.get("mode") === "verifyEmail") {
         return <Navigate to={`/${location.search}`} />;

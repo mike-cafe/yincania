@@ -91,6 +91,8 @@ const Login = (props) => {
         isClosable: true,
       });
       verifyUserEmail();
+    }else if (query.get("mode") === "resetPassword") {
+      navigate("")
     }
   }, [location]);
 

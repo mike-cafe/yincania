@@ -77,6 +77,7 @@ function RequireAuth({ children }) {
     // along to that page after they login, which is a nicer user experience
     // than dropping them off on the home page.
     logout();
+
     return (
       <Navigate
         to={`/?next=${location.pathname+location.search}`}
