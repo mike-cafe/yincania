@@ -92,7 +92,7 @@ const Login = (props) => {
       });
       verifyUserEmail();
     }else if (query.get("mode") === "resetPassword") {
-      navigate("")
+      navigate(`/reset-password${location.search}`)
     }
   }, [location]);
 

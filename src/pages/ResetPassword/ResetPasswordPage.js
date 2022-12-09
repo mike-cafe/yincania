@@ -73,7 +73,7 @@ const ResetPasswordPage = (props) => {
         await verifyPasswordResetCodeVerification(oobCode);
         toast({
           position: "bottom-right",
-          title: "Token Verified",
+          title: "Token verificado",
           description: "Puedes cambiar tu contraseña",
           status: "success",
           isClosable: true,
