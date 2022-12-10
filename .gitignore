@@ -7,7 +7,7 @@
 /emulation
 /public
 /.firebase
-/utils
+/src/utils
 # testing
 /coverage
 
