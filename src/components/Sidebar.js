@@ -77,8 +77,8 @@ export const Sidebar = (props) => {
               image={avatar}
               email={props.profile?.email}
               onClick={()=>{
-                console.log("hola");
-                props.close()}
+                props.close()
+              }
               }
             />
             <NavButton

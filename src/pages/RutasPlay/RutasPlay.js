@@ -7,9 +7,11 @@ import * as React from "react";
 import { BarList } from "../../components/BarList";
 import { TeamPlayCard } from "../../components/TeamPlayCard";
 import { ActionModal } from "../../components/ActionModal";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { httpsCallable } from "firebase/functions";
-import { functions } from "../../utils/init-firebase";
+import { functions,db } from "../../utils/init-firebase";
+import { doc, onSnapshot } from "firebase/firestore";
+import { getTeamDetail } from "../../store/actions/TeamDetail";
 
 const RutasPlay = (props) => {
   const [showQR, setShowQR] = React.useState(0);
@@ -18,14 +20,19 @@ const RutasPlay = (props) => {
   const [tapaLoading, setTapaLoading] = React.useState(false);
   const params = useParams();
 
+  let [searchParams, setSearhParams] = useSearchParams();
+
   React.useEffect(() => props.getRouteDetail(params.id), []);
   React.useEffect(() => props.getUserProfile(), []);
+
   React.useEffect(() => {
     setCurrentTeam(props.user?.routes?.find((route) => route.id === params.id));
     if (currentTeam) {
       props.getTeamDetail(currentTeam.team);
     }
   }, [props.user]);
+
+
 
   const tapasAction = async (pos, game) => {
     setTapaLoading(true);
@@ -38,6 +45,7 @@ const RutasPlay = (props) => {
         members: props.team?.members.length,
       })
         .then((res) => {
+
           if (window.location.hostname === "localhost") {
             setTapaURL(`http://192.168.41.3:3000/tapa/${res.data}`);
           } else {
@@ -54,6 +62,17 @@ const RutasPlay = (props) => {
     setTapaLoading(false);
   };
 
+  React.useEffect(() => {
+    let posTapa = props.team?.routeGames?.findIndex((r)=>r.barGame.id === searchParams.get("game"))+1
+    if(posTapa && props.team?.id){
+      tapasAction(posTapa,searchParams.get("game"))
+    }else if(props.team?.id){
+      const unsub = onSnapshot(doc(db, "teams", props.team.id), (doc) => {
+        props.getTeamDetail(props.team.id);
+    });
+    }
+  }, [props.team]);
+  
   const closeQR = () => {
     if (!currentTeam) {
       setCurrentTeam(
@@ -61,6 +80,7 @@ const RutasPlay = (props) => {
       );
     }
     props.getTeamDetail(currentTeam.team);
+    setSearhParams()
     setShowQR(0);
   };
 

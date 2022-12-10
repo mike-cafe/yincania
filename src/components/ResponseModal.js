@@ -9,12 +9,13 @@ import {
   Stack,
   Text,
   useColorModeValue,
+  Center
 } from "@chakra-ui/react";
 import * as React from "react";
 import { Logo } from "./Logo";
 
-export const ResponseModal = (props) => {
-  const { isCorrect, onFinish,onClose, penaltyWait, ...rest } = props;
+const ResponseModal = (props) => {
+  const { isCorrect, onFinish, onClose, penaltyWait, ...rest } = props;
 
   return (
     <Box height="100vh">
@@ -35,7 +36,9 @@ export const ResponseModal = (props) => {
                 md: "10",
               }}
             >
-              <Logo height="5" />
+              <Center>
+                <Logo height="5" />
+              </Center>
               <Stack spacing="3" textAlign="center">
                 <Text
                   color={useColorModeValue("brand.500", "brand.200")}
@@ -56,27 +59,30 @@ export const ResponseModal = (props) => {
                   </Box>
                 </Text>
               </Stack>
-              {isCorrect? (
-              <Stack direction="row" spacing="4">
-                <Button
-                  type="submit"
-                  colorScheme="brand"
-                  size="md"
-                  width="100%"
-                  onClick={onFinish}
-                >
-                  Inicio
-                </Button>
-                <Button
-                  colorScheme="brand"
-                  variant="outline"
-                  onClick={onClose}
-                  size="md"
-                  width="100%"
-                >
-                  Resultados
-                </Button>
-              </Stack>):""}
+              {isCorrect ? (
+                <Stack direction="row" spacing="4">
+                  <Button
+                    type="submit"
+                    colorScheme="brand"
+                    size="md"
+                    width="100%"
+                    onClick={onFinish}
+                  >
+                    Inicio
+                  </Button>
+                  <Button
+                    colorScheme="brand"
+                    variant="outline"
+                    onClick={onClose}
+                    size="md"
+                    width="100%"
+                  >
+                    Resultados
+                  </Button>
+                </Stack>
+              ) : (
+                ""
+              )}
             </Stack>
           </ModalBody>
         </ModalContent>

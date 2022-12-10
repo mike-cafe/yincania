@@ -9,7 +9,8 @@ import {
   Text,
   Image,
   HStack,
-  StackDivider
+  StackDivider,
+  Center
 } from "@chakra-ui/react";
 import * as React from "react";
 import { Logo } from "./Logo";
@@ -37,7 +38,9 @@ export const CorrectResponseModal = (props) => {
                 md: "10",
               }}
             >
+              <Center>
               <Logo height="5" />
+              </Center>
               /* {showResults ? (
                 <Stack spacing="3" textAlign="center">
                   <Text fontSize="2xl" color="brand.500" fontWeight="bold">
@@ -110,17 +113,6 @@ export const CorrectResponseModal = (props) => {
                 >
                   Canjear Tapa
                 </Button>
-                {/* {showResults || (
-                  <Button
-                    colorScheme="brand"
-                    variant="outline"
-                    onClick={() => setShowResults(true)}
-                    size="md"
-                    width="100%"
-                  >
-                    Resultados
-                  </Button>
-                )} */}
               </Stack>
             </Stack>
           </ModalBody>

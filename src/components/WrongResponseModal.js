@@ -8,6 +8,7 @@ import {
   Stack,
   Text,
   useColorModeValue,
+  Center,
 } from "@chakra-ui/react";
 import * as React from "react";
 import { Logo } from "./Logo";
@@ -34,7 +35,9 @@ export const WrongResponseModal = (props) => {
                 md: "10",
               }}
             >
-              <Logo height="5" />
+              <Center>
+                <Logo height="5" />
+              </Center>
               <Stack spacing="3" textAlign="center">
                 <Text
                   color={useColorModeValue("brand.500", "brand.200")}

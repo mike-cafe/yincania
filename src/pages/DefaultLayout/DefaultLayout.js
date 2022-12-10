@@ -15,7 +15,7 @@ const DefaultLayout = (props) => {
   React.useEffect(
     ()=>{
       let match = location.pathname.match(
-        /(app[/]routes)|(app[/]detail)|(view[/]team)|(create[/]team)|(join[/]team)/g
+        /(app[/]routes)|(app[/]detail)|(view[/]team)|(create[/]team)|(join[/]team)|(app[/]play)/g
       );
       if(match && props.userProfile){
         switch (match[0]) {
@@ -26,7 +26,12 @@ const DefaultLayout = (props) => {
             setBackButton("/app/routes/");
             break;
           case "view/team":
-            setBackButton(`/app/detail/${searchParams.get("routeId")}`);
+            let url = -1;
+            let routeId = searchParams.get("routeId") || "/app/routes/"
+            if(routeId){
+              let url = `/app/detail/${searchParams.get("routeId")}`
+            }
+            setBackButton(url);
             break;
           case "create/team":
             setBackButton(null);
@@ -34,9 +39,14 @@ const DefaultLayout = (props) => {
           case "join/team":
             setBackButton(`/app/detail/${searchParams.get("routeId")}`);
             break;
+          case "app/play":
+            setBackButton("/app/routes");
+            break;
           default:
-            console.log("in other url");
+            setBackButton(null);
         }
+      }else{
+        setBackButton(null);
       }
     },[location.pathname,props]
   ) 

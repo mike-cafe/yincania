@@ -80,7 +80,7 @@ export const ResultsModal = (props) => {
                               </Text>
                             </Box>
                           </HStack>
-                          <Text color="muted">{time2text(team.time)}</Text>
+                          <Text ml="auto" color="muted">{time2text(team.time)}</Text>
                         </Stack>
                       </Stack>
                     ))}

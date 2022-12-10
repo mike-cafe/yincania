@@ -80,6 +80,7 @@ const BarGame = (props) => {
       clearInterval(intervalId);
       setPenalty(false);
       setSeconds(props.game?.penalty);
+      setShowModal(false);
     }
   }, [seconds]);
 
@@ -87,7 +88,7 @@ const BarGame = (props) => {
   React.useEffect(() => setSeconds(props.game?.penalty), [props.game]);
   React.useEffect(() => {
     if (props.saved) {
-      navigate("/app/play/" + props.game?.route);
+      navigate("/app/play/" + props.game?.route + "?game="+params.game);
       props.resetGame()
     }
   }, [props.saved]);

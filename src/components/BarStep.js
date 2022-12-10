@@ -46,7 +46,8 @@ export const BarStep = (props) => {
   React.useEffect(() => {
     if (props.finishTime && props.startTime) {
       setPlayTime(
-        Number(((props.finishTime - props.startTime) / 60).toFixed(1)) + " minutos"
+        Number(((props.finishTime - props.startTime) / 60).toFixed(1)) +
+          " minutos"
       );
     }
   }, [props.startTime, props.finishTime]);
@@ -60,7 +61,7 @@ export const BarStep = (props) => {
         setStepAction(
           <Button
             variant="solid"
-            marginLeft={"auto"}
+            ml="auto"
             colorScheme="brand"
             aria-label="Jugar"
             onClick={() => navigate(`/app/team/${team}/game/${game}`)}
@@ -111,12 +112,11 @@ export const BarStep = (props) => {
           }
         />
       </Stack>
-
       <Stack
         spacing="0.5"
         pb={isLastStep ? "0" : "8"}
         onClick={() => {
-          if(status!="hidden"){
+          if (status != "hidden" || isLastStep) {
             onOpen();
           }
         }}
@@ -132,13 +132,18 @@ export const BarStep = (props) => {
           {description}
         </Text>
       </Stack>
+      <Spacer />
       {stepAction}
       {!(status === "completed") || (
-        <Flex flexGrow={1} pr={4}>
-          <Text fontSize="sm" color="brand.700" fontWeight="bold" marginLeft={"auto"}>
+          <Text
+            textAlign={"right"}
+            fontSize="sm"
+            color="brand.700"
+            fontWeight="bold"
+            marginLeft={"auto"}
+          >
             {playTime}
           </Text>
-        </Flex>
       )}
       <Drawer placement="bottom" isOpen={isOpen} onClose={onClose}>
         <DrawerOverlay />
@@ -155,9 +160,7 @@ export const BarStep = (props) => {
                   colorScheme="brand"
                   variant="link"
                   leftIcon={<ExternalLinkIcon />}
-                  onClick={() =>
-                    window.open(addressURL, "_blank")
-                  }
+                  onClick={() => window.open(addressURL, "_blank")}
                 >
                   ver en el mapa
                 </Button>
