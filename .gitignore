@@ -31,3 +31,5 @@ firebase-debug.log*
 firestore.rules*
 storage.rules*
 ui-debug.log*
+firestore-debug.log*
+firestore.indexes.json*
