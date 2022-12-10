@@ -83,11 +83,7 @@ const RutasPlay = (props) => {
   React.useEffect(
     ()=>{
       if(props.team?.id){
-        let newInterval;
         const unsub = onSnapshot(doc(db, "teams", props.team.id), (doc) => {
-          // newInterval = setInterval(
-          //   ()=>console.log("hola"),1000
-          // )
           props.getTeamDetail(props.team?.id)
         },(err)=>console.error(err))
         return unsub;

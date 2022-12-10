@@ -4,7 +4,10 @@
 /node_modules
 /.pnp
 .pnp.js
-
+/emulation
+/public
+/.firebase
+/utils
 # testing
 /coverage
 
@@ -21,3 +24,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+firebase.json*
+firestore.debug.log*
+firebase-debug.log*
+firestore.rules*
+storage.rules*
+ui-debug.log*
