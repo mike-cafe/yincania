@@ -94,7 +94,7 @@ export const BarStep = (props) => {
   const navigate = useNavigate();
 
   return (
-    <Stack spacing="4" direction="row" {...stackProps}>
+    <Stack spacing="4" direction="row">
       <Stack spacing="0" align="center">
         <BarStepCircle
           isActive={status === "playable" || status === "consumable"}

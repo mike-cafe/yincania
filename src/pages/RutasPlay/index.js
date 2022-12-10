@@ -30,9 +30,6 @@ const mapDispatchToProps = (dispatch) => {
     getUserProfile: (data) => {
       dispatch(getUserProfile(data));
     },
-    // getFinalDetail: (docRef)=>{
-    //   dispatch(getFinalDetail(docRef));
-    // }
   };
 };
 

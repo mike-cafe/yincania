@@ -66,10 +66,6 @@ const RutasPlay = (props) => {
     let posTapa = props.team?.routeGames?.findIndex((r)=>r.barGame.id === searchParams.get("game"))+1
     if(posTapa && props.team?.id){
       tapasAction(posTapa,searchParams.get("game"))
-    }else if(props.team?.id){
-      const unsub = onSnapshot(doc(db, "teams", props.team.id), (doc) => {
-        props.getTeamDetail(props.team.id);
-    });
     }
   }, [props.team]);
   
@@ -83,6 +79,21 @@ const RutasPlay = (props) => {
     setSearhParams()
     setShowQR(0);
   };
+
+  React.useEffect(
+    ()=>{
+      if(props.team?.id){
+        let newInterval;
+        const unsub = onSnapshot(doc(db, "teams", props.team.id), (doc) => {
+          // newInterval = setInterval(
+          //   ()=>console.log("hola"),1000
+          // )
+          props.getTeamDetail(props.team?.id)
+        },(err)=>console.error(err))
+        return unsub;
+      }
+    },[]
+  )
 
   return (
     <Container mb="24">

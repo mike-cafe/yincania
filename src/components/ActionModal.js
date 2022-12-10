@@ -81,7 +81,7 @@ export const ActionModal = (props) => {
                 </Text>
                 <Center>
                   <QRCode
-                    size="196"
+                    size={196}
                     value={tapaURL}
                   />
                 </Center>
