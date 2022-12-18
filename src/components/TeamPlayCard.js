@@ -89,12 +89,13 @@ export const TeamPlayCard = (props) => {
         </Stack>
       </HStack>
         }
-
+        {!props.finished && 
         <Button variant="link" colorScheme="gray" size="sm">
           <Link as={RouteLink} to={"/app/view/team/" + props.team?.id}>
             Ver Equipo
           </Link>
         </Button>
+        }
       </HStack>
     </Box>
   );

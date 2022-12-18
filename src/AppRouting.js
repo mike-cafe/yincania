@@ -70,8 +70,12 @@ export default AppRouting;
 function RequireAuth({ children }) {
   let authToken = localStorage.getItem(LocalStorage.TOKEN);
   let { currentUser, logout } = useAuth();
+
   let location = useLocation();
-  if ((!currentUser && !authToken) || !currentUser?.emailVerified) {
+  if(currentUser && !currentUser.emailVerified){
+    logout();
+  }
+  if ((!currentUser && !authToken)) {
     // Redirect them to the /login page, but save the current location they were
     // trying to go to when they were redirected. This allows us to send them
     // along to that page after they login, which is a nicer user experience

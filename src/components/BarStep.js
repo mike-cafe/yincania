@@ -36,6 +36,7 @@ export const BarStep = (props) => {
     loading,
     address,
     addressURL,
+    completed,
     ...stackProps
   } = props;
 
@@ -53,42 +54,47 @@ export const BarStep = (props) => {
   }, [props.startTime, props.finishTime]);
 
   React.useEffect(() => {
-    switch (status) {
-      case "hidden":
-        setStepAction(null);
-        break;
-      case "playable":
-        setStepAction(
-          <Button
-            variant="solid"
-            ml="auto"
-            colorScheme="brand"
-            aria-label="Jugar"
-            onClick={() => navigate(`/app/team/${team}/game/${game}`)}
-            isLoading={loading}
-          >
-            Jugar
-          </Button>
-        );
-        break;
-      case "consumable":
-        setStepAction(
-          <Button
-            variant="solid"
-            marginLeft={"auto"}
-            colorScheme="brand"
-            aria-label="Jugar"
-            onClick={() => onButtonClick(position, game)}
-            isLoading={props.loading}
-          >
-            Tapa
-          </Button>
-        );
-        break;
-      case "completed":
-        setStepAction(null);
-        break;
+    if(!completed){
+      switch (status) {
+        case "hidden":
+          setStepAction(null);
+          break;
+        case "playable":
+          setStepAction(
+            <Button
+              variant="solid"
+              ml="auto"
+              colorScheme="brand"
+              aria-label="Jugar"
+              onClick={() => navigate(`/app/team/${team}/game/${game}`)}
+              isLoading={loading}
+            >
+              Jugar
+            </Button>
+          );
+          break;
+        case "consumable":
+          setStepAction(
+            <Button
+              variant="solid"
+              marginLeft={"auto"}
+              colorScheme="brand"
+              aria-label="Jugar"
+              onClick={() => onButtonClick(position, game)}
+              isLoading={props.loading}
+            >
+              Tapa
+            </Button>
+          );
+          break;
+        case "completed":
+          setStepAction(null);
+          break;
+      }
+    }else{
+      setStepAction(null)
     }
+
   }, [status, loading]);
 
   const navigate = useNavigate();
@@ -116,7 +122,7 @@ export const BarStep = (props) => {
         spacing="0.5"
         pb={isLastStep ? "0" : "8"}
         onClick={() => {
-          if (status != "hidden" || isLastStep) {
+          if ((status != "hidden" || isLastStep) && !completed) {
             onOpen();
           }
         }}

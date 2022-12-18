@@ -1,15 +1,11 @@
-import {
-  VStack,
-  Container,
-  Text,
-} from "@chakra-ui/react";
+import { VStack, Container, Text } from "@chakra-ui/react";
 import * as React from "react";
 import { BarList } from "../../components/BarList";
 import { TeamPlayCard } from "../../components/TeamPlayCard";
 import { ActionModal } from "../../components/ActionModal";
 import { useParams, useSearchParams } from "react-router-dom";
 import { httpsCallable } from "firebase/functions";
-import { functions,db } from "../../utils/init-firebase";
+import { functions, db } from "../../utils/init-firebase";
 import { doc, onSnapshot } from "firebase/firestore";
 import { getTeamDetail } from "../../store/actions/TeamDetail";
 
@@ -32,8 +28,6 @@ const RutasPlay = (props) => {
     }
   }, [props.user]);
 
-
-
   const tapasAction = async (pos, game) => {
     setTapaLoading(true);
     if (!tapaURL) {
@@ -45,13 +39,10 @@ const RutasPlay = (props) => {
         members: props.team?.members.length,
       })
         .then((res) => {
-
           if (window.location.hostname === "localhost") {
             setTapaURL(`http://192.168.41.3:3000/tapa/${res.data}`);
           } else {
-            setTapaURL(
-              `https://react-coffee-a2736.web.app/tapa/${res.data}`
-            );
+            setTapaURL(`https://react-coffee-a2736.web.app/tapa/${res.data}`);
           }
           setShowQR(pos);
         })
@@ -63,12 +54,15 @@ const RutasPlay = (props) => {
   };
 
   React.useEffect(() => {
-    let posTapa = props.team?.routeGames?.findIndex((r)=>r.barGame.id === searchParams.get("game"))+1
-    if(posTapa && props.team?.id){
-      tapasAction(posTapa,searchParams.get("game"))
+    let posTapa =
+      props.team?.routeGames?.findIndex(
+        (r) => r.barGame.id === searchParams.get("game")
+      ) + 1;
+    if (posTapa && props.team?.id) {
+      tapasAction(posTapa, searchParams.get("game"));
     }
   }, [props.team]);
-  
+
   const closeQR = () => {
     if (!currentTeam) {
       setCurrentTeam(
@@ -76,20 +70,22 @@ const RutasPlay = (props) => {
       );
     }
     props.getTeamDetail(currentTeam.team);
-    setSearhParams()
+    setSearhParams();
     setShowQR(0);
   };
 
-  React.useEffect(
-    ()=>{
-      if(props.team?.id){
-        const unsub = onSnapshot(doc(db, "teams", props.team.id), (doc) => {
-          props.getTeamDetail(props.team?.id)
-        },(err)=>console.error(err))
-        return unsub;
-      }
-    },[]
-  )
+  React.useEffect(() => {
+    if (props.team?.id) {
+      const unsub = onSnapshot(
+        doc(db, "teams", props.team.id),
+        (doc) => {
+          props.getTeamDetail(props.team?.id);
+        },
+        (err) => console.error(err)
+      );
+      return unsub;
+    }
+  }, []);
 
   return (
     <Container mb="24">
@@ -132,13 +128,16 @@ const RutasPlay = (props) => {
         )}
       </VStack>
       {showQR !== 0 ? (
-        <ActionModal tapaURL={tapaURL} barNumber={showQR} onClose={closeQR}>
+        <ActionModal
+          barInfo={props.team?.routeGames[showQR]}
+          tapaURL={tapaURL}
+          onClose={closeQR}
+        >
           {" "}
         </ActionModal>
       ) : (
         ""
       )}
-
     </Container>
   );
 };

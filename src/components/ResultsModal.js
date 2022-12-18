@@ -11,6 +11,7 @@ import {
   StackDivider,
   Text,
   Image,
+  Center,
 } from "@chakra-ui/react";
 import * as React from "react";
 // import { clasification } from "../data";
@@ -45,7 +46,9 @@ export const ResultsModal = (props) => {
                 md: "10",
               }}
             >
+              <Center>
               <Logo height="5" />
+              </Center>
               <Stack spacing="3" textAlign="center">
                 <Text fontSize="2xl" color="brand.500" fontWeight="bold">
                   Resultados

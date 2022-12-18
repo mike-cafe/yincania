@@ -5,7 +5,7 @@ import { useStep } from "./useStep";
 
 export const BarList = (props) => {
 
-  const { loading,...rest } = props;
+  const { completed,loading,...rest } = props;
 
   const [currentStep, { setStep }] = useStep({
     maxStep: 7,
@@ -25,6 +25,7 @@ export const BarList = (props) => {
             ?.map((bar, id) => {
                 return (
                   <BarStep
+                    completed={completed}
                     key={id}
                     position={bar.pos}
                     cursor="pointer"

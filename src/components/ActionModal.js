@@ -24,8 +24,8 @@ import QRCode from "react-qr-code";
 import { BarAvatar } from "./BarAvatar";
 
 export const ActionModal = (props) => {
-  const { barNumber,tapaURL, onClose, ...rest } = props;
-
+  const { barInfo,tapaURL, onClose, ...rest } = props;
+  
   return (
     <Box height="100vh">
       <Modal isOpen={true} onClose={onClose} size="2xl">
@@ -45,7 +45,9 @@ export const ActionModal = (props) => {
                 md: "10",
               }}
             >
-              <Logo height="5" />
+              <Center>
+                <Logo height="5" />
+              </Center>
               <Stack spacing="3" textAlign="center">
                 <HStack
                   spacing="4"
@@ -55,21 +57,21 @@ export const ActionModal = (props) => {
                   borderRadius="lg"
                 >
                   <BarAvatar
-                    name="Destino"
+                    name={barInfo.name}
                     src="https://firebasestorage.googleapis.com/v0/b/react-coffee-a2736.appspot.com/o/CuevaPirata.jpeg?alt=media&token=1ae0f1af-0722-4f02-b841-6980ce83d2d6"
                   />
                   <CardContent>
-                    <CardHeader title="La Cueva del Pirata" />
+                    <CardHeader title={barInfo.name} />
                     <HStack fontSize="sm">
                       <Icon as={GoLocation} color="gray.500" />
-                      <Text>Calle Ida, 12</Text>
+                      <Text>{barInfo.address}</Text>
                       <Button
                         size="xs"
                         colorScheme="gray"
                         variant="link"
                         marginLeft="auto"
                       >
-                        <Link as={RouteLink} isExternal to="https://google.com/">
+                        <Link as={RouteLink} isExternal to={barInfo.addressURL}>
                           Ir al bar
                         </Link>
                       </Button>

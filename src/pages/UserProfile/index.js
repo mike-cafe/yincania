@@ -3,9 +3,7 @@ import { connect } from "react-redux";
 import { getUserProfile, saveUserData } from "../../store/actions/UserProfile";
 import UserProfile from "./UserProfile";
 
-const UserProfileContainer = (props) => {
-  return <UserProfile {...props} />;
-};
+const UserProfileContainer = (props) => <UserProfile {...props} />
 
 const mapStateToProps = ({ UserProfile }) => {
   return {
