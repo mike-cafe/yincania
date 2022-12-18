@@ -24,13 +24,13 @@ export const TeamJoinCard = (props) => {
       shadow="base"
     >
       <HStack py="6" px="4" spacing="4">
-        <Image width="48px" src={props.team.shield} alt="Escudo Equipo" />
+        <Image width="48px" src={props.team?.shield} alt="Escudo Equipo" />
         <CardContent>
-          <CardHeader title={props.team.name} />
+          <CardHeader title={props.team?.name} />
           <Stack spacing="1" mt="2">
             <HStack fontSize="sm">
               <Icon as={HiUser} color="gray.500" />
-              <Text>{`${props.team.memberCounter} jugadores`}</Text>
+              <Text>{`${props.team?.memberCounter} jugadores`}</Text>
             </HStack>
           </Stack>
         </CardContent>
@@ -40,7 +40,7 @@ export const TeamJoinCard = (props) => {
         <Button onClick={props.discard} variant="ghost" colorScheme="gray" size="sm">
           Descartar
         </Button>
-        <Button onClick={props.join} variant="solid" colorScheme="brand" size="sm">
+        <Button isLoading={props.loading} onClick={props.join} variant="solid" colorScheme="brand" size="sm">
           Unirse
         </Button>
       </HStack>

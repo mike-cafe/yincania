@@ -92,6 +92,7 @@ const JoinTeam = (props) => {
             w="100%"
             label="Tapas"
             join={joinTeam}
+            loading={props.loading}
             discard={props.resetFindTeam}
             team={props.teamDetail}
             rutaId={props.teamDetail?.route}
@@ -122,6 +123,7 @@ const JoinTeam = (props) => {
           w="100%"
           colorScheme="brand"
           rightIcon={<Search2Icon />}
+          isLoading={props.loading}
         >
           Buscar Equipo
         </Button>
