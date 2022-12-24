@@ -252,28 +252,42 @@ export const computeResults = functions
           .get()
           .then((snaps) => {
             // transform into array of results
-            const board = snaps.docs.map((snap) => {
-              const teamData = snap.data();
-              return {
-                id: snap.id,
-                name: teamData.name,
-                shield: teamData.shield,
-                warcry: teamData.warcry,
-                time: getTeamTime(teamData),
-                hasFinished: hasTeamFinished(teamData.routeGames),
-              };
-            });
-            // write the data into the route under field "board"
-            return snap.after.ref.set(
+            return Promise.all(snaps.docs.map((doc) => {
+              const teamData = doc.data();
+              return db.collection("teams").doc(doc.id).set({
+                routeFinished:true,
+                hasCompleted: hasTeamFinished(teamData.routeGames),
+              },{merge:true})
+              .catch(
+                (e)=>new functions.https.HttpsError("internal", e.message)
+              )
+              .then(
+                ()=>{
+                  return {
+                    id: doc.id,
+                    name: teamData.name,
+                    shield: teamData.shield,
+                    warcry: teamData.warcry,
+                    time: getTeamTime(teamData),
+                    hasFinished: hasTeamFinished(teamData.routeGames),
+                  }; 
+                }
+              )
+            }))
+            .catch((e) => {
+              return new functions.https.HttpsError("internal", e.message);
+            })
+            .then(
+              (res)=>{
+                return snap.after.ref.set(
                 {
-                  board: board,
+                  board: res,
                 },
                 {merge: true}
-            );
+            );}
+            )
+            // write the data into the route under field "board"
           })
-          .catch((e) => {
-            return new functions.https.HttpsError("internal", e.message);
-          });
     });
 
 /**

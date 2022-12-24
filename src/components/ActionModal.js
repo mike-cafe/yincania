@@ -12,10 +12,13 @@ import {
   Button,
   Icon,
   Text,
+  Spacer,
 } from "@chakra-ui/react";
 import * as React from "react";
 import { Logo } from "./Logo";
 import { GoLocation } from "react-icons/go";
+import { BsSignpostFill } from "react-icons/bs";
+
 import { CardContent } from "./CardContent";
 import { CardHeader } from "./CardHeader";
 import { Link as RouteLink } from "react-router-dom";
@@ -51,27 +54,29 @@ export const ActionModal = (props) => {
               <Stack spacing="3" textAlign="center">
                 <HStack
                   spacing="4"
-                  p={2}
+                  p={4}
                   border="1px"
                   borderColor="gray.300"
                   borderRadius="lg"
                 >
-                  <BarAvatar
+                  {/* <BarAvatar
                     name={barInfo.name}
                     src="https://firebasestorage.googleapis.com/v0/b/react-coffee-a2736.appspot.com/o/CuevaPirata.jpeg?alt=media&token=1ae0f1af-0722-4f02-b841-6980ce83d2d6"
-                  />
+                  /> */}
                   <CardContent>
-                    <CardHeader title={barInfo.name} />
+                    <CardHeader title={barInfo?.name} />
                     <HStack fontSize="sm">
                       <Icon as={GoLocation} color="gray.500" />
-                      <Text>{barInfo.address}</Text>
+                      <Text>{barInfo?.address}</Text>
+                      <Spacer />
                       <Button
                         size="xs"
                         colorScheme="gray"
                         variant="link"
                         marginLeft="auto"
+                        leftIcon={<BsSignpostFill />}
                       >
-                        <Link as={RouteLink} isExternal to={barInfo.addressURL}>
+                        <Link as={RouteLink} isExternal to={barInfo?.addressURL}>
                           Ir al bar
                         </Link>
                       </Button>

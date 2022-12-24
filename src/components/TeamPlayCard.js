@@ -18,31 +18,26 @@ import { Link as RouteLink } from "react-router-dom";
 
 export const TeamPlayCard = (props) => {
   const [totalTime, setTotalTime] = React.useState();
-  React.useEffect(()=>{
-
-    if(props.team?.routeGames){
+  React.useEffect(() => {
+    if (props.team?.routeGames) {
       let timeArray = props.team?.routeGames?.flatMap((game) => {
-        if(game.startTime && game.finishTime){
+        if (game.startTime && game.finishTime) {
           return [game.startTime.seconds, game.finishTime.seconds];
-        }else{
-          return []
+        } else {
+          return [];
         }
       });
       let timeDiff = Math.max(...timeArray) - Math.min(...timeArray);
-      let timeDate = new Date(null);
-      timeDate.setHours(0);
-      try{
-        timeDate.setSeconds(timeDiff);
-        if(timeArray.length===0){
-          setTotalTime("Sin empezar")
-        }else{
-          setTotalTime(timeDate.getHours()+" horas, " + timeDate.getMinutes() + " minutos")
-        }        
-      }catch(e){
-        console.error(e)
+      let hours = Math.floor(timeDiff / (60 * 60));
+      let minutes = Math.floor((timeDiff - hours * 60 * 60) / 60);
+
+      if (timeArray.length === 0) {
+        setTotalTime("Sin empezar");
+      } else {
+        setTotalTime(hours + " horas, " + minutes + " minutos");
       }
     }
-  },[props.team])
+  }, [props.team]);
 
   return (
     <Box
@@ -67,35 +62,35 @@ export const TeamPlayCard = (props) => {
       </HStack>
       <Divider />
       <HStack px={{ base: "6", md: "6" }} py="4" justifyContent="space-between">
-        { !totalTime ||
-        <HStack spacing={3}>
-        <Image
-          width="32px"
-          src="https://firebasestorage.googleapis.com/v0/b/react-coffee-a2736.appspot.com/o/TapapClock.png?alt=media&token=64614b8b-3cb6-4d9d-b4b1-b6c48ad85ea4"
-          alt="Tiempo Equipo"
-        />
-        <Stack spacing={0}>
-          <Text mb={1} fontSize="xs" color="muted">
-            Tiempo de partida
-          </Text>
-          <Text
-            lineHeight={1}
-            fontSize="lg"
-            color="brand.600"
-            fontWeight="bold"
-          >
-            {totalTime}
-          </Text>
-        </Stack>
-      </HStack>
-        }
-        {!props.finished && 
-        <Button variant="link" colorScheme="gray" size="sm">
-          <Link as={RouteLink} to={"/app/view/team/" + props.team?.id}>
-            Ver Equipo
-          </Link>
-        </Button>
-        }
+        {!totalTime || (
+          <HStack spacing={3}>
+            <Image
+              width="32px"
+              src="https://firebasestorage.googleapis.com/v0/b/react-coffee-a2736.appspot.com/o/TapapClock.png?alt=media&token=64614b8b-3cb6-4d9d-b4b1-b6c48ad85ea4"
+              alt="Tiempo Equipo"
+            />
+            <Stack spacing={0}>
+              <Text mb={1} fontSize="xs" color="muted">
+                Tiempo de partida
+              </Text>
+              <Text
+                lineHeight={1}
+                fontSize="lg"
+                color="brand.600"
+                fontWeight="bold"
+              >
+                {totalTime}
+              </Text>
+            </Stack>
+          </HStack>
+        )}
+        {!props.finished && (
+          <Button variant="link" colorScheme="gray" size="sm">
+            <Link as={RouteLink} to={"/app/view/team/" + props.team?.id}>
+              Ver Equipo
+            </Link>
+          </Button>
+        )}
       </HStack>
     </Box>
   );

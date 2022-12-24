@@ -26,7 +26,7 @@ function time2text(time) {
 
 export const ResultsModal = (props) => {
   const { clasification, barNumber, noClose, onClose, ...rest } = props;
-
+  
   return (
     <Box height="100vh">
       <Modal isOpen={true} onClose={onClose} size="2xl">
@@ -89,14 +89,14 @@ export const ResultsModal = (props) => {
                     ))}
                 </Stack>
               </Stack>
-              <Button
+              {/* <Button
                 size="lg"
                 colorScheme="brand"
                 onClick={onClose}
                 variant="solid"
               >
                 Inicio
-              </Button>
+              </Button> */}
             </Stack>
           </ModalBody>
         </ModalContent>

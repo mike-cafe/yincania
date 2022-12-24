@@ -1,13 +1,33 @@
-import { VStack, Container, Text } from "@chakra-ui/react";
+import {
+  VStack,
+  Container,
+  Text,
+  useDisclosure,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalOverlay,
+  ModalCloseButton,
+  ModalFooter,
+  ModalHeader,
+  Button,
+  Stack,
+  Box,
+  HStack,
+  Image,
+  StackDivider,
+  Center,
+} from "@chakra-ui/react";
 import * as React from "react";
 import { BarList } from "../../components/BarList";
 import { TeamPlayCard } from "../../components/TeamPlayCard";
 import { ActionModal } from "../../components/ActionModal";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { httpsCallable } from "firebase/functions";
 import { functions, db } from "../../utils/init-firebase";
 import { doc, onSnapshot } from "firebase/firestore";
 import { getTeamDetail } from "../../store/actions/TeamDetail";
+import { Logo } from "../../components/Logo";
 
 const RutasPlay = (props) => {
   const [showQR, setShowQR] = React.useState(0);
@@ -15,7 +35,8 @@ const RutasPlay = (props) => {
   const [tapaURL, setTapaURL] = React.useState();
   const [tapaLoading, setTapaLoading] = React.useState(false);
   const params = useParams();
-
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  let navigate = useNavigate();
   let [searchParams, setSearhParams] = useSearchParams();
 
   React.useEffect(() => props.getRouteDetail(params.id), []);
@@ -25,6 +46,20 @@ const RutasPlay = (props) => {
     setCurrentTeam(props.user?.routes?.find((route) => route.id === params.id));
     if (currentTeam) {
       props.getTeamDetail(currentTeam.team);
+      if (currentTeam?.team) {
+        const unsub = onSnapshot(
+          doc(db, "teams", currentTeam.team),
+          (doc) => {
+            props.getTeamDetail(currentTeam.team);
+            const teamData = doc.data();
+            if (teamData.routeFinished) {
+              onOpen();
+            }
+          },
+          (err) => console.error(err)
+        );
+        return unsub;
+      }
     }
   }, [props.user]);
 
@@ -74,19 +109,6 @@ const RutasPlay = (props) => {
     setShowQR(0);
   };
 
-  React.useEffect(() => {
-    if (props.team?.id) {
-      const unsub = onSnapshot(
-        doc(db, "teams", props.team.id),
-        (doc) => {
-          props.getTeamDetail(props.team?.id);
-        },
-        (err) => console.error(err)
-      );
-      return unsub;
-    }
-  }, []);
-
   return (
     <Container mb="24">
       <VStack spacing="8" px="4" py="8" pt="92px" flex="1">
@@ -129,7 +151,7 @@ const RutasPlay = (props) => {
       </VStack>
       {showQR !== 0 ? (
         <ActionModal
-          barInfo={props.team?.routeGames[showQR]}
+          barInfo={props.team?.routeGames[showQR-1]}
           tapaURL={tapaURL}
           onClose={closeQR}
         >
@@ -138,6 +160,64 @@ const RutasPlay = (props) => {
       ) : (
         ""
       )}
+      {
+        <Modal
+          isOpen={isOpen}
+          onClose={onClose}
+          size="2xl"
+          closeOnOverlayClick={false}
+        >
+          <ModalOverlay />
+          <ModalContent borderRadius="2xl" mx="4">
+            <ModalHeader>
+              <Center>
+                <Logo height="5" />
+              </Center>
+            </ModalHeader>
+            {/* <ModalCloseButton /> */}
+            <ModalBody>
+              <Stack
+                maxW="xs"
+                mx="auto"
+                py={{
+                  base: "12",
+                  md: "16",
+                }}
+                spacing={{
+                  base: "6",
+                  md: "10",
+                }}
+              >
+                <Stack spacing="3" textAlign="center">
+                  <Text
+                    color="brand.500"
+                    fontWeight="extrabold"
+                    fontSize={{ base: "2xl", md: "3xl" }}
+                    textTransform="uppercase"
+                    transform="scale(1.2)"
+                  >
+                    La Yincaña ha terminado!
+                  </Text>
+                  <Text fontSize="lg">Ya puedes consultar los resultados</Text>
+                </Stack>
+              </Stack>
+            </ModalBody>
+            <ModalFooter>
+              {/* <Button colorScheme="brand" mr={3} onClick={onClose}>
+                Volver
+              </Button> */}
+              <Button
+                onClick={() => navigate(`/app/finished/${props.team.route}`)}
+                variant="solid"
+                colorScheme="brand"
+                w="100%"
+              >
+                Ir a Resultados
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      }
     </Container>
   );
 };
