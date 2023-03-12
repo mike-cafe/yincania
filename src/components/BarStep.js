@@ -6,6 +6,7 @@ import {
   Flex,
   VStack,
   HStack,
+  Icon,
   Drawer,
   DrawerOverlay,
   DrawerBody,
@@ -14,12 +15,12 @@ import {
   useDisclosure,
   Spacer,
   Box,
-  IconButton,
 } from "@chakra-ui/react";
 import * as React from "react";
 import { BarStepCircle } from "./BarStepCircle";
 import { Link as RouteLink, useNavigate } from "react-router-dom";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
+import { BsFillArrowRightCircleFill, BsTornado } from "react-icons/bs";
 
 export const BarStep = (props) => {
   const {
@@ -54,23 +55,33 @@ export const BarStep = (props) => {
   }, [props.startTime, props.finishTime]);
 
   React.useEffect(() => {
-    if(!completed){
+    if (!completed) {
       switch (status) {
         case "hidden":
           setStepAction(null);
           break;
         case "playable":
           setStepAction(
-            <Button
-              variant="solid"
-              ml="auto"
-              colorScheme="brand"
-              aria-label="Jugar"
+            <Icon
+              as={BsFillArrowRightCircleFill}
+              w={"32px"}
+              h={"32px"}
+              color="brand.500"
               onClick={() => navigate(`/app/team/${team}/game/${game}`)}
+              aria-label="Jugar"
               isLoading={loading}
-            >
-              Jugar
-            </Button>
+              ml="auto"
+            />
+            // <Button
+            //   variant="solid"
+            //   ml="auto"
+            //   colorScheme="brand"
+            //   aria-label="Jugar"
+            //   onClick={() => navigate(`/app/team/${team}/game/${game}`)}
+            //   isLoading={loading}
+            // >
+            //   Jugar
+            // </Button>
           );
           break;
         case "consumable":
@@ -91,10 +102,9 @@ export const BarStep = (props) => {
           setStepAction(null);
           break;
       }
-    }else{
-      setStepAction(null)
+    } else {
+      setStepAction(null);
     }
-
   }, [status, loading]);
 
   const navigate = useNavigate();
@@ -134,6 +144,8 @@ export const BarStep = (props) => {
           filter={status === "hidden" && !isLastStep ? "auto" : "none"}
           blur="4px"
           color="muted"
+          fontSize={"xs"}
+          lineHeight={1}
         >
           {description}
         </Text>
@@ -141,15 +153,15 @@ export const BarStep = (props) => {
       <Spacer />
       {stepAction}
       {!(status === "completed") || (
-          <Text
-            textAlign={"right"}
-            fontSize="sm"
-            color="brand.700"
-            fontWeight="bold"
-            marginLeft={"auto"}
-          >
-            {playTime}
-          </Text>
+        <Text
+          textAlign={"right"}
+          fontSize="sm"
+          color="brand.700"
+          fontWeight="bold"
+          marginLeft={"auto"}
+        >
+          {playTime}
+        </Text>
       )}
       <Drawer placement="bottom" isOpen={isOpen} onClose={onClose}>
         <DrawerOverlay />

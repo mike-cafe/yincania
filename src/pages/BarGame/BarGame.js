@@ -88,8 +88,8 @@ const BarGame = (props) => {
   React.useEffect(() => setSeconds(props.game?.penalty), [props.game]);
   React.useEffect(() => {
     if (props.saved) {
-      navigate("/app/play/" + props.game?.route + "?game="+params.game);
-      props.resetGame()
+      navigate("/app/play/" + props.game?.route + "?game=" + params.game);
+      props.resetGame();
     }
   }, [props.saved]);
   return (
@@ -101,6 +101,7 @@ const BarGame = (props) => {
               height="18px"
               width={!props.loading ? "100%" : "75%"}
               isLoaded={!props.loading}
+              mb="24px"
             >
               <Text
                 fontSize="xl"
@@ -126,7 +127,6 @@ const BarGame = (props) => {
             as="section"
             bg="bg-surface"
             py={{ base: "4", md: "8" }}
-            mt={10}
           >
             <Container maxW="xl">
               <RadioQuestionGroup
