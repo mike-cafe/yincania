@@ -126,6 +126,7 @@ const BarGame = (props) => {
             as="section"
             bg="bg-surface"
             py={{ base: "4", md: "8" }}
+            mt={10}
           >
             <Container maxW="xl">
               <RadioQuestionGroup

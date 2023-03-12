@@ -112,8 +112,8 @@ const RutasPlay = (props) => {
   return (
     <Container mb="24">
       <VStack spacing="8" px="4" py="8" pt="128px" flex="1">
-        <VStack color="brand.600" w="100%" spacing={2} align="left">
-          <Text fontSize="xl" lineHeight="1" fontWeight="bold">
+        <VStack w="100%" spacing={2} align="left">
+          <Text fontSize="xl" lineHeight="1" fontWeight="bold" color="blackAlpha.500">
             {props.detail?.location}
           </Text>
           <Text
@@ -121,6 +121,7 @@ const RutasPlay = (props) => {
             lineHeight="1"
             letterSpacing="tight"
             fontWeight="extrabold"
+            color="brand.400"
           >
             {props.detail?.title}
           </Text>
