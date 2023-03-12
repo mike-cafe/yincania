@@ -111,7 +111,7 @@ export const RutaCard = (props) => {
         ) : (
           ""
         )}
-        <VStack align={"flex-start"}>
+        <VStack align={"flex-start"} justify={"center"}>
           <Text
             fontSize="3xl"
             lineHeight="1"
@@ -178,7 +178,7 @@ export const RutaCard = (props) => {
             align="center"
             fontSize="sm"
           >
-            Diviérte y gana premios
+            Ruta de la cerveza Reliquia Madrileña
           </Text>
         </Skeleton>
       </Box>

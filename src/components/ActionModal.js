@@ -69,7 +69,7 @@ export const ActionModal = (props) => {
                       <Icon as={GoLocation} color="gray.500" />
                       <Text>{barInfo?.address}</Text>
                       <Spacer />
-                      <Button
+                      {/* <Button
                         size="xs"
                         colorScheme="gray"
                         variant="link"
@@ -79,7 +79,7 @@ export const ActionModal = (props) => {
                         <Link as={RouteLink} isExternal to={barInfo?.addressURL}>
                           Ir al bar
                         </Link>
-                      </Button>
+                      </Button> */}
                     </HStack>
                   </CardContent>
                 </HStack>

@@ -93,9 +93,9 @@ export const CorrectResponseModal = (props) => {
                   </Text>
 
                   <Text fontSize="lg">
-                    Tú y tu equipo
+                    Tú y tu equipo 
                     <Box as="span" fontWeight="bold">
-                      podéis consumir vuestra tapa e ir al siguiente bar.
+                      {" "}podéis consumir vuestra tapa e ir al siguiente bar.
                     </Box>
                   </Text>
                 </Stack>

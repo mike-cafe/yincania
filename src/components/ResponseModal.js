@@ -51,7 +51,7 @@ const ResponseModal = (props) => {
                 </Text>
 
                 <Text fontSize="lg">
-                  {isCorrect ? "Tú y tu equipo" : "La respuesta es incorrecta."}{" "}
+                  {isCorrect ? "Tú y tu equipo " : "La respuesta es incorrecta."}{" "}
                   <Box as="span" fontWeight="bold">
                     {isCorrect
                       ? "podéis pasar al siguiente bar."
