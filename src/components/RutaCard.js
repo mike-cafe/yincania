@@ -84,6 +84,7 @@ export const RutaCard = (props) => {
         py="8"
         color={image ? "orange.500" : "orange.50"}
         position="relative"
+        borderTop="8px solid #C3672D"
       >
         {isFinished ? (
           <Flex
@@ -116,10 +117,12 @@ export const RutaCard = (props) => {
             lineHeight="1"
             letterSpacing="tight"
             fontWeight={"extrabold"}
+            maxW="55%"
+            color="brand.500"
           >
             {price}
           </Text>
-          <Text textColor="blackAlpha.700" textAlign={"left"} fontWeight="bold">
+          <Text textColor="blackAlpha.600" textAlign={"left"} fontWeight="bold">
             {description}
           </Text>
         </VStack>

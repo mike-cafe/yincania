@@ -255,39 +255,40 @@ export const computeResults = functions
             return Promise.all(snaps.docs.map((doc) => {
               const teamData = doc.data();
               return db.collection("teams").doc(doc.id).set({
-                routeFinished:true,
+                routeFinished: true,
                 hasCompleted: hasTeamFinished(teamData.routeGames),
-              },{merge:true})
-              .catch(
-                (e)=>new functions.https.HttpsError("internal", e.message)
-              )
-              .then(
-                ()=>{
-                  return {
-                    id: doc.id,
-                    name: teamData.name,
-                    shield: teamData.shield,
-                    warcry: teamData.warcry,
-                    time: getTeamTime(teamData),
-                    hasFinished: hasTeamFinished(teamData.routeGames),
-                  }; 
-                }
-              )
+              }, {merge: true})
+                  .catch(
+                      (e)=>new functions.https.HttpsError("internal", e.message)
+                  )
+                  .then(
+                      ()=>{
+                        return {
+                          id: doc.id,
+                          name: teamData.name,
+                          shield: teamData.shield,
+                          warcry: teamData.warcry,
+                          time: getTeamTime(teamData),
+                          hasFinished: hasTeamFinished(teamData.routeGames),
+                        };
+                      }
+                  );
             }))
-            .catch((e) => {
-              return new functions.https.HttpsError("internal", e.message);
-            })
-            .then(
-              (res)=>{
-                return snap.after.ref.set(
-                {
-                  board: res,
-                },
-                {merge: true}
-            );}
-            )
+                .catch((e) => {
+                  return new functions.https.HttpsError("internal", e.message);
+                })
+                .then(
+                    (res)=>{
+                      return snap.after.ref.set(
+                          {
+                            board: res,
+                          },
+                          {merge: true}
+                      );
+                    }
+                );
             // write the data into the route under field "board"
-          })
+          });
     });
 
 /**
