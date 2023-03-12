@@ -7,15 +7,15 @@ export const BarStepCircle = (props) => {
   return (
     <Circle
       size="8"
-      bg={isCompleted ? 'accent' : 'inherit'}
+      bg={isCompleted ? 'brand.300' : 'inherit'}
       borderWidth={isCompleted ? '0' : '2px'}
-      borderColor={isActive ? 'accent' : 'inherit'}
+      borderColor={isActive ? 'brand.300' : 'inherit'}
       // {...props}
     >
       {isCompleted ? (
         <Icon as={HiCheck} color="inverted" boxSize="5" />
       ) : (
-        <Circle bg={isActive ? 'accent' : 'border'} size="3" />
+        <Circle bg={isActive ? 'brand.300' : 'border'} size="3" />
       )}
     </Circle>
   )

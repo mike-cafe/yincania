@@ -77,7 +77,8 @@ export const Navbar = (props) => {
         >
           <Button
             colorScheme={"gray"}
-            variant="outline"
+            color="blackAlpha.500"
+            variant="ghost"
             borderRadius="full"
             onClick={() => navigate(props.backButton)}
             leftIcon={<ArrowBackIcon />}

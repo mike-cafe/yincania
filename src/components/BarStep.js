@@ -66,7 +66,7 @@ export const BarStep = (props) => {
               as={BsFillArrowRightCircleFill}
               w={"32px"}
               h={"32px"}
-              color="brand.500"
+              color="brand.300"
               onClick={() => navigate(`/app/team/${team}/game/${game}`)}
               aria-label="Jugar"
               isLoading={loading}
@@ -121,7 +121,7 @@ export const BarStep = (props) => {
           borderWidth="1px"
           borderColor={
             status === "completed"
-              ? "accent"
+              ? "brand.200"
               : isLastStep
               ? "transparent"
               : "inherit"

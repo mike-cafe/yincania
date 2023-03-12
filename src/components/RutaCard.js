@@ -157,10 +157,11 @@ export const RutaCard = (props) => {
               onClick={onClick}
               size="lg"
               w="full"
-              colorScheme={c}
+              bgColor="brand.400"
+              color="whiteAlpha.900"
               rightIcon={<HiArrowNarrowRight />}
             >
-              {isFinished ? "Ver Resultado" : "Participar"}
+              {isFinished ? "Ver Resultado" : "Jugar"}
             </Button>
           </Skeleton>
         </LightMode>
