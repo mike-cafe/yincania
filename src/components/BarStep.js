@@ -7,14 +7,17 @@ import {
   VStack,
   HStack,
   Icon,
+  Image,
   Drawer,
   DrawerOverlay,
   DrawerBody,
   DrawerHeader,
+  DrawerCloseButton,
   DrawerContent,
   useDisclosure,
   Spacer,
   Box,
+  Heading,
 } from "@chakra-ui/react";
 import * as React from "react";
 import { BarStepCircle } from "./BarStepCircle";
@@ -37,6 +40,7 @@ export const BarStep = (props) => {
     loading,
     address,
     addressURL,
+    profilePic,
     completed,
     ...stackProps
   } = props;
@@ -165,25 +169,34 @@ export const BarStep = (props) => {
       )}
       <Drawer placement="bottom" isOpen={isOpen} onClose={onClose}>
         <DrawerOverlay />
-        <DrawerContent>
-          <DrawerHeader borderBottomWidth="1px">{title}</DrawerHeader>
-          <DrawerBody py={4}>
-            <Flex>
+        <DrawerContent borderRadius="2xl">
+          <DrawerCloseButton />
+          <DrawerHeader p={0.5} boxShadow={"base"}>
+              <Image
+                src={profilePic}
+                alt={title}
+                borderTopRadius="2xl"
+                objectFit='fill'
+                dropShadow={"2xl"}
+              />
+          </DrawerHeader>
+          <DrawerBody p={4}>
+            <VStack spacing={4} alignItems="flex-start">
+              <Text color={"blackAlpha.800"} fontWeight={"bold"} fontSize="3xl">{title}</Text>            
               <Box>
-                <Text>En {address}</Text>
+              <Text color={"blackAlpha.600"} fontSize={"md"}>Dirección</Text>
+              <Text fontWeight={"medium"}>{address}</Text>
               </Box>
-              <Spacer />
-              <Box>
                 <Button
                   colorScheme="brand"
-                  variant="link"
+                  variant="solid"
                   leftIcon={<ExternalLinkIcon />}
                   onClick={() => window.open(addressURL, "_blank")}
+                  w="full"
                 >
-                  ver en el mapa
+                  Ver en Mapa
                 </Button>
-              </Box>
-            </Flex>
+            </VStack>
           </DrawerBody>
         </DrawerContent>
       </Drawer>

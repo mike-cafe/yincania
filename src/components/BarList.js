@@ -23,6 +23,7 @@ export const BarList = (props) => {
         <Stack spacing="0">
           {props.bars
             ?.map((bar, id) => {
+              console.log(bar);
                 return (
                   <BarStep
                     completed={completed}
@@ -36,6 +37,7 @@ export const BarList = (props) => {
                     finishTime={bar.finishTime?.seconds}
                     startTime={bar.startTime?.seconds}
                     description={bar.address}
+                    profilePic={bar.profilePic}
                     status={bar.status}
                     isLastStep={bar.pos===7}
                     routeID={props.routeID}
