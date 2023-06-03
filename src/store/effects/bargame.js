@@ -29,7 +29,9 @@ const saveAnswerData = async (data) =>{
     teamGames = [...docData.data().routeGames];
     const gamePos = teamGames.findIndex((g)=>game===g.barGame.id);
     if (gamePos>-1)
-      teamGames[gamePos].status = "consumable";
+      teamGames[gamePos].status = "completed";
+      if(gamePos<6)
+        teamGames[gamePos+1].status = "consumable";
     const docData2 = await setDoc(doc(db,"teams",team),{
       routeGames:teamGames
     },{merge:true}).then(

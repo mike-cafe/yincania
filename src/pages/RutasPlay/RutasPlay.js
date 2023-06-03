@@ -7,15 +7,10 @@ import {
   ModalBody,
   ModalContent,
   ModalOverlay,
-  ModalCloseButton,
   ModalFooter,
   ModalHeader,
   Button,
   Stack,
-  Box,
-  HStack,
-  Image,
-  StackDivider,
   Center,
 } from "@chakra-ui/react";
 import * as React from "react";
@@ -26,7 +21,6 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { httpsCallable } from "firebase/functions";
 import { functions, db } from "../../utils/init-firebase";
 import { doc, onSnapshot } from "firebase/firestore";
-import { getTeamDetail } from "../../store/actions/TeamDetail";
 import { Logo } from "../../components/Logo";
 
 const RutasPlay = (props) => {
@@ -93,9 +87,9 @@ const RutasPlay = (props) => {
       props.team?.routeGames?.findIndex(
         (r) => r.barGame.id === searchParams.get("game")
       ) + 1;
-    if (posTapa && props.team?.id) {
-      tapasAction(posTapa, searchParams.get("game"));
-    }
+    // if (posTapa && props.team?.id) {
+    //   tapasAction(posTapa, searchParams.get("game"));
+    // }
   }, [props.team]);
 
   const closeQR = () => {

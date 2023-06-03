@@ -102,7 +102,7 @@ const TeamDetail = (props) => {
               color={mode("gray.500", "gray.300")}
               lineHeight="1"
             >
-              {`Equipo para Yincaña '${rutaDetail.title}'`}
+              {`Equipo para Yincaña ${props.teamDetail?.routeTitle}`}
             </Text>
             <Icon as={HiShieldCheck} color="green.500" />
           </HStack>

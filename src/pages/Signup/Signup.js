@@ -145,6 +145,7 @@ const Signup = (props) => {
           name: payload.name,
           email: payload.email,
           routes: [],
+          tipo:"Soy Taper",
         });
         await updateProfile(res.user, {
           displayName: payload.username,

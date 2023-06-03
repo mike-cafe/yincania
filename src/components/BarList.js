@@ -23,7 +23,6 @@ export const BarList = (props) => {
         <Stack spacing="0">
           {props.bars
             ?.map((bar, id) => {
-              console.log(bar);
                 return (
                   <BarStep
                     completed={completed}

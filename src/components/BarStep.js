@@ -24,6 +24,7 @@ import { BarStepCircle } from "./BarStepCircle";
 import { Link as RouteLink, useNavigate } from "react-router-dom";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { BsFillArrowRightCircleFill, BsTornado } from "react-icons/bs";
+import { RateDrawer } from "./RateDrawer";
 
 export const BarStep = (props) => {
   const {
@@ -48,6 +49,7 @@ export const BarStep = (props) => {
   const [playTime, setPlayTime] = React.useState();
   const [stepAction, setStepAction] = React.useState();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen2, onOpen2, onClose2 } = useDisclosure();
 
   React.useEffect(() => {
     if (props.finishTime && props.startTime) {
@@ -76,16 +78,6 @@ export const BarStep = (props) => {
               isLoading={loading}
               ml="auto"
             />
-            // <Button
-            //   variant="solid"
-            //   ml="auto"
-            //   colorScheme="brand"
-            //   aria-label="Jugar"
-            //   onClick={() => navigate(`/app/team/${team}/game/${game}`)}
-            //   isLoading={loading}
-            // >
-            //   Jugar
-            // </Button>
           );
           break;
         case "consumable":
@@ -101,6 +93,18 @@ export const BarStep = (props) => {
               Tapa
             </Button>
           );
+          break;
+        case "evaluate":
+          <Button
+              variant="solid"
+              marginLeft={"auto"}
+              colorScheme="brand"
+              aria-label="Evaluar"
+              onClick={() => onOpen2()}
+              isLoading={props.loading}
+            >
+              Evaluar
+            </Button>
           break;
         case "completed":
           setStepAction(null);
@@ -200,6 +204,7 @@ export const BarStep = (props) => {
           </DrawerBody>
         </DrawerContent>
       </Drawer>
+      <RateDrawer onOpen={onOpen2}/>
     </Stack>
   );
 };

@@ -95,7 +95,7 @@ export const CorrectResponseModal = (props) => {
                   <Text fontSize="lg">
                     Tú y tu equipo 
                     <Box as="span" fontWeight="bold">
-                      {" "}podéis consumir vuestra tapa e ir al siguiente bar.
+                      {" "}podéis pasar al siguiente bar.
                     </Box>
                   </Text>
                 </Stack>
@@ -111,7 +111,7 @@ export const CorrectResponseModal = (props) => {
                   onClick={props.onFinish}
                   isLoading={saving}
                 >
-                  Canjear Tapa
+                  Siguiente bar
                 </Button>
               </Stack>
             </Stack>

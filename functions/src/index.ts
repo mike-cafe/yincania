@@ -11,14 +11,6 @@ admin.initializeApp();
 const db = admin.firestore();
 const auth = admin.auth();
 
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-// export const helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
-
 export const addTeamRoute = functions
     .region("europe-west3")
     .firestore.document("teams/{docId}")
@@ -49,6 +41,7 @@ export const addTeamRoute = functions
             return snap.ref.update({
               routeGames: stageObjects,
               code: snap.ref.id.substring(0, 5),
+              routeTitle: routeData?.title,
             });
           });
     });
@@ -211,16 +204,16 @@ export const achieveGame = functions
             if (isConsumed && gamePos > -1) {
               gamesData[gamePos] = {
                 ...gamesData[gamePos],
-                status: "completed",
+                status: "playable",
                 finishTime: Timestamp.now(),
               };
-              if (gamePos < 6) {
-                gamesData[gamePos + 1] = {
-                  ...gamesData[gamePos + 1],
-                  status: "playable",
-                  startTime: Timestamp.now(),
-                };
-              }
+              // if (gamePos < 6) {
+              //   gamesData[gamePos + 1] = {
+              //     ...gamesData[gamePos + 1],
+              //     status: "playable",
+              //     startTime: Timestamp.now(),
+              //   };
+              // }
               return docSnap.ref.set(
                   {
                     routeGames: gamesData,
