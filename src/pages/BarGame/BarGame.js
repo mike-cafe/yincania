@@ -10,6 +10,7 @@ import {
   useColorModeValue as mode,
   useBreakpointValue,
   Skeleton,
+  useDisclosure,
 } from "@chakra-ui/react";
 import * as React from "react";
 import { CorrectResponseModal } from "../../components/CorrectResponseModal";
@@ -22,67 +23,59 @@ import {
   RadioQuestionGroup,
 } from "../../components/RadioQuestionGroup copy";
 import { useNavigate, useParams } from "react-router-dom";
+import { ResponseDrawer } from "../../components/ResponseDrawer";
 
 const BarGame = (props) => {
   const params = useParams();
   const [currentAnswer, setCurrentAnswer] = React.useState();
-  const [showModal, setShowModal] = React.useState(false);
+  const [isCorrectAnswer, setIsCorrectAnswer] = React.useState();
+
   const [penalty, setPenalty] = React.useState(false);
   const [seconds, setSeconds] = React.useState();
   const [intervalId, setIntervalId] = React.useState();
+  const [rating, setRating] = React.useState(0);
+
   const handleAnswer = (value) => setCurrentAnswer(value);
   const handleFinish = () => {
     props.saveAnswer({
       team: params.team,
       game: params.game,
+      rating:rating,
     });
   };
-  const chooseModal = () => {
-    if (
-      showModal &&
-      currentAnswer === props.game?.answers[props.game?.correct - 1]
-    ) {
-      return (
-        <CorrectResponseModal
-          saving={props.game?.loading}
-          onFinish={handleFinish}
-        />
-      );
-    } else if (showModal) {
-      return (
-        <WrongResponseModal
-          penaltyWait={seconds}
-          onClose={() => setShowModal(false)}
-        />
-      );
+
+  const handleSubmitAnswer = () => {
+    if (currentAnswer === props.game?.answers[props.game?.correct - 1]) {
+      setIsCorrectAnswer(true);
     } else {
-      return "";
+      setIsCorrectAnswer(false);
     }
   };
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   let navigate = useNavigate();
-
-  React.useEffect(() => {
-    if (
-      showModal &&
-      currentAnswer !== props.game?.answers[props.game?.correct - 1]
-    ) {
-      setPenalty(true);
-      const interval = setInterval(() => {
-        setSeconds((seconds) => seconds - 1);
-      }, 1000);
-      setIntervalId(interval);
-    }
-  }, [showModal]);
 
   React.useEffect(() => {
     if (seconds === 0) {
       clearInterval(intervalId);
       setPenalty(false);
       setSeconds(props.game?.penalty);
-      setShowModal(false);
+      onClose();
     }
   }, [seconds]);
+
+  React.useEffect(() => {
+    if(isCorrectAnswer !== undefined){
+      if(!isCorrectAnswer){
+        setPenalty(true);
+        const interval = setInterval(() => {
+          setSeconds((seconds) => seconds - 1);
+        }, 1000);
+        setIntervalId(interval);
+      }
+      onOpen();
+    }
+  }, [isCorrectAnswer]);
 
   React.useEffect(() => props.getBarGameData(params.game), []);
   React.useEffect(() => setSeconds(props.game?.penalty), [props.game]);
@@ -157,13 +150,22 @@ const BarGame = (props) => {
             secondAction="Volver"
             firstAction={penalty ? `Espera... ${seconds}` : "Enviar"}
             backButton={true}
-            mainClick={() => setShowModal(true)}
+            mainClick={handleSubmitAnswer}
             backClick={() => navigate("/app/play/" + props.game?.route)}
             firstDisabled={penalty}
           />
         </VStack>
       </Container>
-      {chooseModal()}
+      {
+        <ResponseDrawer
+          isOpen={isOpen}
+          isCorrectAnswer={isCorrectAnswer}
+          onFinish={handleFinish}
+          penaltyWait={seconds}
+          manageRating={setRating}
+          rating={rating}
+        />
+      }
     </>
   );
 };

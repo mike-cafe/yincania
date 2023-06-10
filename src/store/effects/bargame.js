@@ -20,6 +20,8 @@ const getBarGameData = async (id) => {
 const saveAnswerData = async (data) =>{
   const team = data.team;
   const game = data.game;
+  const rating = data.rating;
+
 
   const docRef = doc(collection(db, "teams"),team);
   const docData = await getDoc(docRef);
@@ -30,6 +32,7 @@ const saveAnswerData = async (data) =>{
     const gamePos = teamGames.findIndex((g)=>game===g.barGame.id);
     if (gamePos>-1)
       teamGames[gamePos].status = "completed";
+      teamGames[gamePos].rating = rating;
       if(gamePos<6)
         teamGames[gamePos+1].status = "consumable";
     const docData2 = await setDoc(doc(db,"teams",team),{
