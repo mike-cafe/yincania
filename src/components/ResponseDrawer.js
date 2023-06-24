@@ -148,8 +148,9 @@ export const ResponseDrawer = (props) => {
                   size="md"
                   width="100%"
                   onClick={props.onFinish}
+                  isDisabled={!props.rating}
                 >
-                  Siguiente bar
+                  Enviar Valoración
                 </Button>
               </VStack>
             </>
