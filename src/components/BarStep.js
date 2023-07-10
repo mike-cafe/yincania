@@ -23,7 +23,7 @@ import * as React from "react";
 import { BarStepCircle } from "./BarStepCircle";
 import { Link as RouteLink, useNavigate } from "react-router-dom";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
-import { BsFillArrowRightCircleFill, BsTornado } from "react-icons/bs";
+import { BsFillArrowRightCircleFill, BsArrowRightCircle,BsTornado } from "react-icons/bs";
 
 export const BarStep = (props) => {
   const {
@@ -66,16 +66,31 @@ export const BarStep = (props) => {
           break;
         case "playable":
           setStepAction(
-            <Icon
-              as={BsFillArrowRightCircleFill}
-              w={"32px"}
-              h={"32px"}
-              color="brand.300"
+            <Button
+              rightIcon={<BsArrowRightCircle size="18px" color="brand.300" />}
+              color="brand.500"
+              colorScheme="brand"
+              size="sm"
+              variant="ghost"
+              borderRadius="full"
               onClick={() => navigate(`/app/team/${team}/game/${game}`)}
               aria-label="Jugar"
               isLoading={loading}
               ml="auto"
-            />
+
+            >
+              Jugar
+            </Button>
+            // <Icon
+            //   as={BsFillArrowRightCircleFill}
+            //   w={"32px"}
+            //   h={"32px"}
+            //   color="brand.300"
+            //   onClick={() => navigate(`/app/team/${team}/game/${game}`)}
+            //   aria-label="Jugar"
+            //   isLoading={loading}
+            //   ml="auto"
+            // />
           );
           break;
         case "consumable":
@@ -162,30 +177,34 @@ export const BarStep = (props) => {
         <DrawerContent borderRadius="2xl">
           <DrawerCloseButton />
           <DrawerHeader p={0.5} boxShadow={"base"}>
-              <Image
-                src={profilePic}
-                alt={title}
-                borderTopRadius="2xl"
-                objectFit='fill'
-                dropShadow={"2xl"}
-              />
+            <Image
+              src={profilePic}
+              alt={title}
+              borderTopRadius="2xl"
+              objectFit="fill"
+              dropShadow={"2xl"}
+            />
           </DrawerHeader>
           <DrawerBody p={4}>
             <VStack spacing={4} alignItems="flex-start">
-              <Text color={"blackAlpha.800"} fontWeight={"bold"} fontSize="3xl">{title}</Text>            
+              <Text color={"blackAlpha.800"} fontWeight={"bold"} fontSize="3xl">
+                {title}
+              </Text>
               <Box>
-              <Text color={"blackAlpha.600"} fontSize={"md"}>Dirección</Text>
-              <Text fontWeight={"medium"}>{address}</Text>
+                <Text color={"blackAlpha.600"} fontSize={"md"}>
+                  Dirección
+                </Text>
+                <Text fontWeight={"medium"}>{address}</Text>
               </Box>
-                <Button
-                  colorScheme="brand"
-                  variant="solid"
-                  leftIcon={<ExternalLinkIcon />}
-                  onClick={() => window.open(addressURL, "_blank")}
-                  w="full"
-                >
-                  Ver en Mapa
-                </Button>
+              <Button
+                colorScheme="brand"
+                variant="solid"
+                leftIcon={<ExternalLinkIcon />}
+                onClick={() => window.open(addressURL, "_blank")}
+                w="full"
+              >
+                Ver en Mapa
+              </Button>
             </VStack>
           </DrawerBody>
         </DrawerContent>

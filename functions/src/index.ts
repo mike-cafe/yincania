@@ -32,7 +32,7 @@ export const addTeamRoute = functions
                   return {
                     ...stage,
                     pos: idx + 1,
-                    status: idx != 0 ? "hidden" : "playable",
+                    status: idx != 0 ? "hidden" : "consumable",
                   };
                 }
             );

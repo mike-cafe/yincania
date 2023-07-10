@@ -20,21 +20,21 @@ export const Tutorial = () => {
         "Ruta de bares cronometrada con una tapa y una prueba a superar en cada bar. Si tu equipo llega el primero al último bar, ¡ganará premios!.",
       title: "¿Qué es una Yincaña?",
       stepImage:
-        "https://firebasestorage.googleapis.com/v0/b/react-coffee-a2736.appspot.com/o/Yincania%20Ilustration%2070pp.png?alt=media&token=95a79a73-2bb4-4f51-8d84-886092b7dd4f",
+        "https://firebasestorage.googleapis.com/v0/b/react-coffee-a2736.appspot.com/o/Tutorial%201.png?alt=media&token=6e861c6a-f496-4c3c-922d-42e333b4fcce",
     },
     {
       description:
-        "Verás la fecha de la Yincaña y las horas a la que estará activa. Dentro de ese rango de horas podrás realizar la Yincaña. No importa cuando empieces, importa cuanto tardas en acabarla.",
+        "Verás la fecha y hora de la Yincaña, dentro de ese rango de horas podrás jugar la Yincaña. No importa cuando empieces, importa cuanto tardas en acabarla.",
       title: "¿Cómo apuntarse?",
       stepImage:
-        "https://firebasestorage.googleapis.com/v0/b/react-coffee-a2736.appspot.com/o/Yincania%20Ilustration%2070pp.png?alt=media&token=95a79a73-2bb4-4f51-8d84-886092b7dd4f",
+        "https://firebasestorage.googleapis.com/v0/b/react-coffee-a2736.appspot.com/o/Tutorial%202.png?alt=media&token=719b24ae-be97-4a6b-8bff-0a6d05709606",
     },
     {
       description:
         "Recuerda, cuantos más seáis más difícil será poneros de acuerdo y superar las pruebas. Quedate solo con los mejores Tappers!",
       title: "¿Con quien quieres jugar?",
       stepImage:
-        "https://firebasestorage.googleapis.com/v0/b/react-coffee-a2736.appspot.com/o/Yincania%20Ilustration%2070pp.png?alt=media&token=95a79a73-2bb4-4f51-8d84-886092b7dd4f",
+        "https://firebasestorage.googleapis.com/v0/b/react-coffee-a2736.appspot.com/o/Tutorial%203.png?alt=media&token=142a38e3-1e4b-485d-a9f7-31a2f1e3858d",
     },
   ];
 
@@ -79,8 +79,7 @@ export const Tutorial = () => {
       >
         <HStack
           justify="center"
-          spacing="4"
-          mt="8"
+          spacing="2"
           color={mode("gray.300", "gray.600")}
         >
           <Circle
