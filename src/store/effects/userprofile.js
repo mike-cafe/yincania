@@ -40,7 +40,9 @@ const saveUserData = async (action) => {
         routes: arrayUnion(action.payload.newRoute || {}),
       },
       { merge: true }
-    ).then(() => getDoc(docRef));
+    ).then((res) => {
+      return getDoc(docRef)
+    });
     return docData.data();
   } catch (e) {
     return null;
@@ -88,14 +90,16 @@ function* saveUserProfileData(payload) {
       payload
     );
     if (data) {
-      yield put(
-        showToast({
-          title: "Datos de usuario actualizados",
-          status: "success",
-          duration: 4500,
-          isClosable: true,
-        })
-      );
+      if(!payload.payload.tutorial){
+        yield put(
+          showToast({
+            title: "Datos de usuario actualizados",
+            status: "success",
+            duration: 4500,
+            isClosable: true,
+          })
+        );
+      }
       yield put(getUserProfileSuccess(data));
     }
   } catch (error) {

@@ -67,30 +67,18 @@ export const BarStep = (props) => {
         case "playable":
           setStepAction(
             <Button
-              rightIcon={<BsArrowRightCircle size="18px" color="brand.300" />}
-              color="brand.500"
+              rightIcon={<BsArrowRightCircle color="brand.300" />}
               colorScheme="brand"
-              size="sm"
-              variant="ghost"
-              borderRadius="full"
+              size="md"
+              variant="solid"
               onClick={() => navigate(`/app/team/${team}/game/${game}`)}
               aria-label="Jugar"
               isLoading={loading}
               ml="auto"
-
+              my="auto"
             >
               Jugar
             </Button>
-            // <Icon
-            //   as={BsFillArrowRightCircleFill}
-            //   w={"32px"}
-            //   h={"32px"}
-            //   color="brand.300"
-            //   onClick={() => navigate(`/app/team/${team}/game/${game}`)}
-            //   aria-label="Jugar"
-            //   isLoading={loading}
-            //   ml="auto"
-            // />
           );
           break;
         case "consumable":
@@ -138,7 +126,7 @@ export const BarStep = (props) => {
         />
       </Stack>
       <Stack
-        spacing="0.5"
+        spacing="1"
         pb={isLastStep ? "0" : "8"}
         onClick={() => {
           if ((status != "hidden" || isLastStep) && !completed) {
@@ -146,7 +134,7 @@ export const BarStep = (props) => {
           }
         }}
       >
-        <Text color="emphasized" fontWeight="medium">
+        <Text color={status==="hidden" ? "gray.300":"emphasized"} fontWeight="medium">
           {title}
         </Text>
         <Text

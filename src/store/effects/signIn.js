@@ -40,7 +40,11 @@ function* getUserDocument({ payload }) {
       yield put(userDataSuccess(JSON.stringify(data)));
       localStorage.setItem(LocalStorage.TOKEN, payload.user.accessToken);
       localStorage.setItem(LocalStorage.USER_ID, payload.user.uid);
-      payload.navigate(payload.next);
+      if(data.tutorial){      
+        payload.navigate(payload.next);
+      }else{
+        payload.navigate("/tutorial");
+      }
     } else {
       yield put(
         userDataFailure({
@@ -76,6 +80,7 @@ const verifyTokenApi = async (payload) => {
   });
 
 };
+
 function* verify_Token({ payload }) {
   try {
     const response = yield retry(

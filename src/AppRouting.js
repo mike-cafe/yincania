@@ -16,7 +16,7 @@ import RutasPlay from "./pages/RutasPlay";
 import AppSignIn from "./pages/Login";
 import SignUp from "./pages/Signup";
 import RutasFinished from "./pages/RutasFinished";
-import { Tutorial } from "./pages/Tutorial";
+import Tutorial from "./pages/Tutorial";
 import DefaultLayout from "./pages/DefaultLayout";
 import BarGame from "./pages/BarGame";
 import UserProfile from "./pages/UserProfile";

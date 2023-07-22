@@ -6,14 +6,33 @@ import {
 } from "@chakra-ui/react";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import { ActionTrail } from "../components/ActionTrail";
-import { TutorialStep } from "../components/TutorialStep";
+import { ActionTrail } from "../../components/ActionTrail";
+import { TutorialStep } from "../../components/TutorialStep";
+import { userData } from "../../store/actions/SignIn";
+import { getUserProfile } from "../../store/actions/UserProfile";
 
-export const Tutorial = () => {
+const Tutorial = (props) => {
   let navigate = useNavigate();
-  
+
   const [currentStep, setCurrentStep] = React.useState(0);
-  
+  const [saved,setSaved] = React.useState(false)
+
+  React.useEffect(()=>{
+    if(!props.user){
+      props.getUserProfile()
+    }
+  },[])
+
+
+  React.useEffect(()=>{
+    if(props.user){
+      if(!saved){
+        props.saveUserData({tutorial:true,uid:props.user.uid})
+        setSaved(true)
+      }
+    }
+  },[props.user])
+
   const steps = [
     {
       description:
@@ -99,3 +118,5 @@ export const Tutorial = () => {
     </VStack>
   );
 };
+
+export default Tutorial;

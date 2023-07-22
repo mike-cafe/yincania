@@ -8,6 +8,7 @@ import {
   SAVE_USER_DATA,
   SAVE_USER_DATA_SUCCESS,
   SAVE_USER_DATA_FAILURE,
+  RESET_USER_DATA
 } from "../types";
 
 export const getUserProfile = (payload) => {
@@ -73,3 +74,10 @@ export const saveUserDataFailure = (error) => {
     payload: error,
   };
 };
+
+export const resetUserData = () =>{
+  return {
+    type:RESET_USER_DATA,
+    payload:{}
+  }
+}

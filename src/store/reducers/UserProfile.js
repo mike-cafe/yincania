@@ -7,6 +7,7 @@ import {
   REMOVE_TEAM_SUCCESS,
   REMOVE_TEAM_FAILURE,
   SAVE_USER_DATA,
+  RESET_USER_DATA,
 } from "../types";
 
 const INIT_STATE = {
@@ -29,7 +30,9 @@ const UserProfile = (state = INIT_STATE, action) => {
     case REMOVE_TEAM_FAILURE:
       return { ...state,  removedTeam: false, loading: false, err: action.payload };
     case SAVE_USER_DATA:
-        return { ...state, loading: true };    
+        return { ...state, loading: true };  
+    case RESET_USER_DATA:
+        return INIT_STATE  
     default:
       return { ...state };
   }

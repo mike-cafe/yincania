@@ -125,6 +125,7 @@ export default function AuthContextProvider({ children }) {
   function logout() {
     return signOut(auth).then(() => {
       setAdditionalInfo(null);
+      setCurrentUser(null);
       localStorage.clear();
     });
   }
@@ -156,6 +157,7 @@ export default function AuthContextProvider({ children }) {
             email: user.email,
             uid: user.uid,
             routes: [],
+            tutorial:true,
           }
         ).finally((data)=>{
           fnCallback({...result,isNewUser:isNewUser});

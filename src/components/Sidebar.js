@@ -83,7 +83,7 @@ export const Sidebar = (props) => {
             />
             <NavButton
                 path="/"
-                onClick={logout}
+                onClick={()=>logout}
                 label="Cerrar sesión"
                 icon={FiLogOut}
               />

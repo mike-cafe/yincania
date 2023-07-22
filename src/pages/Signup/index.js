@@ -14,6 +14,7 @@ import {
   userData,
 } from "./../../store/actions/SignIn";
 import {
+  resetUserData,
   saveUserData,
 } from "./../../store/actions/UserProfile";
 
@@ -50,6 +51,9 @@ const mapDispatchToProps = (dispatch) => {
     userData: (data) => {
       dispatch(userData(data));
     },
+    resetUser: ()=>{
+      dispatch(resetUserData());
+    }
   };
 };
 

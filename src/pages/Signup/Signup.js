@@ -146,10 +146,12 @@ const Signup = (props) => {
           email: payload.email,
           routes: [],
           tipo:"Soy Taper",
+          tutorial:false,
         });
         await updateProfile(res.user, {
           displayName: payload.username,
         });
+        props.resetUser();
         await logout();
         setDisabledForm(false);
         toast({
