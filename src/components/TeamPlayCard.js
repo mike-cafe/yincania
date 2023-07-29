@@ -20,13 +20,7 @@ export const TeamPlayCard = (props) => {
   const [totalTime, setTotalTime] = React.useState();
   React.useEffect(() => {
     if (props.team?.routeGames) {
-      let timeArray = props.team?.routeGames?.flatMap((game) => {
-        if (game.startTime && game.finishTime) {
-          return [game.startTime.seconds, game.finishTime.seconds];
-        } else {
-          return [];
-        }
-      });
+      let timeArray = props.team?.routeGames?.flatMap((game) => [game.consumedTime?.seconds,game.finishTime?.seconds] || []);
       let timeDiff = Math.max(...timeArray) - Math.min(...timeArray);
       let hours = Math.floor(timeDiff / (60 * 60));
       let minutes = Math.floor((timeDiff - hours * 60 * 60) / 60);

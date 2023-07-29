@@ -1,12 +1,19 @@
 import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+  Progress,
+  Tag,
+  TagLabel,
+  TagLeftIcon,
+  TagRightIcon,
+  TagCloseButton,
   Button,
   Divider,
   Stack,
   Text,
-  Flex,
   VStack,
-  HStack,
-  Icon,
   Image,
   Drawer,
   DrawerOverlay,
@@ -17,13 +24,16 @@ import {
   useDisclosure,
   Spacer,
   Box,
-  Heading,
 } from "@chakra-ui/react";
 import * as React from "react";
 import { BarStepCircle } from "./BarStepCircle";
 import { Link as RouteLink, useNavigate } from "react-router-dom";
-import { ExternalLinkIcon } from "@chakra-ui/icons";
-import { BsFillArrowRightCircleFill, BsArrowRightCircle,BsTornado } from "react-icons/bs";
+import { ExternalLinkIcon, TimeIcon } from "@chakra-ui/icons";
+import {
+  BsFillArrowRightCircleFill,
+  BsArrowRightCircle,
+  BsTornado,
+} from "react-icons/bs";
 
 export const BarStep = (props) => {
   const {
@@ -47,16 +57,43 @@ export const BarStep = (props) => {
 
   const [playTime, setPlayTime] = React.useState();
   const [stepAction, setStepAction] = React.useState();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  // const [coolUntil, setCoolUntil] = React.useState(
+  //   Number((props.finishTime + 126 * 60) / 60).toFixed(0)
+  // );
+  // const [waitTime, setWaitTime] = React.useState(
+  //   coolUntil - Number((Date.now() / 60000).toFixed(0))
+  // );
 
-  React.useEffect(() => {
-    if (props.finishTime && props.startTime) {
-      setPlayTime(
-        Number(((props.finishTime - props.startTime) / 60).toFixed(1)) +
-          " minutos"
-      );
-    }
-  }, [props.startTime, props.finishTime]);
+  // const [waitAction,setWaitAction] = React.useState()
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  // React.useEffect(() => {
+  //   var intervalId;
+  //   if (props.finishTime) {
+  //     intervalId = setInterval(() => {
+  //       if (coolUntil - Number(Date.now() / 60000).toFixed(0) > 0) {
+  //         console.log(
+  //           "hello",
+  //           coolUntil - Number(Date.now() / 60000).toFixed(0)
+  //         );
+  //         setWaitTime(coolUntil - Number(Date.now() / 60000).toFixed(0));
+  //       }
+  //     }, 60000);
+  //   }
+  //   return () => {
+  //     console.log("clearing interval", intervalId);
+  //     clearInterval(intervalId);
+  //   };
+  // }, [props.finishTime]);
+
+  // React.useEffect(() => {
+  //   if (props.finishTime) {
+  //     setPlayTime(
+  //       Number(((props.finishTime - props.startTime) / 60).toFixed(1)) +
+  //         " minutos"
+  //     );
+  //   }
+  // }, [props.startTime, props.finishTime]);
 
   React.useEffect(() => {
     if (!completed) {
@@ -65,21 +102,22 @@ export const BarStep = (props) => {
           setStepAction(null);
           break;
         case "playable":
-          setStepAction(
-            <Button
-              rightIcon={<BsArrowRightCircle color="brand.300" />}
-              colorScheme="brand"
-              size="md"
-              variant="solid"
-              onClick={() => navigate(`/app/team/${team}/game/${game}`)}
-              aria-label="Jugar"
-              isLoading={loading}
-              ml="auto"
-              my="auto"
-            >
-              Jugar
-            </Button>
-          );
+            setStepAction(
+              <Button
+                rightIcon={<BsArrowRightCircle color="brand.300" />}
+                colorScheme="brand"
+                size="md"
+                variant="solid"
+                onClick={() => navigate(`/app/team/${team}/game/${game}`)}
+                aria-label="Jugar"
+                isLoading={loading}
+                ml="auto"
+                my="auto"
+                disabled={props.coolDownActive}
+              >
+                Jugar
+              </Button>
+            );
           break;
         case "consumable":
           setStepAction(
@@ -102,101 +140,111 @@ export const BarStep = (props) => {
     } else {
       setStepAction(null);
     }
-  }, [status, loading]);
+  }, [status, loading,props.coolDownActive]);
 
   const navigate = useNavigate();
 
   return (
-    <Stack spacing="4" direction="row">
-      <Stack spacing="0" align="center">
-        <BarStepCircle
-          isActive={status === "playable" || status === "consumable"}
-          isCompleted={status === "completed"}
-        />
-        <Divider
-          orientation="vertical"
-          borderWidth="1px"
-          borderColor={
-            status === "completed"
-              ? "brand.200"
-              : isLastStep
-              ? "transparent"
-              : "inherit"
-          }
-        />
-      </Stack>
-      <Stack
-        spacing="1"
-        pb={isLastStep ? "0" : "8"}
-        onClick={() => {
-          if ((status != "hidden" || isLastStep) && !completed) {
-            onOpen();
-          }
-        }}
-      >
-        <Text color={status==="hidden" ? "gray.300":"emphasized"} fontWeight="medium">
-          {title}
-        </Text>
-        <Text
-          filter={status === "hidden" && !isLastStep ? "auto" : "none"}
-          blur="4px"
-          color="muted"
-          fontSize={"xs"}
-          lineHeight={1}
+    <VStack justifyContent="flex-start" alignItems={"flex-start"} spacing="4">
+      <Stack spacing="4" direction="row">
+        <Stack spacing="0" align="center">
+          <BarStepCircle
+            isActive={status === "playable" || status === "consumable"}
+            isCompleted={status === "completed"}
+          />
+          <Divider
+            orientation="vertical"
+            borderWidth="1px"
+            borderColor={
+              status === "completed"
+                ? "brand.200"
+                : isLastStep
+                ? "transparent"
+                : "inherit"
+            }
+          />
+        </Stack>
+        <Stack
+          spacing="1"
+          pb={isLastStep ? "0" : "8"}
+          onClick={() => {
+            if ((status != "hidden" || isLastStep) && !completed) {
+              onOpen();
+            }
+          }}
         >
-          {description}
-        </Text>
-      </Stack>
-      <Spacer />
-      {stepAction}
-      {!(status === "completed") || (
-        <Text
-          textAlign={"right"}
-          fontSize="sm"
-          color="brand.700"
-          fontWeight="bold"
-          marginLeft={"auto"}
-        >
-          {playTime}
-        </Text>
-      )}
-      <Drawer placement="bottom" isOpen={isOpen} onClose={onClose}>
-        <DrawerOverlay />
-        <DrawerContent borderRadius="2xl">
-          <DrawerCloseButton />
-          <DrawerHeader p={0.5} boxShadow={"base"}>
-            <Image
-              src={profilePic}
-              alt={title}
-              borderTopRadius="2xl"
-              objectFit="fill"
-              dropShadow={"2xl"}
-            />
-          </DrawerHeader>
-          <DrawerBody p={4}>
-            <VStack spacing={4} alignItems="flex-start">
-              <Text color={"blackAlpha.800"} fontWeight={"bold"} fontSize="3xl">
-                {title}
-              </Text>
-              <Box>
-                <Text color={"blackAlpha.600"} fontSize={"md"}>
-                  Dirección
+          <Text
+            color={status === "hidden" ? "gray.300" : "emphasized"}
+            fontWeight="medium"
+          >
+            {title}
+          </Text>
+          <Text
+            filter={status === "hidden" && !isLastStep ? "auto" : "none"}
+            blur="4px"
+            color="muted"
+            fontSize={"xs"}
+            lineHeight={1}
+          >
+            {description}
+          </Text>
+        </Stack>
+        <Spacer />
+        {stepAction}
+
+        {!(status === "completed") || (
+          <Text
+            textAlign={"right"}
+            fontSize="sm"
+            color="brand.700"
+            fontWeight="bold"
+            marginLeft={"auto"}
+          >
+            {playTime}
+          </Text>
+        )}
+        <Drawer placement="bottom" isOpen={isOpen} onClose={onClose}>
+          <DrawerOverlay />
+          <DrawerContent borderRadius="2xl">
+            <DrawerCloseButton />
+            <DrawerHeader p={0.5} boxShadow={"base"}>
+              <Image
+                src={profilePic}
+                alt={title}
+                borderTopRadius="2xl"
+                objectFit="fill"
+                dropShadow={"2xl"}
+              />
+            </DrawerHeader>
+            <DrawerBody p={4}>
+              <VStack spacing={4} alignItems="flex-start">
+                <Text
+                  color={"blackAlpha.800"}
+                  fontWeight={"bold"}
+                  fontSize="3xl"
+                >
+                  {title}
                 </Text>
-                <Text fontWeight={"medium"}>{address}</Text>
-              </Box>
-              <Button
-                colorScheme="brand"
-                variant="solid"
-                leftIcon={<ExternalLinkIcon />}
-                onClick={() => window.open(addressURL, "_blank")}
-                w="full"
-              >
-                Ver en Mapa
-              </Button>
-            </VStack>
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
-    </Stack>
+                <Box>
+                  <Text color={"blackAlpha.600"} fontSize={"md"}>
+                    Dirección
+                  </Text>
+                  <Text fontWeight={"medium"}>{address}</Text>
+                </Box>
+                <Button
+                  colorScheme="brand"
+                  variant="solid"
+                  leftIcon={<ExternalLinkIcon />}
+                  onClick={() => window.open(addressURL, "_blank")}
+                  w="full"
+                >
+                  Ver en Mapa
+                </Button>
+              </VStack>
+            </DrawerBody>
+          </DrawerContent>
+        </Drawer>
+      </Stack>
+    </VStack>
   );
 };

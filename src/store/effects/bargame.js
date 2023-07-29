@@ -3,7 +3,7 @@ import { getBarGameSuccess, getBarGameFailure, saveAnswerSuccess } from "../acti
 import { GET_BAR_GAME, SAVE_ANSWER } from "../types";
 
 import { db } from "../../utils/init-firebase";
-import { collection, getDoc, doc, setDoc, arrayUnion } from "firebase/firestore";
+import { collection, getDoc, doc, setDoc, arrayUnion, Timestamp } from "firebase/firestore";
 import { MAX_RETRY_COUNT, RETRY_INTERVAL } from "../constants";
 import { getTeamDetailFailure, getTeamDetailSuccess } from "../actions/TeamDetail";
 
@@ -21,7 +21,7 @@ const saveAnswerData = async (data) =>{
   const team = data.team;
   const game = data.game;
   const rating = data.rating;
-
+  const finishTime = Timestamp.now()
 
   const docRef = doc(collection(db, "teams"),team);
   const docData = await getDoc(docRef);
@@ -33,6 +33,7 @@ const saveAnswerData = async (data) =>{
     if (gamePos>-1)
       teamGames[gamePos].status = "completed";
       teamGames[gamePos].rating = rating;
+      teamGames[gamePos].finishTime = finishTime;
       if(gamePos<6)
         teamGames[gamePos+1].status = "consumable";
     const docData2 = await setDoc(doc(db,"teams",team),{

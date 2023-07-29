@@ -44,6 +44,7 @@ export const BarList = (props) => {
                     game={bar.barGame.id}
                     team={props.team}
                     loading={loading}
+                    coolDownActive={props.coolDownActive}
                   />
                 );
               }

@@ -1,4 +1,7 @@
 import {
+  Alert,
+  AlertIcon,
+  AlertDescription,
   VStack,
   Container,
   Text,
@@ -24,14 +27,18 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { Logo } from "../../components/Logo";
 
 const RutasPlay = (props) => {
+  const coolDownTime = 5 * 60;
   const [showQR, setShowQR] = React.useState(0);
   const [currentTeam, setCurrentTeam] = React.useState();
   const [tapaURL, setTapaURL] = React.useState();
+  const [waitAlert, setWaitAlert] = React.useState();
   const [tapaLoading, setTapaLoading] = React.useState(false);
   const params = useParams();
   const { isOpen, onOpen, onClose } = useDisclosure();
   let navigate = useNavigate();
+  let [waitTime, setWaitTime] = React.useState();
   let [searchParams, setSearhParams] = useSearchParams();
+  let [coolDownActive, setCoolDownActive] = React.useState(false);
 
   React.useEffect(() => props.getRouteDetail(params.id), []);
   React.useEffect(() => props.getUserProfile(), []);
@@ -58,6 +65,7 @@ const RutasPlay = (props) => {
   }, [props.user]);
 
   const tapasAction = async (pos, game) => {
+    console.log(pos,game)
     setTapaLoading(true);
     if (!tapaURL) {
       const generateQR = httpsCallable(functions, "createTapa");
@@ -83,14 +91,51 @@ const RutasPlay = (props) => {
   };
 
   React.useEffect(() => {
-    let posTapa =
-      props.team?.routeGames?.findIndex(
-        (r) => r.barGame.id === searchParams.get("game")
-      ) + 1;
-    // if (posTapa && props.team?.id) {
-    //   tapasAction(posTapa, searchParams.get("game"));
-    // }
+    if (props.team?.routeGames?.find((r) => r.status === "playable")) {
+      let coolFinish = new Date(1970, 0, 1)
+      coolFinish.setSeconds(
+        props.team?.routeGames?.find((r) => r.status === "playable")
+          .consumedTime?.seconds + coolDownTime + 60*60*2
+      );
+      var intervalId;
+      if (coolFinish - Date.now() > 0) {
+        setCoolDownActive(true);
+        setWaitTime(coolFinish - Date.now());
+      }
+      intervalId = setInterval(() => {
+        if (coolFinish - Date.now() > 0) {
+          setCoolDownActive(true);
+          setWaitTime(coolFinish - Date.now());
+        } else {
+          setCoolDownActive(false);
+          setWaitAlert(null);
+          setWaitTime(null);
+          clearInterval(intervalId);
+        }
+      }, 20000);
+    }
+    return () => {
+      clearInterval(intervalId);
+    };
   }, [props.team]);
+
+  React.useEffect(() => {
+    if (waitTime) {
+      if ((waitTime / 60000).toFixed(0) > 0) {
+        setCoolDownActive(true);
+        setWaitAlert(
+          <Alert status="warning">
+            <AlertIcon />
+            Necesitáis esperar {(waitTime / 60000).toFixed(0)} minutos antes de
+            jugar esta ronda
+          </Alert>
+        );
+      } else {
+        setCoolDownActive(false);
+        setWaitAlert(null);
+      }
+    }
+  }, [waitTime]);
 
   const closeQR = () => {
     if (!currentTeam) {
@@ -107,7 +152,12 @@ const RutasPlay = (props) => {
     <Container mb="24">
       <VStack spacing="8" px="4" py="8" pt="128px" flex="1">
         <VStack w="100%" spacing={2} align="left">
-          <Text fontSize="xl" lineHeight="1" fontWeight="bold" color="blackAlpha.600">
+          <Text
+            fontSize="xl"
+            lineHeight="1"
+            fontWeight="bold"
+            color="blackAlpha.600"
+          >
             {props.detail?.location}
           </Text>
           <Text
@@ -133,20 +183,24 @@ const RutasPlay = (props) => {
           ""
         )}
         {currentTeam?.team ? (
-          <BarList
-            routeID={params.id}
-            team={currentTeam?.team || props.team?.id}
-            bars={props.team?.routeGames}
-            tapasAction={tapasAction}
-            loading={tapaLoading}
-          />
+          <>
+            {waitAlert}
+            <BarList
+              routeID={params.id}
+              team={currentTeam?.team || props.team?.id}
+              bars={props.team?.routeGames}
+              tapasAction={tapasAction}
+              loading={tapaLoading}
+              coolDownActive={coolDownActive}
+            />
+          </>
         ) : (
           "No hay current team"
         )}
       </VStack>
       {showQR !== 0 ? (
         <ActionModal
-          barInfo={props.team?.routeGames[showQR-1]}
+          barInfo={props.team?.routeGames[showQR - 1]}
           tapaURL={tapaURL}
           onClose={closeQR}
         >

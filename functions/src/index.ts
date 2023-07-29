@@ -205,7 +205,7 @@ export const achieveGame = functions
               gamesData[gamePos] = {
                 ...gamesData[gamePos],
                 status: "playable",
-                finishTime: Timestamp.now(),
+                consumedTime: Timestamp.now(),
               };
               // if (gamePos < 6) {
               //   gamesData[gamePos + 1] = {
@@ -291,7 +291,7 @@ export const computeResults = functions
 function getTeamTime(teamData: any) {
   const startTime = Math.min.apply(
       null,
-      teamData.routeGames.map((route: any) => route.startTime)
+      teamData.routeGames.map((route: any) => route.consumedTime)
   );
   const finishTime = Math.max.apply(
       null,
