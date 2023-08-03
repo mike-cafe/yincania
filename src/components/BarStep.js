@@ -67,33 +67,6 @@ export const BarStep = (props) => {
   // const [waitAction,setWaitAction] = React.useState()
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  // React.useEffect(() => {
-  //   var intervalId;
-  //   if (props.finishTime) {
-  //     intervalId = setInterval(() => {
-  //       if (coolUntil - Number(Date.now() / 60000).toFixed(0) > 0) {
-  //         console.log(
-  //           "hello",
-  //           coolUntil - Number(Date.now() / 60000).toFixed(0)
-  //         );
-  //         setWaitTime(coolUntil - Number(Date.now() / 60000).toFixed(0));
-  //       }
-  //     }, 60000);
-  //   }
-  //   return () => {
-  //     console.log("clearing interval", intervalId);
-  //     clearInterval(intervalId);
-  //   };
-  // }, [props.finishTime]);
-
-  // React.useEffect(() => {
-  //   if (props.finishTime) {
-  //     setPlayTime(
-  //       Number(((props.finishTime - props.startTime) / 60).toFixed(1)) +
-  //         " minutos"
-  //     );
-  //   }
-  // }, [props.startTime, props.finishTime]);
 
   React.useEffect(() => {
     if (!completed) {

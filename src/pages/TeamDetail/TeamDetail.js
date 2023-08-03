@@ -31,7 +31,6 @@ const TeamDetail = (props) => {
   let params = useParams();
   const [teamCode, setTeamCode] = React.useState();
   const [showCheck, setShowCheck] = React.useState(false);
-
   React.useEffect(() => props.getTeamDetail(params.id), [params.id]);
 
   React.useEffect(() => {

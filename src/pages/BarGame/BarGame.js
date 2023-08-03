@@ -81,8 +81,8 @@ const BarGame = (props) => {
   React.useEffect(() => setSeconds(props.game?.penalty), [props.game]);
   React.useEffect(() => {
     if (props.saved) {
-      navigate("/app/play/" + props.game?.route + "?game=" + params.game);
       props.resetGame();
+      navigate("/app/play/" + props.game?.route);
     }
   }, [props.saved]);
   return (

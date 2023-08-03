@@ -19,17 +19,25 @@ import { Link as RouteLink } from "react-router-dom";
 export const TeamPlayCard = (props) => {
   const [totalTime, setTotalTime] = React.useState();
   React.useEffect(() => {
-    if (props.team?.routeGames) {
-      let timeArray = props.team?.routeGames?.flatMap((game) => [game.consumedTime?.seconds,game.finishTime?.seconds] || []);
-      let timeDiff = Math.max(...timeArray) - Math.min(...timeArray);
-      let hours = Math.floor(timeDiff / (60 * 60));
-      let minutes = Math.floor((timeDiff - hours * 60 * 60) / 60);
-
-      if (timeArray.length === 0) {
-        setTotalTime("Sin empezar");
-      } else {
-        setTotalTime(hours + " horas, " + minutes + " minutos");
+    try {
+      if (props.team?.routeGames) {
+        let timeArray = props.team?.routeGames?.flatMap(
+          (game) => [game.consumedTime?.seconds, game.finishTime?.seconds] || []
+        );
+        timeArray = timeArray.filter(function( element ) {
+          return element !== undefined;
+       });
+        let timeDiff = Math.max(...timeArray) - Math.min(...timeArray);
+        let hours = Math.floor(timeDiff / (60 * 60));
+        let minutes = Math.floor((timeDiff - hours * 60 * 60) / 60);
+        if (timeArray.length === 0) {
+          setTotalTime("Sin empezar");
+        } else {
+          setTotalTime(hours + " horas, " + minutes + " minutos");
+        }
       }
+    } catch (e) {
+      console.error("new error", e);
     }
   }, [props.team]);
 

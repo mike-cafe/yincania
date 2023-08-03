@@ -147,7 +147,9 @@ export const ResponseDrawer = (props) => {
                   colorScheme="brand"
                   size="md"
                   width="100%"
-                  onClick={props.onFinish}
+                  onClick={()=>{
+                    props.onFinish()
+                  }}
                   isDisabled={!props.rating}
                 >
                   Enviar Valoración

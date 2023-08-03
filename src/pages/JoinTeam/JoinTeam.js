@@ -26,6 +26,7 @@ const JoinTeam = (props) => {
     register,
     handleSubmit,
     setError,
+    setValue,
     formState: { errors },
   } = useForm({
     mode: "onChange",
@@ -35,6 +36,8 @@ const JoinTeam = (props) => {
   const navigate = useNavigate();
   const auth = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [showTeam, setShowTeam] = React.useState(false);
+  const [teamCode,setTeamCode] = React.useState("");
 
   const onSubmit = async (values) => props.findTeam(values.code);
 
@@ -46,11 +49,15 @@ const JoinTeam = (props) => {
       navigate: navigate,
     });
   };
-  let code = searchParams.get("code");
 
-  if (code) {
-    onSubmit({ code: code });
-  }
+  
+  React.useEffect(()=>{
+    let paramCode = searchParams.get("code")
+    if (paramCode) {
+      onSubmit({ code: paramCode });
+      setValue("code",paramCode)
+    }
+  },[searchParams])
 
   React.useEffect(() => {
     if (props.teamFound) {
@@ -73,7 +80,6 @@ const JoinTeam = (props) => {
     }
   }, [props.err]);
 
-  const [showTeam, setShowTeam] = React.useState(false);
 
   return (
     <>
@@ -110,7 +116,7 @@ const JoinTeam = (props) => {
         >
           <FormLabel>Código</FormLabel>
           <Input
-            defaultValue={code}
+            defaultValue={teamCode}
             placeholder="XXXXXX"
             {...register("code")}
           />

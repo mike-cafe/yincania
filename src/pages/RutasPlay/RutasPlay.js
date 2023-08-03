@@ -20,38 +20,49 @@ import * as React from "react";
 import { BarList } from "../../components/BarList";
 import { TeamPlayCard } from "../../components/TeamPlayCard";
 import { ActionModal } from "../../components/ActionModal";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { httpsCallable } from "firebase/functions";
-import { functions, db } from "../../utils/init-firebase";
+import { functions, db, app } from "../../utils/init-firebase";
 import { doc, onSnapshot } from "firebase/firestore";
 import { Logo } from "../../components/Logo";
 
 const RutasPlay = (props) => {
   const coolDownTime = 5 * 60;
   const [showQR, setShowQR] = React.useState(0);
-  const [currentTeam, setCurrentTeam] = React.useState();
   const [tapaURL, setTapaURL] = React.useState();
-  const [waitAlert, setWaitAlert] = React.useState();
+  const [waitAlert, setWaitAlert] = React.useState(null);
   const [tapaLoading, setTapaLoading] = React.useState(false);
   const params = useParams();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [teamId, setTeamId] = React.useState();
   let navigate = useNavigate();
   let [waitTime, setWaitTime] = React.useState();
-  let [searchParams, setSearhParams] = useSearchParams();
   let [coolDownActive, setCoolDownActive] = React.useState(false);
 
-  React.useEffect(() => props.getRouteDetail(params.id), []);
-  React.useEffect(() => props.getUserProfile(), []);
+  React.useEffect(() => {
+    props.getRouteDetail(params.id);
+    if (props.user) {
+      let teamId = props.user?.routes?.find(
+        (route) => route.id === params.id
+      ).team;
+      try {
+        props.getTeamDetail(teamId);
+        setTeamId(teamId)
+      } catch (e) {
+        console.error("failed to get team detail", e);
+      }
+    } else {
+      props.getUserProfile();
+    }
+  }, []);
 
   React.useEffect(() => {
-    setCurrentTeam(props.user?.routes?.find((route) => route.id === params.id));
-    if (currentTeam) {
-      props.getTeamDetail(currentTeam.team);
-      if (currentTeam?.team) {
+    if (teamId) {
+      try {
         const unsub = onSnapshot(
-          doc(db, "teams", currentTeam.team),
+          doc(db, "teams", teamId),
           (doc) => {
-            props.getTeamDetail(currentTeam.team);
+            // props.getTeamDetail(props.team.id);
             const teamData = doc.data();
             if (teamData.routeFinished) {
               onOpen();
@@ -60,17 +71,31 @@ const RutasPlay = (props) => {
           (err) => console.error(err)
         );
         return unsub;
+      } catch (e) {
+        console.error("failed to get snapshot with team",props.team)
+        console.error("more error info", e);
+      }
+    }
+  }, [teamId]);
+
+  React.useEffect(() => {
+    if (props.user) {
+      let teamId = props.user?.routes?.find(
+        (route) => route.id === params.id
+      ).team;
+      if (teamId) {
+        props.getTeamDetail(teamId);
+        setTeamId(teamId)
       }
     }
   }, [props.user]);
 
   const tapasAction = async (pos, game) => {
-    console.log(pos,game)
     setTapaLoading(true);
     if (!tapaURL) {
       const generateQR = httpsCallable(functions, "createTapa");
       await generateQR({
-        team: props.team?.id || currentTeam?.team,
+        team: props.team?.id,
         game: game,
         bar: props.team?.routeGames[pos - 1]?.bar,
         members: props.team?.members.length,
@@ -92,10 +117,12 @@ const RutasPlay = (props) => {
 
   React.useEffect(() => {
     if (props.team?.routeGames?.find((r) => r.status === "playable")) {
-      let coolFinish = new Date(1970, 0, 1)
+      let coolFinish = new Date(1970, 0, 1);
       coolFinish.setSeconds(
         props.team?.routeGames?.find((r) => r.status === "playable")
-          .consumedTime?.seconds + coolDownTime + 60*60*2
+          .consumedTime?.seconds +
+          coolDownTime +
+          60 * 60 * 2
       );
       var intervalId;
       if (coolFinish - Date.now() > 0) {
@@ -115,6 +142,8 @@ const RutasPlay = (props) => {
       }, 20000);
     }
     return () => {
+      setCoolDownActive(false);
+      setWaitTime(null);
       clearInterval(intervalId);
     };
   }, [props.team]);
@@ -133,18 +162,13 @@ const RutasPlay = (props) => {
       } else {
         setCoolDownActive(false);
         setWaitAlert(null);
+        setWaitTime(null);
       }
     }
   }, [waitTime]);
 
   const closeQR = () => {
-    if (!currentTeam) {
-      setCurrentTeam(
-        props.user?.routes?.find((route) => route.id === params.id)
-      );
-    }
-    props.getTeamDetail(currentTeam.team);
-    setSearhParams();
+    props.getTeamDetail(props.team.id);
     setShowQR(0);
   };
 
@@ -182,12 +206,12 @@ const RutasPlay = (props) => {
         ) : (
           ""
         )}
-        {currentTeam?.team ? (
+        {props.team?.id ? (
           <>
             {waitAlert}
             <BarList
               routeID={params.id}
-              team={currentTeam?.team || props.team?.id}
+              team={props.team?.id}
               bars={props.team?.routeGames}
               tapasAction={tapasAction}
               loading={tapaLoading}
