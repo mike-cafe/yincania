@@ -52,6 +52,7 @@ export const BarStep = (props) => {
     addressURL,
     profilePic,
     completed,
+    timetable,
     ...stackProps
   } = props;
 
@@ -203,6 +204,12 @@ export const BarStep = (props) => {
                     Dirección
                   </Text>
                   <Text fontWeight={"medium"}>{address}</Text>
+                </Box>
+                <Box>
+                  <Text color={"blackAlpha.600"} fontSize={"md"}>
+                    Horario
+                  </Text>
+                  <Text fontWeight={"medium"}>{timetable}</Text>
                 </Box>
                 <Button
                   colorScheme="brand"

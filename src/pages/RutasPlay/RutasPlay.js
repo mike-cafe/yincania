@@ -62,7 +62,7 @@ const RutasPlay = (props) => {
         const unsub = onSnapshot(
           doc(db, "teams", teamId),
           (doc) => {
-            // props.getTeamDetail(props.team.id);
+            props.getTeamDetail(props.team?.id);
             const teamData = doc.data();
             if (teamData.routeFinished) {
               onOpen();
@@ -168,7 +168,7 @@ const RutasPlay = (props) => {
   }, [waitTime]);
 
   const closeQR = () => {
-    props.getTeamDetail(props.team.id);
+    props.getTeamDetail(props.team?.id);
     setShowQR(0);
   };
 
