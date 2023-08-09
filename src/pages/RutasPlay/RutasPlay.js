@@ -247,7 +247,6 @@ const RutasPlay = (props) => {
                 <Logo height="5" />
               </Center>
             </ModalHeader>
-            {/* <ModalCloseButton /> */}
             <ModalBody>
               <Stack
                 maxW="xs"
@@ -276,9 +275,6 @@ const RutasPlay = (props) => {
               </Stack>
             </ModalBody>
             <ModalFooter>
-              {/* <Button colorScheme="brand" mr={3} onClick={onClose}>
-                Volver
-              </Button> */}
               <Button
                 onClick={() => navigate(`/app/finished/${props.team.route}`)}
                 variant="solid"

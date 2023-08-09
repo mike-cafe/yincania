@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertIcon,
   Box,
   Center,
   Link,
@@ -13,90 +15,69 @@ import {
   Icon,
   Text,
   Spacer,
+  Card,
+  CardBody,
+  CardHeader,
+  CardFooter
 } from "@chakra-ui/react";
 import * as React from "react";
 import { Logo } from "./Logo";
 import { GoLocation } from "react-icons/go";
-import { BsSignpostFill } from "react-icons/bs";
-
-import { CardContent } from "./CardContent";
-import { CardHeader } from "./CardHeader";
-import { Link as RouteLink } from "react-router-dom";
+// import { CardContent } from "./CardContent";
+// import { CardHeader } from "./CardHeader";
 
 import QRCode from "react-qr-code";
-import { BarAvatar } from "./BarAvatar";
 
 export const ActionModal = (props) => {
-  const { barInfo,tapaURL, onClose, ...rest } = props;
-  
+  const { barInfo, tapaURL, onClose, ...rest } = props;
+
   return (
-    <Box height="100vh">
-      <Modal isOpen={true} onClose={onClose} size="2xl">
-        <ModalOverlay />
-        <ModalContent borderRadius="2xl" mx="4">
-          <ModalBody>
-            <ModalCloseButton />
-            <Stack
-              maxW="xs"
-              mx="auto"
-              py={{
-                base: "12",
-                md: "16",
-              }}
-              spacing={{
-                base: "6",
-                md: "10",
-              }}
-            >
-              <Center>
-                <Logo height="5" />
-              </Center>
-              <Stack spacing="3" textAlign="center">
-                <HStack
-                  spacing="4"
-                  p={4}
-                  border="1px"
-                  borderColor="gray.300"
-                  borderRadius="lg"
-                >
-                  {/* <BarAvatar
-                    name={barInfo.name}
-                    src="https://firebasestorage.googleapis.com/v0/b/react-coffee-a2736.appspot.com/o/CuevaPirata.jpeg?alt=media&token=1ae0f1af-0722-4f02-b841-6980ce83d2d6"
-                  /> */}
-                  <CardContent>
-                    <CardHeader title={barInfo?.name} />
-                    <HStack fontSize="sm">
-                      <Icon as={GoLocation} color="gray.500" />
-                      <Text>{barInfo?.address}</Text>
-                      <Spacer />
-                      {/* <Button
-                        size="xs"
-                        colorScheme="gray"
-                        variant="link"
-                        marginLeft="auto"
-                        leftIcon={<BsSignpostFill />}
-                      >
-                        <Link as={RouteLink} isExternal to={barInfo?.addressURL}>
-                          Ir al bar
-                        </Link>
-                      </Button> */}
-                    </HStack>
-                  </CardContent>
-                </HStack>
-                <Text fontSize="lg">
-                  Muestra este código al camarero para obtener tu tapa.
-                </Text>
-                <Center>
-                  <QRCode
-                    size={196}
-                    value={tapaURL}
-                  />
-                </Center>
-              </Stack>
-            </Stack>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-    </Box>
+    <Modal isOpen={true} onClose={onClose} size="full">
+      <ModalOverlay
+        bg="blackAlpha.300"
+        backdropFilter="blur(10px) hue-rotate(90deg)"
+      />
+      <ModalContent>
+        <ModalBody>
+          <ModalCloseButton />
+          <Stack
+            maxW="xs"
+            mx="auto"
+            py={{
+              base: "12",
+              md: "16",
+            }}
+            spacing={{
+              base: "6",
+              md: "10",
+            }}
+          >
+            <Center>
+              <Logo height="5" />
+            </Center>
+            <Text fontSize="lg" textAlign="justify">
+              Para disfrutar de las tapas, <b>muestra este código QR al camarero</b> que
+              lo escaneará con su móvil y os servirá el plato.
+            </Text>
+            <Center>
+              <QRCode size={196} value={tapaURL} />
+            </Center>
+
+            <Alert status="info">
+              <AlertIcon />
+              Válido para todo el equipo y solo se puede canjear una vez.
+            </Alert>
+            <Card>
+              <CardHeader title={barInfo?.name} />
+              <CardBody fontSize="sm">
+                <Icon as={GoLocation} color="gray.500" />
+                <Text>{barInfo?.address}</Text>
+                <Spacer />
+              </CardBody>
+            </Card>
+          </Stack>
+        </ModalBody>
+      </ModalContent>
+    </Modal>
   );
 };
