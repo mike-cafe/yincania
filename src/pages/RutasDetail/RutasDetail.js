@@ -1,4 +1,8 @@
 import {
+  Box,
+  Alert,
+  AlertDescription,
+  AlertIcon,
   HStack,
   Image,
   VStack,
@@ -7,6 +11,7 @@ import {
   useBreakpointValue,
   Container,
   Button,
+  Spacer,
 } from "@chakra-ui/react";
 import * as React from "react";
 import { StatLight } from "../../components/StatLight";
@@ -71,7 +76,31 @@ const RutasDetail = (props) => {
           >
             {`${props.detail?.date.toDate().getDate()} de ${
               months[props.detail?.date.toDate().getMonth()]
-            } de ${props.detail?.date.toDate().getFullYear()}`}
+            } de ${props.detail?.date
+              .toDate()
+              .getFullYear()} a la ${props.detail?.date.toDate().getHours()}:${
+              props.detail?.date.toDate().getMinutes() < 10 ? "0" : ""
+            }${props.detail?.date.toDate().getMinutes()}`}
+          </Text>
+          <Spacer></Spacer>
+          <Text
+            fontSize="lg"
+            marginStart="1"
+            alignSelf="flex-start"
+            fontWeight="medium"
+            color="blackAlpha.700"
+          >
+            {`La cerveza Reliquia, de Toledo, patrocina esta ruta de bares por ${props.detail?.location} a la que te invitamos a jugar con tus amigo/as.`}
+          </Text>
+          <Spacer />
+          <Text
+            fontSize="lg"
+            marginStart="1"
+            alignSelf="flex-start"
+            fontWeight="medium"
+            color="blackAlpha.700"
+          >
+            La Yincaña consiste en:
           </Text>
         </VStack>{" "}
         <HStack w="100%" spacing="4">
@@ -94,16 +123,24 @@ const RutasDetail = (props) => {
             creativity="https://firebasestorage.googleapis.com/v0/b/react-coffee-a2736.appspot.com/o/TapapTapas.png?alt=media&token=5eb3599d-0b03-4f8d-8d04-17a53a0ac5b3"
           />
         </HStack>
+        <Alert status="info">
+          <AlertIcon />
+          {`El precio de participar en esta Yincaña es de ${props.detail?.precio} euros`}
+        </Alert>
         {props.final ? <BarCard w="100%" barDetail={props.final} /> : ""}
         <ActionTrail
           backButton={!hasTeam}
-          backClick={() => navigate(`/app/join/team?routeId=${props.detail?.id}`)}
+          backClick={() =>
+            navigate(`/app/join/team?routeId=${props.detail?.id}`)
+          }
           secondVariant="outline"
           secondAction="Unirse a Equipo"
           firstAction={hasTeam ? "Ver Equipo" : "Crear Equipo"}
           mainClick={() => {
             if (hasTeam) {
-              navigate("/app/view/team/" + hasTeam + `?routeId=${props.detail?.id}`);
+              navigate(
+                "/app/view/team/" + hasTeam + `?routeId=${props.detail?.id}`
+              );
             } else {
               navigate("/app/create/team/" + props.detail?.id);
             }

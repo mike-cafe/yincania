@@ -97,7 +97,8 @@ export const createTapa = functions
                       .add({
                         ...data,
                         code: snap.get("code"),
-                        consumed: false,
+                        served: false,
+                        confirmed: false,
                         expiration: expStamp,
                       })
                       .then((ref) => ref.id);
@@ -144,11 +145,14 @@ export const retrieveTapa = functions
 export const updateTapa = functions
     .region("europe-west3")
     .https.onCall((data, context) => {
+      functions.logger.info(data)
       const id = data.id;
-
-      return db
+      const change = data.change;
+      switch (change){
+        case "served":
+          return db
           .doc("/tapas/" + id)
-          .set({consumed: true}, {merge: true})
+          .set({served: true}, {merge: true})
           .then((snap) => {
             return db
                 .doc("/tapas/" + id)
@@ -159,6 +163,35 @@ export const updateTapa = functions
             functions.logger.error("An internal error" + e);
             throw new functions.https.HttpsError("internal", e);
           });
+        case "confirmed":
+          return db
+          .doc("/tapas/" + id)
+          .set({confirmed: true}, {merge: true})
+          .then((snap) => {
+            return db
+                .doc("/tapas/" + id)
+                .get()
+                .then((ref) => ref.data());
+          })
+          .catch((e) => {
+            functions.logger.error("An internal error" + e);
+            throw new functions.https.HttpsError("internal", e);
+          });
+        default:
+          return db
+          .doc("/tapas/" + id)
+          .set({confirmed: true}, {merge: true})
+          .then((snap) => {
+            return db
+                .doc("/tapas/" + id)
+                .get()
+                .then((ref) => ref.data());
+          })
+          .catch((e) => {
+            functions.logger.error("An internal error" + e);
+            throw new functions.https.HttpsError("internal", e);
+          });
+      }
     });
 
 export const changeFieldName = functions
@@ -186,7 +219,9 @@ export const achieveGame = functions
     .firestore.document("tapas/{docId}")
     .onUpdate((snap, context) => {
       const docData = snap.after.data();
-      const isConsumed = docData.consumed;
+      // const isConsumed = docData.consumed;
+      const isServed = docData.served;
+      const isConfirmed = docData.confirmed;
       const barGame = docData.game;
       const team = docData.team;
       return db
@@ -201,7 +236,7 @@ export const achieveGame = functions
             const gamePos = gamesData.findIndex(
                 (res: any) => res.barGame.id === barGame
             );
-            if (isConsumed && gamePos > -1) {
+            if (isServed && isConfirmed && gamePos > -1) {
               gamesData[gamePos] = {
                 ...gamesData[gamePos],
                 status: "playable",

@@ -1,8 +1,10 @@
 import {
   Alert,
   AlertIcon,
-  Box,
+  Button,
   Center,
+  VStack,
+  Checkbox,
   Link,
   Modal,
   ModalBody,
@@ -10,26 +12,16 @@ import {
   ModalOverlay,
   ModalCloseButton,
   Stack,
-  HStack,
-  Button,
-  Icon,
   Text,
   Spacer,
-  Card,
-  CardBody,
-  CardHeader,
-  CardFooter
 } from "@chakra-ui/react";
 import * as React from "react";
 import { Logo } from "./Logo";
-import { GoLocation } from "react-icons/go";
-// import { CardContent } from "./CardContent";
-// import { CardHeader } from "./CardHeader";
-
 import QRCode from "react-qr-code";
 
 export const ActionModal = (props) => {
-  const { barInfo, tapaURL, onClose, ...rest } = props;
+  const { barInfo, tapaId,tapaURL,confirmTapa, onClose, ...rest } = props;
+  const [received, setReceived] = React.useState(false);
 
   return (
     <Modal isOpen={true} onClose={onClose} size="full">
@@ -40,7 +32,7 @@ export const ActionModal = (props) => {
       <ModalContent>
         <ModalBody>
           <ModalCloseButton />
-          <Stack
+          <VStack
             maxW="xs"
             mx="auto"
             py={{
@@ -56,26 +48,46 @@ export const ActionModal = (props) => {
               <Logo height="5" />
             </Center>
             <Text fontSize="lg" textAlign="justify">
-              Para disfrutar de las tapas, <b>muestra este código QR al camarero</b> que
-              lo escaneará con su móvil y os servirá el plato.
+              Para disfrutar de las tapas,{" "}
+              <b>muestra este código QR al camarero</b> que lo escaneará con su
+              móvil y os servirá el plato.
             </Text>
             <Center>
               <QRCode size={196} value={tapaURL} />
             </Center>
-
             <Alert status="info">
               <AlertIcon />
               Válido para todo el equipo y solo se puede canjear una vez.
             </Alert>
-            <Card>
-              <CardHeader title={barInfo?.name} />
-              <CardBody fontSize="sm">
-                <Icon as={GoLocation} color="gray.500" />
-                <Text>{barInfo?.address}</Text>
-                <Spacer />
-              </CardBody>
-            </Card>
-          </Stack>
+            <Alert status="success" variant="left-accent">
+              <AlertIcon />
+              El camarero ha validado el QR, pronto deberíais recibir vuestras
+              tapas y consumiciones
+            </Alert>
+            <Alert visibility={""} status="success" variant="left-accent">
+              <AlertIcon />
+              El camarero ha validado el QR, pronto deberíais recibir vuestras
+              tapas y consumiciones
+            </Alert>
+            <Spacer />
+            <Checkbox
+              isRequired={true}
+              isChecked={received}
+              onChange={() => setReceived(!received)}
+            >
+              Hemos recibido las consumuciones y tapas
+            </Checkbox>
+            <Button
+              colorScheme="orange"
+              variant="solid"
+              borderRadius="full"
+              size="lg"
+              isDisabled={!received}
+              onClick={confirmTapa}
+            >
+              CONTINUAR
+            </Button>
+          </VStack>
         </ModalBody>
       </ModalContent>
     </Modal>

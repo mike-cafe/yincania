@@ -1,4 +1,5 @@
 import {
+  Badge,
   VStack,
   Box,
   Button,
@@ -62,6 +63,7 @@ export const RutaCard = (props) => {
     duration,
     colorScheme: c,
     image,
+    status,
     ...rest
   } = props;
   return (
@@ -112,6 +114,11 @@ export const RutaCard = (props) => {
           ""
         )}
         <VStack align={"flex-start"} justify={"center"}>
+        {status == "open" && (
+            <Badge size="sm" variant="solid" colorScheme="green">
+              Proximamente
+            </Badge>
+          )}
           <Text
             fontSize="3xl"
             lineHeight="1"
@@ -125,6 +132,7 @@ export const RutaCard = (props) => {
           <Text textColor="blackAlpha.600" textAlign={"left"} fontWeight="bold">
             {description}
           </Text>
+
         </VStack>
       </Box>
       {isFinished ? (

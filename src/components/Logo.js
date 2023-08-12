@@ -42,8 +42,8 @@ import { chakra, useColorModeValue, Image } from "@chakra-ui/react";
 
 export const Logo = (props) => (
   <Image
-    src="https://firebasestorage.googleapis.com/v0/b/react-coffee-a2736.appspot.com/o/LogoYincania.jpeg?alt=media&token=e3d5e7d6-c942-4e1f-a2b8-0bdf131393c0"
+    src="https://firebasestorage.googleapis.com/v0/b/react-coffee-a2736.appspot.com/o/Logo%20Yincan%CC%83a%20-%20Naranja%20Corporativo%203.png?alt=media&token=32f103c2-9555-4a6a-b89b-b3ad94f19bbb"
     alt="Yincania"
-    w="100px"
+    w="80px"
     />
 );

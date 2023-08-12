@@ -41,6 +41,7 @@ export const BarList = (props) => {
                     isLastStep={bar.pos===7}
                     routeID={props.routeID}
                     barID={bar.bar}
+                    timetable={bar.timetable}
                     game={bar.barGame.id}
                     team={props.team}
                     loading={loading}

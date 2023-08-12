@@ -22,10 +22,10 @@ const getTapasDetailData = async (request) => {
   }
 };
 
-const updateTapaData = async (id) => {
+const updateTapaData = async (payload) => {
   const updateTapaCallable = httpsCallable(functions, "updateTapa");
 
-  const tapaData = await updateTapaCallable(id);
+  const tapaData = await updateTapaCallable(payload);
 
   if (tapaData) {
     return tapaData.data;
@@ -49,13 +49,13 @@ function* getTapasDetail(payload) {
   }
 }
 
-function* updateTapa(id) {
+function* updateTapa(payload) {
   try {
     const data = yield retry(
       MAX_RETRY_COUNT,
       RETRY_INTERVAL,
       updateTapaData,
-      id
+      payload
     );
     if (data) yield put(getTapaDetailSuccess(data));
   } catch (error) {

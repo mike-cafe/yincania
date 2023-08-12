@@ -87,7 +87,7 @@ export const BarStep = (props) => {
                 isLoading={loading}
                 ml="auto"
                 my="auto"
-                disabled={props.coolDownActive}
+                isDisabled={props.coolDownActive}
               >
                 Jugar
               </Button>
@@ -102,6 +102,7 @@ export const BarStep = (props) => {
               aria-label="Jugar"
               onClick={() => onButtonClick(position, game)}
               isLoading={props.loading}
+              isDisabled={props.coolDownActive}
             >
               Tapa
             </Button>

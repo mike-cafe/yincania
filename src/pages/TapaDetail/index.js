@@ -20,8 +20,8 @@ const mapDispatchToProps = (dispatch) => {
     getTapaDetail: (data) => {
       dispatch(getTapaDetail(data));
     },
-    udpateTapa: (id) => {
-      dispatch(updateTapa(id));
+    updateTapa: (id) => {
+      dispatch(updateTapa({id:id,change:"served"}));
     },
   };
 };

@@ -68,8 +68,7 @@ export const Sidebar = (props) => {
             }}
           >
             <Stack spacing="1">
-              <NavButton path="/tutorial" label="Ayuda" icon={FiHelpCircle} onClick={()=>props.close()}/>
-              <NavButton path="/app/routes" label="Compartir" icon={FiShare2} onClick={()=>props.close()}/>
+              {/* <NavButton path="/app/routes" label="Compartir" icon={FiShare2} onClick={()=>props.close()}/> */}
             </Stack>
             <Divider />
             <UserProfile
@@ -81,6 +80,7 @@ export const Sidebar = (props) => {
               }
               }
             />
+            <NavButton path="/tutorial" label="Ayuda" icon={FiHelpCircle} onClick={()=>props.close()}/> 
             <NavButton
                 path="/"
                 onClick={()=>logout}

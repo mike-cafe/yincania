@@ -26,9 +26,10 @@ export const getTapaDetailFailure = (payload) => {
   };
 };
 
-export const updateTapa = (id) => {
+export const updateTapa = ({id,change}) => {
   return {
     type: UPDATE_TAPA,
     id: id,
+    change:change
   };
 };

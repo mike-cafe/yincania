@@ -1,7 +1,5 @@
 import {
-  Alert,
-  AlertIcon,
-  AlertDescription,
+  ScaleFade,
   VStack,
   Container,
   Text,
@@ -22,23 +20,23 @@ import { TeamPlayCard } from "../../components/TeamPlayCard";
 import { ActionModal } from "../../components/ActionModal";
 import { useNavigate, useParams } from "react-router-dom";
 import { httpsCallable } from "firebase/functions";
-import { functions, db, app } from "../../utils/init-firebase";
 import { doc, onSnapshot } from "firebase/firestore";
 import { Logo } from "../../components/Logo";
+import CountdownTimer from "../../components/CountdownTimer";
 
 const RutasPlay = (props) => {
   const coolDownTime = 5 * 60;
   const [showQR, setShowQR] = React.useState(0);
   const [tapaURL, setTapaURL] = React.useState();
-  const [waitAlert, setWaitAlert] = React.useState(null);
   const [tapaLoading, setTapaLoading] = React.useState(false);
   const params = useParams();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [teamId, setTeamId] = React.useState();
+  const [tapaId, setTapaId] = React.useState();
   let navigate = useNavigate();
-  let [waitTime, setWaitTime] = React.useState();
   let [coolDownActive, setCoolDownActive] = React.useState(false);
-
+  const [targetDate, setTargetDate] = React.useState();
+  
   React.useEffect(() => {
     props.getRouteDetail(params.id);
     if (props.user) {
@@ -47,7 +45,7 @@ const RutasPlay = (props) => {
       ).team;
       try {
         props.getTeamDetail(teamId);
-        setTeamId(teamId)
+        setTeamId(teamId);
       } catch (e) {
         console.error("failed to get team detail", e);
       }
@@ -72,7 +70,7 @@ const RutasPlay = (props) => {
         );
         return unsub;
       } catch (e) {
-        console.error("failed to get snapshot with team",props.team)
+        console.error("failed to get snapshot with team", props.team);
         console.error("more error info", e);
       }
     }
@@ -85,7 +83,7 @@ const RutasPlay = (props) => {
       ).team;
       if (teamId) {
         props.getTeamDetail(teamId);
-        setTeamId(teamId)
+        setTeamId(teamId);
       }
     }
   }, [props.user]);
@@ -102,8 +100,10 @@ const RutasPlay = (props) => {
       })
         .then((res) => {
           if (window.location.hostname === "localhost") {
+            setTapaId(res.data);
             setTapaURL(`http://192.168.41.3:3000/tapa/${res.data}`);
           } else {
+            setTapaId(res.data);
             setTapaURL(`https://react-coffee-a2736.web.app/tapa/${res.data}`);
           }
           setShowQR(pos);
@@ -116,62 +116,32 @@ const RutasPlay = (props) => {
   };
 
   React.useEffect(() => {
-    if (props.team?.routeGames?.find((r) => r.status === "playable")) {
-      let coolFinish = new Date(1970, 0, 1);
-      coolFinish.setSeconds(
-        props.team?.routeGames?.find((r) => r.status === "playable")
-          .consumedTime?.seconds +
-          coolDownTime +
-          60 * 60 * 2
+    if (props.team) {
+      let cooldownFinish = new Date(1970, 0, 1);
+      let playableStep = props.team?.routeGames?.find(
+        (r) => r.status === "playable"
       );
-      var intervalId;
-      if (coolFinish - Date.now() > 0) {
-        setCoolDownActive(true);
-        setWaitTime(coolFinish - Date.now());
-      }
-      intervalId = setInterval(() => {
-        if (coolFinish - Date.now() > 0) {
-          setCoolDownActive(true);
-          setWaitTime(coolFinish - Date.now());
-        } else {
-          setCoolDownActive(false);
-          setWaitAlert(null);
-          setWaitTime(null);
-          clearInterval(intervalId);
-        }
-      }, 20000);
-    }
-    return () => {
-      setCoolDownActive(false);
-      setWaitTime(null);
-      clearInterval(intervalId);
-    };
-  }, [props.team]);
-
-  React.useEffect(() => {
-    if (waitTime) {
-      if ((waitTime / 60000).toFixed(0) > 0) {
-        setCoolDownActive(true);
-        setWaitAlert(
-          <Alert status="warning">
-            <AlertIcon />
-            Necesitáis esperar {(waitTime / 60000).toFixed(0)} minutos antes de
-            jugar esta ronda
-          </Alert>
+      if (playableStep) {
+        cooldownFinish.setSeconds(
+          props.team?.routeGames?.find((r) => r.status === "playable")
+            .consumedTime?.seconds +
+            coolDownTime +
+            60 * 60 * 2
         );
-      } else {
-        setCoolDownActive(false);
-        setWaitAlert(null);
-        setWaitTime(null);
+        setTargetDate(cooldownFinish);
+        setCoolDownActive(true);
       }
     }
-  }, [waitTime]);
+  }, [props.team]);
 
   const closeQR = () => {
     props.getTeamDetail(props.team?.id);
     setShowQR(0);
   };
 
+  const onConfirmTapa = () => {
+    props.updateTapa(tapaId);
+  };
   return (
     <Container mb="24">
       <VStack spacing="8" px="4" py="8" pt="128px" flex="1">
@@ -208,7 +178,22 @@ const RutasPlay = (props) => {
         )}
         {props.team?.id ? (
           <>
-            {waitAlert}
+            {/* {waitAlert} */}
+            <ScaleFade in={coolDownActive} unmountOnExit={true}>
+              {coolDownActive ? (
+                <CountdownTimer
+                  targetDate={targetDate}
+                  onCompletion={() => {
+                    setTargetDate(null);
+                    setCoolDownActive(false);
+                  }}
+                  totalCooldownTime={coolDownTime}
+                />
+              ) : (
+                ""
+              )}
+            </ScaleFade>
+
             <BarList
               routeID={params.id}
               team={props.team?.id}
@@ -227,6 +212,8 @@ const RutasPlay = (props) => {
           barInfo={props.team?.routeGames[showQR - 1]}
           tapaURL={tapaURL}
           onClose={closeQR}
+          tapaId={tapaId}
+          confirmTapa={onConfirmTapa}
         >
           {" "}
         </ActionModal>
