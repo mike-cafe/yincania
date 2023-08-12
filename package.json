@@ -12,9 +12,9 @@
     "@redux-devtools/extension": "^3.2.3",
     "cjson": "^0.5.0",
     "cors": "^2.8.5",
-    "firebase": "^9.8.2",
+    "firebase": "^10.1.0",
     "firebase-admin": "^11.0.1",
-    "firebase-functions": "^4.1.0",
+    "firebase-functions": "^4.4.1",
     "framer-motion": "^6.3.4",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
@@ -67,6 +67,6 @@
     "@redux-devtools/core": "^3.13.1",
     "@redux-devtools/dock-monitor": "^3.0.1",
     "@redux-devtools/log-monitor": "^4.0.1",
-    "react-scripts": "^5.0.1"
+    "@babel/plugin-proposal-private-property-in-object":"^7.21.11"
   }
 }

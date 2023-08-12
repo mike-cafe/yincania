@@ -23,6 +23,7 @@ import { httpsCallable } from "firebase/functions";
 import { doc, onSnapshot } from "firebase/firestore";
 import { Logo } from "../../components/Logo";
 import CountdownTimer from "../../components/CountdownTimer";
+import { db, functions } from "../../utils/init-firebase";
 
 const RutasPlay = (props) => {
   const coolDownTime = 5 * 60;
@@ -36,7 +37,7 @@ const RutasPlay = (props) => {
   let navigate = useNavigate();
   let [coolDownActive, setCoolDownActive] = React.useState(false);
   const [targetDate, setTargetDate] = React.useState();
-  
+
   React.useEffect(() => {
     props.getRouteDetail(params.id);
     if (props.user) {
