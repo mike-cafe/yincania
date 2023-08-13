@@ -33,7 +33,7 @@ export const Navbar = (props) => {
         width="full"
         py="4"
         px={{ base: "4", md: "8" }}
-        bg="bg-surface"
+        bg="bg.canvas"
         borderBottom="1px"
         borderBottomColor="blackAlpha.200"
         position="fixed"

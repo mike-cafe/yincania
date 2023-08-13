@@ -30,9 +30,7 @@ import Banner from "./../../components/authenticationModules/Banner";
 import { Toast } from "./../../store/Toast";
 import { useAuth } from "./../../contexts/AuthContext";
 import { Logo } from "../../components/Logo";
-import {
-  getAuth,
-} from "@firebase/auth";
+import { getAuth } from "@firebase/auth";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
 const schema = yup.object().shape({
@@ -69,7 +67,7 @@ const Login = (props) => {
     additionalInfo,
     logout,
     manageRedirectResult,
-    createUserProfile
+    createUserProfile,
   } = useAuth();
 
   const [show, setShow] = useState(false);
@@ -91,8 +89,8 @@ const Login = (props) => {
         isClosable: true,
       });
       verifyUserEmail();
-    }else if (query.get("mode") === "resetPassword") {
-      navigate(`/reset-password${location.search}`)
+    } else if (query.get("mode") === "resetPassword") {
+      navigate(`/reset-password${location.search}`);
     }
   }, [location]);
 
@@ -137,28 +135,27 @@ const Login = (props) => {
   };
 
   const handleGoogleClick = () => {
-    setDisabledForm(true)
+    setDisabledForm(true);
     signInWithGoogle(redirectTo)
-    .catch((err)=>{
-      if(err.message=="auth/user-disabled"){
-        toast({
-          position: "bottom-center",
-          description: "Usuario deshabilitado, por favor contacta con nosotros",
-          status: "error",
-          duration: 4000,
-          isClosable: true,
-        });
-      }
-    })
-    .finally(
-      ()=>setDisabledForm(false)
-    )
+      .catch((err) => {
+        if (err.message == "auth/user-disabled") {
+          toast({
+            position: "bottom-center",
+            description:
+              "Usuario deshabilitado, por favor contacta con nosotros",
+            status: "error",
+            duration: 4000,
+            isClosable: true,
+          });
+        }
+      })
+      .finally(() => setDisabledForm(false));
   };
   const redirectTo = (res) => {
-    if(res.isNewUser && nextUrl==="/app/routes"){
-      props.userData({ user: res.user,next:"/tutorial", navigate })
-    }else{
-      props.userData({ user: res.user,next:nextUrl, navigate })
+    if (res.isNewUser && nextUrl === "/app/routes") {
+      props.userData({ user: res.user, next: "/tutorial", navigate });
+    } else {
+      props.userData({ user: res.user, next: nextUrl, navigate });
     }
   };
 
@@ -167,7 +164,7 @@ const Login = (props) => {
     login(payload.email, payload.password)
       .then((res) => {
         if (res.user?.emailVerified) {
-          props.userData({ user: res.user,next:nextUrl, navigate });
+          props.userData({ user: res.user, next: nextUrl, navigate });
         } else {
           setEmail(res?.user?.email);
           setShowBanner(true);
@@ -178,15 +175,16 @@ const Login = (props) => {
       .catch((error) => {
         setDisabledForm(false);
         props.signInFailure(error.message);
-        if(error.message.includes("auth/user-disabled")){
+        if (error.message.includes("auth/user-disabled")) {
           toast({
             position: "bottom-center",
-            description: "Usuario deshabilitado, por favor contacta con nosotros",
+            description:
+              "Usuario deshabilitado, por favor contacta con nosotros",
             status: "error",
             duration: 4000,
             isClosable: true,
           });
-        }else{
+        } else {
           toast({
             position: "bottom-center",
             description: "Usuario y/o contraseña incorrectos.",
@@ -196,7 +194,6 @@ const Login = (props) => {
           });
         }
       });
-
   };
 
   const verifyUserEmail = async () => {
@@ -299,7 +296,7 @@ const Login = (props) => {
               </FormControl>
               <Button
                 type="submit"
-                colorScheme="yellow"
+                colorScheme="brand"
                 size="lg"
                 fontSize="md"
                 onClick={handleSubmit(onSubmit)}
@@ -325,19 +322,30 @@ const Login = (props) => {
                 <Divider borderColor="currentcolor" />
               </Box>
             </Flex>
-            <SimpleGrid mt="12" columns={1} spacing="2">
+            <Button
+              w="full"
+              maxW="md"
+              onClick={handleGoogleClick}
+              variant="secondary"
+              leftIcon={<FcGoogle />}
+              mt="6"
+            >
+              Iniciar sesión con Google
+            </Button>
+            {/* <SimpleGrid mt="12" columns={1} spacing="2">
               <Button
                 w={"full"}
                 maxW={"md"}
                 variant={"outline"}
                 leftIcon={<FcGoogle />}
                 onClick={handleGoogleClick}
+                colorScheme="blackAlpha"
               >
                 <Center>
                   <Text>Google</Text>
                 </Center>
               </Button>
-            </SimpleGrid>
+            </SimpleGrid> */}
           </Card>
         </Box>
       </Box>

@@ -23,10 +23,10 @@ export const Sidebar = (props) => {
   }, [props.profile]);
   const vh = useVH();
   return (
-    <Flex as="section" style={{ minHeight: `${100 * vh}px` }} bg="bg-canvas" zIndex="9999">
+    <Flex as="section" style={{ minHeight: `${100 * vh}px` }} bg="bg.canvas" zIndex="9999">
       <Flex
         flex="1"
-        bg="bg-surface"
+        bg="bg.canvas"
         overflowY="auto"
         boxShadow={useColorModeValue("sm", "sm-dark")}
         maxW={{

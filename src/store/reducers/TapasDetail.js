@@ -18,9 +18,9 @@ import {
       case UPDATE_TAPA:
         return { ...state, loading: true };
       case GET_TAPA_DETAIL_SUCCESS:
-        return { ...state, loading: false, data: action.payload };
+        return { ...state, loading: false, data: action.payload,error:null };
       case GET_TAPA_DETAIL_FAILURE:
-        return { ...state, loading: false, error: action.payload };
+        return { ...state, loading: false, error: action.payload,data:null };
       default:
         return { ...state };
     }

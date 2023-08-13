@@ -19,6 +19,8 @@ import {
   CardFooter,
   Checkbox,
   ButtonGroup,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { Sidebar } from "../../components/Sidebar";
@@ -32,11 +34,11 @@ const TapaDetail = (props) => {
   const [received, setReceived] = React.useState(false);
 
   let params = useParams();
+
   const checkCode = (code) => {
-    setUserCode(code);
-    props.getTapaDetail({ id: params.id, code: code });
+    props.getTapaDetail({ id: params.id, code: userCode });
   };
-  
+
   const onConfirm = () => {
     props.updateTapa(params.id);
   };
@@ -47,7 +49,6 @@ const TapaDetail = (props) => {
       props.resetToast();
     }
   }, [props.userFeedback]);
-
 
   return (
     <Flex
@@ -60,7 +61,7 @@ const TapaDetail = (props) => {
         width="full"
         py="4"
         px={{ base: "4", md: "8" }}
-        bg="bg-surface"
+        bg="bg.canvas"
         borderBottom="1px"
         borderBottomColor="blackAlpha.200"
         position="fixed"
@@ -88,40 +89,70 @@ const TapaDetail = (props) => {
         <Spacer />
         <Text color="muted">Escribe aquí tú código</Text>
         <HStack justifyContent={"center"}>
-          <PinInput type="alphanumeric" mask onComplete={checkCode}>
+          <PinInput
+            type="alphanumeric"
+            mask
+            onChange={(value) => {
+              if (value.length < 4) {
+                setUserCode(null);
+              } else {
+                setUserCode(value);
+              }
+            }}
+            isInvalid={props.error}
+          >
             <PinInputField />
             <PinInputField />
             <PinInputField />
             <PinInputField />
           </PinInput>
+          <Spacer />
+          <Button
+            colorScheme="blue"
+            size="md"
+            onClick={checkCode}
+            isLoading={props.loading}
+            isDisabled={userCode == null}
+          >
+            Ver Consumición
+          </Button>
         </HStack>
-        <Card
-          boxShadow="dark-lg"
-          maxW="sm"
-          visibility={props.tapa?.code ? "visible" : "hidden"}
-          mt="32px"
-        >
-          <CardHeader>
-            <Heading size="xs">Servir Consumición</Heading>
-          </CardHeader>
-          <CardBody>
-            <Text>
-              Este equipo todavía no ha canjeado su consumición. Les
-              corresponden un máximo de{" "}
-              <b>{props.tapa?.members} tapas y consumiciones</b>.
-              <br />
-              <br />
-              Por favor confirma el número de consumiciones con ellos y procede
-              a servirles.
-            </Text>
-          </CardBody>
-          <Divider borderColor="gray" opacity="30%" />
-          <CardFooter>
-            <ButtonGroup spacing="2">
+        {props.error ? (
+          <Alert status="error" mt="8">
+            <AlertIcon />
+            El código es incorrecto o el QR no es válido.
+          </Alert>
+        ) : (
+          ""
+        )}
+        {!props.tapa?.served ? (
+          <Card
+            boxShadow="dark-lg"
+            maxW="sm"
+            visibility={props.tapa ? "visible" : "hidden"}
+            mt="32px"
+          >
+            <CardHeader>
+              <Heading size="xs">Servir Consumición</Heading>
+            </CardHeader>
+            <CardBody>
+              <Text>
+                Este equipo todavía no ha canjeado su consumición. Les
+                corresponden un máximo de{" "}
+                <b>{props.tapa?.members} tapas y consumiciones</b>.
+                <br />
+                <br />
+                Por favor confirma el número de consumiciones con ellos y
+                procede a servirles.
+              </Text>
+            </CardBody>
+            <Divider borderColor="gray" opacity="30%" />
+            <CardFooter flexDirection="column">
               <Checkbox
                 isRequired={true}
                 isChecked={received}
                 onChange={() => setReceived(!received)}
+                mb="4"
               >
                 He servido a los clientes las consumuciones y tapas que les
                 correspondían.
@@ -136,9 +167,14 @@ const TapaDetail = (props) => {
               >
                 Confirmar
               </Button>
-            </ButtonGroup>
-          </CardFooter>
-        </Card>
+            </CardFooter>
+          </Card>
+        ) : (
+          <Alert status="success" mt="8" variant="solid" borderRadius="md">
+            <AlertIcon />
+            Este equipo ya ha sido servido
+          </Alert>
+        )}
       </VStack>
     </Flex>
   );

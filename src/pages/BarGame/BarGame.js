@@ -118,7 +118,7 @@ const BarGame = (props) => {
           <Box
             w="100%"
             as="section"
-            bg="bg-surface"
+            bg="bg.canvas"
             py={{ base: "4", md: "8" }}
           >
             <Container maxW="xl">

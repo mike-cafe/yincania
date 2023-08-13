@@ -62,7 +62,7 @@ const CountdownTimer = ({
   }, []);
 
   return (
-      <Box bgColor="orange" px={8} py={6} mx={-8}>
+      <Box bgColor="brand.100" px={8} py={6} mx={-8}>
         <VStack>
           <Text
             color="blackAlpha.800"
@@ -70,7 +70,7 @@ const CountdownTimer = ({
             fontWeight={"bold"}
             fontSize={"lg"}
           >
-            Tenéis que esperar para poder jugar la partida
+            Tenéis que esperar para poder responder al quiz
           </Text>
           <Text>
             {timeLeft.minutes} minutos {timeLeft.seconds} segundos
@@ -84,7 +84,7 @@ const CountdownTimer = ({
             ((timeLeft.minutes * 60 + timeLeft.seconds) / totalCooldownTime) *
               100
           }
-          colorScheme="orange"
+          colorScheme="brand"
         />
       </Box>
   );

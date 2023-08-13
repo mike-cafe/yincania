@@ -20,8 +20,10 @@ import { Logo } from "./Logo";
 import QRCode from "react-qr-code";
 
 export const ActionModal = (props) => {
-  const { barInfo, tapaId,tapaURL,confirmTapa, onClose, ...rest } = props;
+  const { barInfo, tapaId, tapaURL, confirmTapa, onClose, ...rest } =
+    props;
   const [received, setReceived] = React.useState(false);
+
 
   return (
     <Modal isOpen={true} onClose={onClose} size="full">
@@ -59,34 +61,31 @@ export const ActionModal = (props) => {
               <AlertIcon />
               Válido para todo el equipo y solo se puede canjear una vez.
             </Alert>
-            <Alert status="success" variant="left-accent">
-              <AlertIcon />
-              El camarero ha validado el QR, pronto deberíais recibir vuestras
-              tapas y consumiciones
-            </Alert>
-            <Alert visibility={""} status="success" variant="left-accent">
-              <AlertIcon />
-              El camarero ha validado el QR, pronto deberíais recibir vuestras
-              tapas y consumiciones
-            </Alert>
-            <Spacer />
-            <Checkbox
-              isRequired={true}
-              isChecked={received}
-              onChange={() => setReceived(!received)}
-            >
-              Hemos recibido las consumuciones y tapas
-            </Checkbox>
-            <Button
-              colorScheme="orange"
-              variant="solid"
-              borderRadius="full"
-              size="lg"
-              isDisabled={!received}
-              onClick={confirmTapa}
-            >
-              CONTINUAR
-            </Button>
+            <VStack visibility={props.isServed ? "visible" : "hidden"} spacing={4}>
+              <Alert status="success" variant="solid" borderRadius="lg">
+                <AlertIcon />
+                El camarero ha registrado la entrega de las consumiciones.
+              </Alert>
+              <Spacer />
+              <Checkbox
+                isRequired={true}
+                isChecked={received}
+                onChange={() => setReceived(!received)}
+              >
+                Hemos recibido las consumuciones y tapas
+              </Checkbox>
+              <Button
+                w="full"
+                colorScheme="orange"
+                variant="solid"
+                borderRadius="full"
+                size="lg"
+                isDisabled={!received}
+                onClick={confirmTapa}
+              >
+                CONTINUAR
+              </Button>
+            </VStack>
           </VStack>
         </ModalBody>
       </ModalContent>

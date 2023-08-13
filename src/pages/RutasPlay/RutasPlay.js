@@ -34,6 +34,8 @@ const RutasPlay = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [teamId, setTeamId] = React.useState();
   const [tapaId, setTapaId] = React.useState();
+  const [isServed, setIsServed] = React.useState(false);
+
   let navigate = useNavigate();
   let [coolDownActive, setCoolDownActive] = React.useState(false);
   const [targetDate, setTargetDate] = React.useState();
@@ -61,7 +63,7 @@ const RutasPlay = (props) => {
         const unsub = onSnapshot(
           doc(db, "teams", teamId),
           (doc) => {
-            props.getTeamDetail(props.team?.id);
+            props.getTeamDetail(teamId);
             const teamData = doc.data();
             if (teamData.routeFinished) {
               onOpen();
@@ -129,14 +131,27 @@ const RutasPlay = (props) => {
             coolDownTime +
             60 * 60 * 2
         );
-        setTargetDate(cooldownFinish);
-        setCoolDownActive(true);
+        let currentDate = new Date();
+        if (cooldownFinish.getTime() > currentDate.getTime()) {
+          closeQR();
+          setTargetDate(cooldownFinish);
+          setCoolDownActive(true);
+        }
+      }
+      let consumableStep = props.team?.routeGames?.find(
+        (r) => r.status === "consumable"
+      );
+      if (consumableStep) {
+        if (consumableStep.served) {
+          setIsServed(true);
+        } else {
+          setIsServed(false);
+        }
       }
     }
   }, [props.team]);
 
   const closeQR = () => {
-    props.getTeamDetail(props.team?.id);
     setShowQR(0);
   };
 
@@ -179,7 +194,6 @@ const RutasPlay = (props) => {
         )}
         {props.team?.id ? (
           <>
-            {/* {waitAlert} */}
             <ScaleFade in={coolDownActive} unmountOnExit={true}>
               {coolDownActive ? (
                 <CountdownTimer
@@ -212,9 +226,10 @@ const RutasPlay = (props) => {
         <ActionModal
           barInfo={props.team?.routeGames[showQR - 1]}
           tapaURL={tapaURL}
-          onClose={closeQR}
           tapaId={tapaId}
           confirmTapa={onConfirmTapa}
+          isServed={isServed}
+          onClose={closeQR}
         >
           {" "}
         </ActionModal>

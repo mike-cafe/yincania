@@ -13,7 +13,7 @@ export const BarList = (props) => {
   });
 
   return (
-    <Box width="100%" bg="bg-surface" boxShadow="base" borderRadius="lg">
+    <Box width="100%" bg="bg.canvas" boxShadow="base" borderRadius="lg">
       <Container
         py={{
           base: "4",

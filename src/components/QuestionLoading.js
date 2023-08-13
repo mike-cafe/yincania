@@ -5,7 +5,7 @@ const QuestionLoading = (props) => {
   return (
     <Box
       w="100%"
-      bg="bg-surface"
+      bg="bg.canvas"
       px="4"
       py="6"
       mb={4}

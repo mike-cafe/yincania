@@ -13,7 +13,7 @@ export const StatLight = (props) => {
   const { label, value, delta,creativity, ...boxProps } = props;
   return (
     <Box
-      bg="bg-surface"
+      bg="bg.canvas"
       borderRadius="lg"
       textAlign="center"
       w="100%"
