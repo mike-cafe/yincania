@@ -18,16 +18,48 @@ import { Link as RouteLink } from "react-router-dom";
 
 export const TeamPlayCard = (props) => {
   const [totalTime, setTotalTime] = React.useState();
+
   React.useEffect(() => {
     try {
       if (props.team?.routeGames) {
-        let timeArray = props.team?.routeGames?.flatMap(
-          (game) => [game.consumedTime?.seconds, game.finishTime?.seconds] || []
-        );
-        timeArray = timeArray.filter(function( element ) {
+        let slowDowns = 0;
+        let timeArray = props.team?.routeGames?.flatMap((game) => {
+          let finish = game.finishTime?.seconds;
+          let consumed = game.consumedTime?.seconds;
+          switch (game.status) {
+            case "completed":
+              console.log(game.name, "completed", [consumed, finish]);
+              slowDowns++;
+              return [consumed,finish];
+            case "playable":
+              console.log(game.name, "playable", [consumed]);
+              if(consumed + props.cooldown > Date.now()/1000){
+                return [consumed];
+              }else{
+                slowDowns++
+                return [consumed,Date.now()/1000];
+              }
+            case "consumable":
+              console.log(game.name, "consumable", Date.now() / 1000);
+              return Date.now() / 1000;
+            case "hidden":
+              console.log(game.name, "hidden", []);
+              return [];
+            default:
+              console.log("default", game.name, [consumed, finish]);
+              return [consumed, finish];
+          }
+        });
+        // timeArray.unshift(props.rutaStart.seconds)
+        console.log(timeArray, slowDowns);
+        timeArray = timeArray.filter(function (element) {
           return element !== undefined;
-       });
-        let timeDiff = Math.max(...timeArray) - Math.min(...timeArray);
+        });
+        let timeDiff =
+          Math.max(...timeArray) -
+          Math.min(...timeArray) -
+          slowDowns * props.cooldown;
+        let timSum = timeArray.reduce((a, b) => a + b, 0);
         let hours = Math.floor(timeDiff / (60 * 60));
         let minutes = Math.floor((timeDiff - hours * 60 * 60) / 60);
         if (timeArray.length === 0) {

@@ -1,16 +1,7 @@
 import {
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
-  Progress,
-  Tag,
-  TagLabel,
-  TagLeftIcon,
-  TagRightIcon,
-  TagCloseButton,
   Button,
   Divider,
+  HStack,
   Stack,
   Text,
   VStack,
@@ -23,17 +14,15 @@ import {
   DrawerContent,
   useDisclosure,
   Spacer,
+  IconButton,
   Box,
 } from "@chakra-ui/react";
 import * as React from "react";
 import { BarStepCircle } from "./BarStepCircle";
 import { Link as RouteLink, useNavigate } from "react-router-dom";
-import { ExternalLinkIcon, TimeIcon } from "@chakra-ui/icons";
-import {
-  BsFillArrowRightCircleFill,
-  BsArrowRightCircle,
-  BsTornado,
-} from "react-icons/bs";
+import { ExternalLinkIcon } from "@chakra-ui/icons";
+import { BsArrowRightCircle, BsInfoCircle, BsMap } from "react-icons/bs";
+import { MdOutlineLocationOn } from "react-icons/md";
 
 export const BarStep = (props) => {
   const {
@@ -58,14 +47,6 @@ export const BarStep = (props) => {
 
   const [playTime, setPlayTime] = React.useState();
   const [stepAction, setStepAction] = React.useState();
-  // const [coolUntil, setCoolUntil] = React.useState(
-  //   Number((props.finishTime + 126 * 60) / 60).toFixed(0)
-  // );
-  // const [waitTime, setWaitTime] = React.useState(
-  //   coolUntil - Number((Date.now() / 60000).toFixed(0))
-  // );
-
-  // const [waitAction,setWaitAction] = React.useState()
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -76,28 +57,28 @@ export const BarStep = (props) => {
           setStepAction(null);
           break;
         case "playable":
-            setStepAction(
-              <Button
-                rightIcon={<BsArrowRightCircle color="brand.300" />}
-                colorScheme="brand"
-                size="md"
-                variant="solid"
-                onClick={() => navigate(`/app/team/${team}/game/${game}`)}
-                aria-label="Jugar"
-                isLoading={loading}
-                ml="auto"
-                my="auto"
-                isDisabled={props.coolDownActive}
-              >
-                Jugar
-              </Button>
-            );
+          setStepAction(
+            <Button
+              rightIcon={<BsArrowRightCircle color="brand.300" />}
+              colorScheme="brand"
+              size="md"
+              variant="solid"
+              onClick={() => navigate(`/app/team/${team}/game/${game}`)}
+              aria-label="Jugar"
+              isLoading={loading}
+              marginLeft={"auto"}
+              isDisabled={props.coolDownActive}
+            >
+              Jugar
+            </Button>
+          );
           break;
         case "consumable":
           setStepAction(
             <Button
               variant="solid"
-              marginLeft={"auto"}
+              marginLeft="auto"
+              justifySelf="flex-end"
               colorScheme="brand"
               aria-label="Jugar"
               onClick={() => onButtonClick(position, game)}
@@ -115,13 +96,13 @@ export const BarStep = (props) => {
     } else {
       setStepAction(null);
     }
-  }, [status, loading,props.coolDownActive]);
+  }, [status, loading, props.coolDownActive]);
 
   const navigate = useNavigate();
 
   return (
     <VStack justifyContent="flex-start" alignItems={"flex-start"} spacing="4">
-      <Stack spacing="4" direction="row">
+      <Stack spacing="4" direction="row" w="full">
         <Stack spacing="0" align="center">
           <BarStepCircle
             isActive={status === "playable" || status === "consumable"}
@@ -149,19 +130,29 @@ export const BarStep = (props) => {
           }}
         >
           <Text
-            color={status === "hidden" ? "gray.300" : "emphasized"}
+            filter={status === "hidden" && !isLastStep ? "auto" : "none"}
+            blur="4px"
+            color={status === "hidden" && !isLastStep ? "gray.400" : "muted"}
             fontWeight="medium"
+            fontSize={"lg"}
           >
             {title}
           </Text>
           <Text
             filter={status === "hidden" && !isLastStep ? "auto" : "none"}
             blur="4px"
-            color="muted"
+            color={status === "hidden" && !isLastStep ? "gray.400" : "muted"}
             fontSize={"xs"}
             lineHeight={1}
           >
-            {description}
+            <Text as="span">{description} </Text>
+            <Text
+              color={status === "hidden" && !isLastStep ? "gray.400" : "muted"}
+              as="span"
+              textDecor="underline"
+            >
+              ver info
+            </Text>
           </Text>
         </Stack>
         <Spacer />

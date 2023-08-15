@@ -182,6 +182,8 @@ const RutasPlay = (props) => {
         </VStack>{" "}
         {props.team ? (
           <TeamPlayCard
+            cooldown={coolDownTime}
+            rutaStart={props.detail?.date}
             w="100%"
             label="Tapas"
             team={props.team}

@@ -13,7 +13,7 @@ export const BarStepCircle = (props) => {
       // {...props}
     >
       {isCompleted ? (
-        <Icon as={HiCheck} color="inverted" boxSize="5" />
+        <Icon as={HiCheck} color="white" boxSize="5" />
       ) : (
         <Circle bg={isActive ? 'brand.300' : 'border'} size="3" />
       )}

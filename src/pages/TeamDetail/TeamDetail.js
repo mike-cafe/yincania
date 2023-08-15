@@ -18,7 +18,6 @@ import { HiShieldCheck, HiUser } from "react-icons/hi";
 import { useNavigate, useParams } from "react-router-dom";
 import { ActionTrail } from "../../components/ActionTrail";
 import { ShareDrawer } from "../../components/ShareDrawer";
-import { rutaDetail } from "../../data";
 import { useAuth } from "../../contexts/AuthContext";
 import { CheckIcon, CopyIcon } from "@chakra-ui/icons";
 import copy from "copy-to-clipboard";
@@ -37,6 +36,9 @@ const TeamDetail = (props) => {
     if (props.teamDetail?.members) {
       props.getUsernames(props.teamDetail?.members);
     }
+    if (props.teamDetail?.route) {
+      props.getRouteDetail(props.teamDetail.route);
+    }
     if (props.teamDetail?.id) {
       if (props.teamDetail?.code) {
         setTeamCode(props.teamDetail?.code);
@@ -45,6 +47,7 @@ const TeamDetail = (props) => {
       }
     }
   }, [props.teamDetail]);
+
 
   const abandonTeam = () => {
     props.removeUser({
@@ -153,14 +156,18 @@ const TeamDetail = (props) => {
           <Text>(con este código puedes invitar al equipo)</Text>
         </VStack>
         {/* <Text>Con este código otros podrán unirse a tu equipo</Text> */}
-        <ActionTrail
-          secondVariant="ghost"
-          secondAction="Abandonar Equipo"
-          firstAction="Invitar al Equipo"
-          backButton={true}
-          mainClick={onOpen}
-          backClick={abandonTeam}
-        />
+        {props.routeDetail?.status == "open" ? (
+          <ActionTrail
+            secondVariant="ghost"
+            secondAction="Abandonar Equipo"
+            firstAction="Invitar al Equipo"
+            backButton={true}
+            mainClick={onOpen}
+            backClick={abandonTeam}
+          />
+        ) : (
+          ""
+        )}
       </VStack>
       <ShareDrawer
         isOpen={isOpen}

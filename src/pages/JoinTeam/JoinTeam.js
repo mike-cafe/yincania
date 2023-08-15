@@ -37,7 +37,8 @@ const JoinTeam = (props) => {
   const auth = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [showTeam, setShowTeam] = React.useState(false);
-  const [teamCode,setTeamCode] = React.useState("");
+  const [joinAvailable, setJoinAvailable] = React.useState(false);
+  const [teamCode, setTeamCode] = React.useState("");
 
   const onSubmit = async (values) => props.findTeam(values.code);
 
@@ -50,14 +51,13 @@ const JoinTeam = (props) => {
     });
   };
 
-  
-  React.useEffect(()=>{
-    let paramCode = searchParams.get("code")
+  React.useEffect(() => {
+    let paramCode = searchParams.get("code");
     if (paramCode) {
       onSubmit({ code: paramCode });
-      setValue("code",paramCode)
+      setValue("code", paramCode);
     }
-  },[searchParams])
+  }, [searchParams]);
 
   React.useEffect(() => {
     if (props.teamFound) {
@@ -66,6 +66,17 @@ const JoinTeam = (props) => {
       setShowTeam(false);
     }
   }, [props.teamFound]);
+
+  React.useEffect(
+    ()=>{
+      if(props.routeDetail?.status == "open"){
+        setJoinAvailable(true)
+      }else{
+        setJoinAvailable(false)
+      }
+      setValue("code","")
+    },[props.routeDetail]
+  )
 
   React.useEffect(() => {
     if (props.err) {
@@ -80,6 +91,13 @@ const JoinTeam = (props) => {
     }
   }, [props.err]);
 
+  React.useEffect(() => {
+    if (props.teamDetail?.route || searchParams.get("routeId")) {
+      props.getRouteDetail(
+        props.teamDetail?.route || searchParams.get("routeId")
+      );
+    }
+  }, [props.teamDetail]);
 
   return (
     <>
@@ -103,6 +121,7 @@ const JoinTeam = (props) => {
             team={props.teamDetail}
             rutaId={props.teamDetail?.route}
             delta={{ isUpwardsTrend: true, value: "+10" }}
+            isAvailable={joinAvailable}
             creativity="https://firebasestorage.googleapis.com/v0/b/react-coffee-a2736.appspot.com/o/TapapTapas.png?alt=media&token=5eb3599d-0b03-4f8d-8d04-17a53a0ac5b3"
           />
         ) : (

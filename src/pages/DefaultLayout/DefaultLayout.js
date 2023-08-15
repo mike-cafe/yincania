@@ -27,9 +27,9 @@ const DefaultLayout = (props) => {
             break;
           case "view/team":
             let url = -1;
-            let routeId = searchParams.get("routeId") || "/app/routes/"
+            let routeId = searchParams.get("routeId")
             if(routeId){
-              let url = `/app/detail/${searchParams.get("routeId")}`
+              url = `/app/detail/${searchParams.get("routeId")}`
             }
             setBackButton(url);
             break;
