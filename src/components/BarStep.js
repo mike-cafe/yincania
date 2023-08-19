@@ -16,10 +16,11 @@ import {
   Spacer,
   IconButton,
   Box,
+  Skeleton,
 } from "@chakra-ui/react";
 import * as React from "react";
 import { BarStepCircle } from "./BarStepCircle";
-import { Link as RouteLink, useNavigate } from "react-router-dom";
+import { Link as RouteLink, useLocation, useNavigate } from "react-router-dom";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { BsArrowRightCircle, BsInfoCircle, BsMap } from "react-icons/bs";
 import { MdOutlineLocationOn } from "react-icons/md";
@@ -50,6 +51,8 @@ export const BarStep = (props) => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  console.log(window.location.host);
+
   React.useEffect(() => {
     if (!completed) {
       switch (status) {
@@ -59,9 +62,9 @@ export const BarStep = (props) => {
         case "playable":
           setStepAction(
             <Button
-              rightIcon={<BsArrowRightCircle color="brand.300" />}
+              // rightIcon={<BsArrowRightCircle color="brand.300" />}
               colorScheme="brand"
-              size="md"
+              size={{base:"xs",sm:"md"}}
               variant="solid"
               onClick={() => navigate(`/app/team/${team}/game/${game}`)}
               aria-label="Jugar"
@@ -155,7 +158,7 @@ export const BarStep = (props) => {
             </Text>
           </Text>
         </Stack>
-        <Spacer />
+        {/* <Spacer /> */}
         {stepAction}
 
         {!(status === "completed") || (
@@ -172,14 +175,18 @@ export const BarStep = (props) => {
         <Drawer placement="bottom" isOpen={isOpen} onClose={onClose}>
           <DrawerOverlay />
           <DrawerContent borderRadius="2xl">
-            <DrawerCloseButton />
+            <DrawerCloseButton size="sm" color="blackAlpha.500" background={"whiteAlpha.700"} />
             <DrawerHeader p={0.5} boxShadow={"base"}>
+              <Skeleton></Skeleton>
               <Image
                 src={profilePic}
+                fallbackSrc="/placeholderImagev2.png"
                 alt={title}
                 borderTopRadius="2xl"
-                objectFit="fill"
+                objectFit="cover"
                 dropShadow={"2xl"}
+                w="100%"
+                maxH="196px"
               />
             </DrawerHeader>
             <DrawerBody p={4}>

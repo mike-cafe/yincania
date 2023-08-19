@@ -186,7 +186,7 @@ export const RutaCard = (props) => {
             align="center"
             fontSize="sm"
           >
-            Ruta de la cerveza Reliquia Madrileña
+            Ruta de Reliquia Madrileña
           </Text>
         </Skeleton>
       </Box>
