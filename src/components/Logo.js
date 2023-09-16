@@ -2,7 +2,7 @@ import { chakra, useColorModeValue, Image } from "@chakra-ui/react";
 
 // export const Logo = (props) => (
 //   <chakra.svg
-//     color={useColorModeValue("blue.500", "blue.200")}
+//     color={useColorModeValue("secondary.500", "secondary.200")}
 //     width="120"
 //     height="35"
 //     viewBox="0 0 120 35"

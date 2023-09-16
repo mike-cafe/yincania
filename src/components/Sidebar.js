@@ -1,6 +1,6 @@
 import { Divider, Flex, Stack, useColorModeValue } from "@chakra-ui/react";
 import * as React from "react";
-import { FiHelpCircle, FiHome, FiLogOut, FiShare2 } from "react-icons/fi";
+import { FiHelpCircle, FiHome, FiInfo, FiLogOut, FiShare2 } from "react-icons/fi";
 import useVH from "react-viewport-height";
 import { useAuth } from "../contexts/AuthContext";
 import { avatarOptions } from "../data";
@@ -63,8 +63,8 @@ export const Sidebar = (props) => {
           </Stack>
           <Stack
             spacing={{
-              base: "5",
-              sm: "6",
+              base: "2",
+              sm: "3",
             }}
           >
             <Stack spacing="1">
@@ -80,7 +80,7 @@ export const Sidebar = (props) => {
               }
               }
             />
-            <NavButton path="/tutorial" label="Ayuda" icon={FiHelpCircle} onClick={()=>props.close()}/> 
+            <NavButton path="/tutorial" label="Tutorial" icon={FiInfo} onClick={()=>props.close()}/> 
             <NavButton
                 path="/"
                 onClick={()=>logout}

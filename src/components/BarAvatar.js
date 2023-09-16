@@ -5,7 +5,7 @@ import { GoVerified } from 'react-icons/go'
 export const BarAvatar = (props) => {
   const { isVerified, ...avatarProps } = props
   const avatarColor = useColorModeValue('white', 'gray.700')
-  const iconColor = useColorModeValue('blue.500', 'blue.200')
+  const iconColor = useColorModeValue('secondary.500', 'secondary.200')
   return (
     <Avatar size="lg" {...avatarProps}>
       {/* {isVerified && (

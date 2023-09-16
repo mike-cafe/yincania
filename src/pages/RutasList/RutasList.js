@@ -83,6 +83,7 @@ const RutasList = (props) => {
                       colorScheme="brand"
                       name={ruta.location}
                       price={ruta.title}
+                      hasJoined={props.userProfile.routes.findIndex((x)=>x.id==ruta.id)>-1}
                       duration=""
                       description={`${ruta.date.toDate().getDate()} de ${
                         months[ruta.date.toDate().getMonth()]

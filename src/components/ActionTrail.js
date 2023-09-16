@@ -1,4 +1,5 @@
-import { Text, Button, Spacer, HStack, Box, VStack } from "@chakra-ui/react";
+import { Text,
+   Button, Spacer, HStack, Box, VStack, ButtonGroup } from "@chakra-ui/react";
 import * as React from "react";
 import { HiArrowNarrowRight } from "react-icons/hi";
 
@@ -21,31 +22,31 @@ export const ActionTrail = (props) => {
   let actionButtons;
   if (backButton) {
     actionButtons = (
-      <>
-        {" "}
+      <ButtonGroup variant='solid' spacing='2' w={"100%"}>
         <Button
           hidden={!backButton}
           onClick={backClick}
           size="xl"
-          colorScheme="gray"
+          w="100%"
+          colorScheme="secondary"
           variant={secondVariant}
           marginRight="auto"
           fontSize={{ base: "sm", sm: "md" }}
         >
           {secondAction}
         </Button>
-        <Spacer />
         <Button
+          w="100%"
           disabled={firstDisabled}
           onClick={mainClick}
           size="xl"
           colorScheme="brand"
-          rightIcon={<HiArrowNarrowRight />}
+          variant="solid"
           fontSize={{ base: "sm", sm: "md" }}
         >
           {firstAction}
         </Button>
-      </>
+      </ ButtonGroup>
     );
   } else {
     actionButtons = (
@@ -56,7 +57,6 @@ export const ActionTrail = (props) => {
           size="lg"
           w="100%"
           colorScheme="brand"
-          rightIcon={<HiArrowNarrowRight />}
           fontSize={{ base: "sm", sm: "md" }}
         >
           {firstAction}
@@ -81,9 +81,9 @@ export const ActionTrail = (props) => {
           Estás apuntado a este evento
         </Text>
       )}
-      <HStack w="100%" justifyContent="between" alignItems="between" px={8}>
+      <Box w="100%" justifyContent="center" alignItems="between" px={8}>
         {actionButtons}
-      </HStack>
+      </Box>
     </Box>
   );
 };

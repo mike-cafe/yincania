@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Search2Icon } from "@chakra-ui/icons";
 import {
+  Box,
   VStack,
   FormControl,
   FormLabel,
@@ -9,13 +10,22 @@ import {
   Text,
   Stack,
   FormErrorMessage,
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
+  Link,
 } from "@chakra-ui/react";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { TeamJoinCard } from "../../components/TeamJoinCard";
 import { useAuth } from "../../contexts/AuthContext";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Link as RouteLink,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 
 const schema = yup.object().shape({
   code: yup.string().required("Introduce un código de equipo"),
@@ -39,6 +49,8 @@ const JoinTeam = (props) => {
   const [showTeam, setShowTeam] = React.useState(false);
   const [joinAvailable, setJoinAvailable] = React.useState(false);
   const [teamCode, setTeamCode] = React.useState("");
+  const [alreadyPlaying, setAlreadyPlaying] = React.useState(false);
+  const [currentTeam, setCurrentTeam] = React.useState();
 
   const onSubmit = async (values) => props.findTeam(values.code);
 
@@ -67,16 +79,14 @@ const JoinTeam = (props) => {
     }
   }, [props.teamFound]);
 
-  React.useEffect(
-    ()=>{
-      if(props.routeDetail?.status == "open"){
-        setJoinAvailable(true)
-      }else{
-        setJoinAvailable(false)
-      }
-      setValue("code","")
-    },[props.routeDetail]
-  )
+  React.useEffect(() => {
+    if (props.routeDetail?.status == "open") {
+      setJoinAvailable(true);
+    } else {
+      setJoinAvailable(false);
+    }
+    setValue("code", "");
+  }, [props.routeDetail]);
 
   React.useEffect(() => {
     if (props.err) {
@@ -98,6 +108,17 @@ const JoinTeam = (props) => {
       );
     }
   }, [props.teamDetail]);
+
+  React.useEffect(() => {
+    setAlreadyPlaying(
+      props.user?.routes?.findIndex(
+        (x) => x.id == searchParams.get("routeId")
+      ) > -1
+    );
+    setCurrentTeam(
+      props.user?.routes?.find((x) => x.id == searchParams.get("routeId"))
+    );
+  }, [props.user]);
 
   return (
     <>
@@ -127,6 +148,35 @@ const JoinTeam = (props) => {
         ) : (
           ""
         )}
+        {currentTeam && (
+          <Alert
+            status="warning"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            textAlign="center"
+            colorScheme="accent"
+            variant="top-accent"
+            borderRadius={"base"}
+          >
+            <AlertIcon />
+            <AlertTitle>Ya estás apuntado a un equipo</AlertTitle>
+            <AlertDescription>
+              Si quieres apuntarte a otro, antes debes abandonar
+              <Link
+                ml={1}
+                fontWeight="bold"
+                as={RouteLink}
+                color="accent.700"
+                textDecor="underline"
+                to={`/app/view/team/${currentTeam.team}?routeId=${currentTeam.id}`}
+              >
+                tu equipo actual
+              </Link>
+            </AlertDescription>
+          </Alert>
+        )}
+
         <FormControl
           id="code"
           isInvalid={!!errors?.code?.message}
@@ -137,12 +187,13 @@ const JoinTeam = (props) => {
           <Input
             defaultValue={teamCode}
             placeholder="XXXXXX"
+            disabled={alreadyPlaying}
             {...register("code")}
           />
           <FormErrorMessage>{errors?.code?.message}</FormErrorMessage>
         </FormControl>
         <Button
-          disabled={!!errors?.code?.message}
+          isDisabled={!!errors?.code?.message || alreadyPlaying}
           onClick={handleSubmit(onSubmit)}
           size="lg"
           w="100%"

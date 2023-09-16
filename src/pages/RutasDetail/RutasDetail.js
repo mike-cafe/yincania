@@ -56,7 +56,7 @@ const RutasDetail = (props) => {
         <Image src={props.detail?.cover} alt={props.detail?.title} />
       </Center>
       <VStack spacing="8" px="4" py="8" flex="1">
-        <VStack color="brand.600" w="100%" spacing={2} align="left">
+        <VStack color="blackAlpha.900" w="100%" spacing={2} align="left">
           <Text fontSize="xl" lineHeight="1" fontWeight="bold">
             {props.detail?.location}
           </Text>
@@ -123,7 +123,7 @@ const RutasDetail = (props) => {
             creativity="https://firebasestorage.googleapis.com/v0/b/react-coffee-a2736.appspot.com/o/TapapTapas.png?alt=media&token=5eb3599d-0b03-4f8d-8d04-17a53a0ac5b3"
           />
         </HStack>
-        <Alert status="info">
+        <Alert status="info" borderRadius={"md"}>
           <AlertIcon />
           {`El precio de participar en esta Yincaña es de ${props.detail?.precio} euros`}
         </Alert>
@@ -133,7 +133,7 @@ const RutasDetail = (props) => {
           backClick={() =>
             navigate(`/app/join/team?routeId=${props.detail?.id}`)
           }
-          secondVariant="outline"
+          secondVariant="solid"
           secondAction="Unirse a Equipo"
           firstAction={hasTeam ? "Ver Equipo" : "Crear Equipo"}
           mainClick={() => {

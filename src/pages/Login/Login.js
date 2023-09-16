@@ -223,7 +223,7 @@ const Login = (props) => {
   return (
     <>
       <Box
-        bg={useColorModeValue("gray.50", "inherit")}
+        bg="bg.canvas"
         minH="100vh"
         py="12"
         px={{
@@ -243,7 +243,7 @@ const Login = (props) => {
             <Text as="span">¿No tienes una cuenta todavía?</Text>
             <Link
               ml={1}
-              color="brand.600"
+              color="secondary.500"
               fontWeight="bold"
               as={RouteLink}
               to="/signup"
@@ -273,7 +273,7 @@ const Login = (props) => {
                   <FormLabel m={0}>Contraseña</FormLabel>
                   <Button
                     variant="link"
-                    colorScheme="yellow"
+                    colorScheme="secondary"
                     onClick={() => navigate("/forget-password")}
                     fontWeight="normal"
                     fontSize="xs"

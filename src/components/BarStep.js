@@ -48,10 +48,28 @@ export const BarStep = (props) => {
 
   const [playTime, setPlayTime] = React.useState();
   const [stepAction, setStepAction] = React.useState();
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  console.log(window.location.host);
+  const [image, setImage] = React.useState();
+
+  React.useEffect(() => {
+    console.log("stting image with ",profilePic)
+    setImage(
+      <Image
+        loading="eager"
+        src={profilePic}
+        fallbackSrc="/placeholderImagev2.png"
+        alt={title}
+        borderTopRadius="2xl"
+        objectFit="cover"
+        dropShadow={"2xl"}
+        w="100%"
+        maxH="196px"
+      />
+    );
+  }, [profilePic]);
 
   React.useEffect(() => {
     if (!completed) {
@@ -64,7 +82,7 @@ export const BarStep = (props) => {
             <Button
               // rightIcon={<BsArrowRightCircle color="brand.300" />}
               colorScheme="brand"
-              size={{base:"xs",sm:"md"}}
+              size={{ base: "xs", sm: "md" }}
               variant="solid"
               onClick={() => navigate(`/app/team/${team}/game/${game}`)}
               aria-label="Jugar"
@@ -128,7 +146,7 @@ export const BarStep = (props) => {
           pb={isLastStep ? "0" : "8"}
           onClick={() => {
             if ((status != "hidden" || isLastStep) && !completed) {
-              onOpen();
+              setDrawerOpen(true)
             }
           }}
         >
@@ -172,13 +190,17 @@ export const BarStep = (props) => {
             {playTime}
           </Text>
         )}
-        <Drawer placement="bottom" isOpen={isOpen} onClose={onClose}>
+        <Drawer placement="bottom" isOpen={drawerOpen} onClose={()=>setDrawerOpen(false)}>
           <DrawerOverlay />
           <DrawerContent borderRadius="2xl">
-            <DrawerCloseButton size="sm" color="blackAlpha.500" background={"whiteAlpha.700"} />
+            <DrawerCloseButton
+              size="sm"
+              color="blackAlpha.500"
+              background={"whiteAlpha.700"}
+            />
             <DrawerHeader p={0.5} boxShadow={"base"}>
-              <Skeleton></Skeleton>
               <Image
+                loading="lazy"
                 src={profilePic}
                 fallbackSrc="/placeholderImagev2.png"
                 alt={title}
@@ -211,7 +233,8 @@ export const BarStep = (props) => {
                   <Text fontWeight={"medium"}>{timetable}</Text>
                 </Box>
                 <Button
-                  colorScheme="brand"
+                  colorScheme="accent"
+                  color="accent.900"
                   variant="solid"
                   leftIcon={<ExternalLinkIcon />}
                   onClick={() => window.open(addressURL, "_blank")}

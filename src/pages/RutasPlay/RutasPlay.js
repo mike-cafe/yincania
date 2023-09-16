@@ -165,8 +165,8 @@ const RutasPlay = (props) => {
           <Text
             fontSize="xl"
             lineHeight="1"
-            fontWeight="bold"
-            color="blackAlpha.600"
+            fontWeight="normal"
+            color="blackAlpha.800"
           >
             {props.detail?.location}
           </Text>
@@ -174,8 +174,8 @@ const RutasPlay = (props) => {
             fontSize="4xl"
             lineHeight="1"
             letterSpacing="tight"
-            fontWeight="extrabold"
-            color="brand.500"
+            fontWeight="medium"
+            color="blackAlpha.800"
           >
             {props.detail?.title}
           </Text>
@@ -221,7 +221,7 @@ const RutasPlay = (props) => {
             />
           </>
         ) : (
-          "No hay current team"
+          "No hay equipo"
         )}
       </VStack>
       {showQR !== 0 ? (

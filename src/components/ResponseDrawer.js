@@ -109,8 +109,8 @@ export const ResponseDrawer = (props) => {
                   <Box marginLeft="auto" marginRight="auto">
                     <StarRatingComponent
                       name="app6"
-                      starColor="#ffb400"
-                      emptyStarColor="#ffb400"
+                      starColor="accent.500"
+                      emptyStarColor="accent.50"
                       value={props.rating}
                       onStarClick={onStarClickHalfStar}
                       renderStarIcon={(index, value) => {

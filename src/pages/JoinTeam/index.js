@@ -10,12 +10,13 @@ const JoinTeamContainer = (props) => {
   return <JoinTeam {...props} />;
 };
 
-const mapStateToProps = ({ TeamDetail,RouteDetail }) => {
+const mapStateToProps = ({ TeamDetail,RouteDetail,UserProfile }) => {
   return {
     loading: TeamDetail?.loading,
     teamFound:TeamDetail?.teamFound,
     teamDetail:TeamDetail?.data,
     routeDetail:RouteDetail.data,
+    user:UserProfile.data,
     err:TeamDetail?.err,
   };
 };

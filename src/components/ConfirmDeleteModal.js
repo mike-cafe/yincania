@@ -29,7 +29,7 @@ export const ConfirmDeleteModal = (props) => {
                 
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme='blue' mr={3} onClick={onClose}>
+            <Button colorScheme='accent' mr={3} onClick={onClose}>
               Close
             </Button>
             <Button variant='ghost'>Secondary Action</Button>

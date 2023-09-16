@@ -108,7 +108,7 @@ const TapaDetail = (props) => {
           </PinInput>
           <Spacer />
           <Button
-            colorScheme="blue"
+            colorScheme="secondary"
             size="md"
             onClick={checkCode}
             isLoading={props.loading}

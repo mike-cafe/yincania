@@ -159,8 +159,8 @@ const TeamDetail = (props) => {
         {props.routeDetail?.status == "open" ? (
           <ActionTrail
             secondVariant="ghost"
-            secondAction="Abandonar Equipo"
-            firstAction="Invitar al Equipo"
+            secondAction="Abandonar"
+            firstAction="Invitar"
             backButton={true}
             mainClick={onOpen}
             backClick={abandonTeam}

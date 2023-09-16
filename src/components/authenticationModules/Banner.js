@@ -46,7 +46,7 @@ const Banner = (props) => {
         px={{ base: "3", md: "6", lg: "8" }}
         color="white"
         spacing="4"
-        bg={useColorModeValue("blue.600", "blue.400")}
+        bg={useColorModeValue("secondary.600", "secondary.400")}
         position="relative"
       >
         <Box position="absolute" top="2" right="2">

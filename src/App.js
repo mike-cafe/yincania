@@ -20,17 +20,41 @@ const myTheme = extendTheme(
     colors: {
       ...baseTheme.colors,
       brand: {
-        50: "#FEEFE6",
-        100: "#FCE0CF",
-        200: "#F2B38C",
-        300: "#E99563",
-        400: "#DE7F45",
-        500: "#C3672D",
-        600: "#AD561F",
-        700: "#844015",
-        800: "#5C290A",
-        900: "#451F08",
+        50: "#fff5e8",
+        100: "#ffecd1",
+        200: "#ffd8a3",
+        300: "#ffc575",
+        400: "#ffb147",
+        500: "#FF9E19",
+        600: "#cc7e14",
+        700: "#995f0f",
+        800: "#663f0a",
+        900: "#332005",
       },
+      secondary:{
+        50: "#f2fafd",
+        100: "#e5f6fb",
+        200: "#caedf7",
+        300: "#b0e3f2",
+        400: "#95daee",
+        500: "#7BD1EA",
+        600: "#5692a4",
+        700: "#3e6975",
+        800: "#253f46",
+        900: "#0c1517",
+      },
+      accent:{
+        50: "#f9fceb",
+        100: "#f3f8d6",
+        200: "#e7f1ad",
+        300: "#daea84",
+        400: "#cee35b",
+        500: "#C2DC32",
+        600: "#9bb028",
+        700: "#74841e",
+        800: "#4e5814",
+        900: "#272c0a",
+      }
     },
     breakpoints: {
       base: "220px",
@@ -69,19 +93,6 @@ const myTheme2 = extendTheme(
   },
   myTheme
 );
-
-// const myTheme3 = extendTheme(
-//   {
-//     styles: {
-//       global: {
-//         body: {
-//           bg: "gray.900",
-//           color: "white",
-//         },
-//       },
-//     },
-//   },myTheme2
-// )
 
 const { ToastContainer, toast } = createStandaloneToast({ theme: myTheme2 });
 

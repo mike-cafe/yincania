@@ -119,7 +119,7 @@ export const TeamForm = (props) => {
       <ActionTrail
         secondVariant="ghost"
         secondAction="Cancelar"
-        firstAction="Guardar Equipo"
+        firstAction="Guardar"
         mainClick={handleSubmit(onSubmit)}
         backButton={true}
         backClick={() => navigate("/app/detail/" + props.id)}

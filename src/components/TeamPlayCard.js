@@ -28,11 +28,9 @@ export const TeamPlayCard = (props) => {
           let consumed = game.consumedTime?.seconds;
           switch (game.status) {
             case "completed":
-              console.log(game.name, "completed", [consumed, finish]);
               slowDowns++;
               return [consumed,finish];
             case "playable":
-              console.log(game.name, "playable", [consumed]);
               if(consumed + props.cooldown > Date.now()/1000){
                 return [consumed];
               }else{
@@ -40,13 +38,10 @@ export const TeamPlayCard = (props) => {
                 return [consumed,Date.now()/1000];
               }
             case "consumable":
-              console.log(game.name, "consumable", Date.now() / 1000);
               return Date.now() / 1000;
             case "hidden":
-              console.log(game.name, "hidden", []);
               return [];
             default:
-              console.log("default", game.name, [consumed, finish]);
               return [consumed, finish];
           }
         });
@@ -84,7 +79,7 @@ export const TeamPlayCard = (props) => {
       <HStack py="6" px="4" spacing="4">
         <Image width="48px" src={props.team?.shield} alt="Escudo Equipo" />
         <CardContent>
-          <Text color="muted">Tu Equipo</Text>
+          <Text color="muted">Tu equipo</Text>
           <CardHeader title={props.team?.name} />
           <Stack spacing="1" mt="2">
             <HStack fontSize="sm">
@@ -110,7 +105,7 @@ export const TeamPlayCard = (props) => {
               <Text
                 lineHeight={1}
                 fontSize="lg"
-                color="brand.600"
+                color="secondary.500"
                 fontWeight="bold"
               >
                 {totalTime}
@@ -119,8 +114,8 @@ export const TeamPlayCard = (props) => {
           </HStack>
         )}
         {!props.finished && (
-          <Button variant="link" colorScheme="gray" size="sm">
-            <Link as={RouteLink} to={"/app/view/team/" + props.team?.id}>
+          <Button variant="solid" colorScheme="secondary" size="sm" >
+            <Link as={RouteLink} to={"/app/view/team/" + props.team?.id} color="whiteAlpha.800">
               Ver Equipo
             </Link>
           </Button>

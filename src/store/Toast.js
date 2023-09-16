@@ -6,8 +6,8 @@ export const Toast = {
     },
     success: {
       title: "Correo verificado",
-      description: "Puedes hacer login normalmente",
-      duration: 3000,
+      description: "Ahora puedes iniciar sesión con tu cuenta de correo y contraseña",
+      duration: null,
     },
     error: {
       title: "No hemos podido verificar tu correo electrónico.",

@@ -9,9 +9,9 @@ export const NavButton = (props) => {
     <Button variant="ghost" justifyContent="start" {...buttonProps}>
         <Link as={RouteLink} to={path}>
       <HStack spacing="3">
-          <Icon as={icon} boxSize="6" color="subtle" />
+          <Icon as={icon} boxSize="6" color="brand.500" />
           <Text
-            color="subtle"
+            color="brand.900"
             fontWeight={props["aria-current"] ? "bold" : "normal"}
           >
             {label}

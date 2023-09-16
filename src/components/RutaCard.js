@@ -40,7 +40,7 @@ const RutaDetail = (props) => {
       <ListIcon
         fontSize="2xl"
         as={HiCheckCircle}
-        color="blue.400"
+        color="secondary.500"
         marginEnd="4"
         mt="1"
       />
@@ -64,6 +64,7 @@ export const RutaCard = (props) => {
     colorScheme: c,
     image,
     status,
+    hasJoined,
     ...rest
   } = props;
   return (
@@ -84,9 +85,10 @@ export const RutaCard = (props) => {
         bgPos="center center"
         px="8"
         py="8"
-        color={image ? "orange.500" : "orange.50"}
+        color={image ? "brand.500" : "brand.50"}
         position="relative"
-        borderTop="8px solid #C3672D"
+        borderTop="8px solid"
+        borderTopColor="brand.500"
       >
         {isFinished ? (
           <Flex
@@ -115,9 +117,17 @@ export const RutaCard = (props) => {
         )}
         <VStack align={"flex-start"} justify={"center"}>
         {status == "open" && (
-            <Badge size="sm" variant="solid" colorScheme="green">
+          <VStack alignItems="flex-start">
+            <Badge size="xs" variant="solid" colorScheme="accent">
               Proximamente
             </Badge>
+            {
+              hasJoined && 
+              <Badge size="xs" variant="solid" colorScheme="secondary">
+                Apuntado
+              </Badge>
+            }
+            </VStack>
           )}
           <Text
             fontSize="3xl"
@@ -165,7 +175,7 @@ export const RutaCard = (props) => {
               onClick={onClick}
               size="lg"
               w="full"
-              bgColor="brand.400"
+              colorScheme="brand"
               color="whiteAlpha.900"
               rightIcon={<HiArrowNarrowRight />}
             >
